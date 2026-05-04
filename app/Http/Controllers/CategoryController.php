@@ -49,17 +49,26 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Category $category)
     {
-        //
+        return Inertia::render('Categories/Edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $category->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+        ]);
+        return to_route('categories.index')->with('message', 'Category Updated Successfully!');
     }
 
     /**

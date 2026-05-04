@@ -6,21 +6,31 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import categories from '@/routes/categories';
 
-export default function Create() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        description: '',
+interface Category {
+    id: number;
+    name: string;
+    description: string;
+}
+
+interface Props {
+    category: Category;
+}
+
+export default function Edit({ category }: Props) {
+    const { data, setData, put, processing, errors, reset } = useForm({
+        name: category.name,
+        description: category.description,
     });
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         // console.log('hit');
-        post(categories.store().url);
+        put(categories.update(category.id).url);
     }
 
     return (
         <>
-            <Head title="Categories" />
+            <Head title="Edit Categories" />
             <div className="m-4 flex flex-col items-center">
                 <div className="w-full max-w-2xl">
                     <Link
@@ -35,30 +45,6 @@ export default function Create() {
                     onSubmit={handleSubmit}
                     className="w-full max-w-2xl space-y-4"
                 >
-                    {/* {Object.keys(errors).length > 0 && (
-                        <Alert variant="destructive" className="max-w-md">
-                            <AlertCircleIcon />
-                            <AlertTitle>Errors</AlertTitle>
-                            <AlertDescription>
-                                <ul className="mt-2 list-disc pl-5">
-                                    {Object.values(errors).map(
-                                        (error, index) => (
-                                            <li key={index}>{error}</li>
-                                        ),
-                                    )}
-                                </ul>
-                            </AlertDescription>
-                            <AlertDescription>
-                                {Object.entries(errors).map(
-                                    ([field, message]) => (
-                                        <p key={field}>
-                                            <strong>{field}:</strong> {message}
-                                        </p>
-                                    ),
-                                )}
-                            </AlertDescription>
-                        </Alert>
-                    )} */}
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="name">Category Name</Label>
 
@@ -102,7 +88,7 @@ export default function Create() {
                         </Button>
 
                         <Button type="submit" disabled={processing}>
-                            {processing ? 'Creating...' : 'Create'}
+                            {processing ? 'Editing...' : 'Edit'}
                         </Button>
                     </div>
                 </form>
@@ -111,10 +97,10 @@ export default function Create() {
     );
 }
 
-Create.layout = {
+Edit.layout = {
     breadcrumbs: [
         {
-            title: 'Create New Categories',
+            title: 'Edit Category',
             href: categories.create().url,
         },
     ],

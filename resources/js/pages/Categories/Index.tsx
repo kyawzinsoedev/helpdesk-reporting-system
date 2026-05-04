@@ -1,5 +1,5 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { Megaphone } from 'lucide-react';
+import { LucidePenLine, Megaphone } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -82,7 +82,15 @@ export default function Index() {
                                     </TableCell>
                                     <TableCell className="text-center">
                                         <div className="flex items-center justify-center gap-2">
-                                            <Button>Edit</Button>
+                                            <Link
+                                                href={
+                                                    routeCategories.edit(
+                                                        category.id,
+                                                    ).url
+                                                }
+                                            >
+                                                <Button>Edit</Button>
+                                            </Link>
                                             <Button
                                                 disabled={processing}
                                                 onClick={() =>
