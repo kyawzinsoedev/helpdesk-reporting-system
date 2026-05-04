@@ -13,7 +13,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Categories/Index');
+        $categories = Category::all();
+        return Inertia::render('Categories/Index', compact("categories"));
     }
 
     /**
@@ -34,7 +35,7 @@ class CategoryController extends Controller
             'description' => 'nullable|string',
         ]);
         Category::create($validated);
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('message', 'Category Created Successfully!');
     }
 
     /**
@@ -64,8 +65,13 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+            return to_route('categories.index')->with('message', 'Category Deleted Successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Something went wrong while deleting!');
+        }
     }
 }
