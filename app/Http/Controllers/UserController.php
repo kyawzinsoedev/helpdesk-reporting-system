@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Branch;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
@@ -30,7 +30,7 @@ class UserController extends Controller
     {
         return Inertia::render('Users/Create', [
             'departments' => Department::all(),
-            // 'roles' => Role::all(),
+            'roles' => Role::all(),
         ]);
     }
 
@@ -40,20 +40,24 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
-            'first_name' => 'required|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
-            'last_name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'birthday' => 'required|date',
             'email' => 'required|email|unique:users,email',
-            'gender' => 'nullable|string',
+            'gender' => 'nullable|in:male,female',
             'address' => 'required|string',
-            'status' => 'required|string',
+            'status' => 'required|in:active,draft',
             'department_id' => 'required|exists:departments,id',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'required|exists:roles,name',
         ]);
+
+        $validated['password'] = Hash::make($request->password);
+
+        $validated['gender'] = $validated['gender'] ?? 'male';
+
+        $validated['status'] = $validated['status'] ?? 'active';
 
         $user = User::create($validated);
 
@@ -69,9 +73,9 @@ class UserController extends Controller
     public function edit(User $user)
     {
         return Inertia::render('Users/Edit', [
-            // 'user' => $user->load(['roles']),
+            'user' => $user->load(['roles']),
             'departments' => Department::all(),
-            // 'roles' => Role::all(),
+            'roles' => Role::all(),
         ]);
     }
 
@@ -81,14 +85,12 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'first_name' => 'required|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
-            'last_name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'birthday' => 'required|date',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'gender' => 'nullable|string',
+            'gender' => 'nullable|in:male,female',
             'address' => 'required|string',
             'status' => 'required|string',
             'department_id' => 'required|exists:departments,id',
@@ -96,8 +98,9 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-        // Remove password if empty
-        if (!$request->password) {
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->passwrod);
+        } else {
             unset($validated['password']);
         }
 

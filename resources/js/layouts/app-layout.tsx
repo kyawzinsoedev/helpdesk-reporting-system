@@ -1,16 +1,29 @@
-import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
-import type { BreadcrumbItem } from '@/types';
+import type { ReactNode } from 'react';
+import Navbar from '@/components/Navbar';
+import Title from '@/components/Title';
+import TopHeader from '@/components/TopHeader';
 
-export default function AppLayout({
-    breadcrumbs = [],
-    children,
-}: {
-    breadcrumbs?: BreadcrumbItem[];
-    children: React.ReactNode;
-}) {
+interface AppLayoutProps {
+    children: ReactNode;
+}
+
+export default function AppLayout({ children }: AppLayoutProps) {
     return (
-        <AppLayoutTemplate breadcrumbs={breadcrumbs}>
-            {children}
-        </AppLayoutTemplate>
+        <div className="min-h-screen bg-muted/40">
+            {/* Main Container */}
+            <div className="mx-auto min-h-screen max-w-6xl border-x bg-background shadow-xl">
+                {/* Top Header */}
+                <TopHeader />
+
+                {/* Title */}
+                {/* <Title /> */}
+
+                {/* Navbar */}
+                <Navbar />
+
+                {/* Main Content */}
+                <main className="p-6">{children}</main>
+            </div>
+        </div>
     );
 }

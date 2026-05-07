@@ -12,16 +12,21 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('user_name')->unique();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('username')->unique();
             $table->string('password');
-            $table->string('phone');
+            $table->string('name');
+            $table->string('phone')->nullable();
+            $table->date('birthday')->nullable();
+            $table->string('email')->unique();
+            $table->string('gender')->nullable();
+            $table->text('address')->nullable();
+            $table->enum('status', ['active', 'draft'])->default('active');
+
+            // Foreign Keys
+            $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();
+
             $table->rememberToken();
             $table->timestamps();
-
-            $table->foreignId('department_id')->constrained()->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
