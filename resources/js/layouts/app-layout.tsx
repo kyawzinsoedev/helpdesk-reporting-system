@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import Navbar from '@/components/Navbar';
-import Title from '@/components/Title';
 import TopHeader from '@/components/TopHeader';
 
 interface AppLayoutProps {
@@ -14,9 +13,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <div className="mx-auto min-h-screen max-w-6xl border-x bg-background shadow-xl">
                 {/* Top Header */}
                 <TopHeader />
-
-                {/* Title */}
-                {/* <Title /> */}
 
                 {/* Navbar */}
                 <Navbar />
