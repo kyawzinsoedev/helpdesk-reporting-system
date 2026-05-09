@@ -1,5 +1,31 @@
+import { Trash2Icon, Eye, Pencil, Trash2 } from 'lucide-react';
+
 import React from 'react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogMedia,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Table,
     TableBody,
@@ -10,6 +36,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import departments from '@/routes/departments';
+
+import { Field, FieldGroup } from '@/components/ui/field';
 
 export default function Index() {
     const departments = [
@@ -54,7 +82,50 @@ export default function Index() {
         <>
             <div className="flex items-center justify-between">
                 <span className="text-xl font-bold">Department</span>
-                <Button>Create</Button>
+                {/* <Button>Create</Button> */}
+                <Dialog>
+                    <form>
+                        <DialogTrigger asChild>
+                            <Button>Create</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-sm">
+                            <DialogHeader>
+                                <DialogTitle>Create Department</DialogTitle>
+                                <DialogDescription>
+                                    Click save when you&apos;re done.
+                                </DialogDescription>
+                            </DialogHeader>
+                            {/* <FieldGroup>
+                                                        <Field>
+                                                            <Label htmlFor="name-1">
+                                                                Name
+                                                            </Label>
+                                                            <Input
+                                                                id="name-1"
+                                                                name="name"
+                                                                defaultValue="Pedro Duarte"
+                                                            />
+                                                        </Field>
+                                                        <Field>
+                                                            <Label htmlFor="username-1">
+                                                                Username
+                                                            </Label>
+                                                            <Input
+                                                                id="username-1"
+                                                                name="username"
+                                                                defaultValue="@peduarte"
+                                                            />
+                                                        </Field>
+                                                    </FieldGroup> */}
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </DialogClose>
+                                <Button type="submit">Save</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </form>
+                </Dialog>
             </div>
             <div>
                 <Table>
@@ -83,10 +154,124 @@ export default function Index() {
                                         {department.department_code}
                                     </TableCell>
                                     <TableCell className="flex items-center justify-center gap-2 text-center">
-                                        <Button>Edit</Button>
-                                        <Button variant="destructive">
-                                            Delete
-                                        </Button>
+                                        {/* Show Details  */}
+                                        <Dialog>
+                                            <form>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline">
+                                                        <Eye />
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-sm">
+                                                    <DialogHeader>
+                                                        <DialogTitle>
+                                                            Details About
+                                                            Department
+                                                        </DialogTitle>
+                                                        <DialogDescription>
+                                                            Click save when
+                                                            you&apos;re done.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+
+                                                    <DialogFooter>
+                                                        <DialogClose asChild>
+                                                            <Button variant="outline">
+                                                                Close
+                                                            </Button>
+                                                        </DialogClose>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </form>
+                                        </Dialog>
+                                        {/* Edit Button */}
+                                        <Dialog>
+                                            <form>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline">
+                                                        <Pencil />
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-sm">
+                                                    <DialogHeader>
+                                                        <DialogTitle>
+                                                            Edit Department
+                                                        </DialogTitle>
+                                                        <DialogDescription>
+                                                            Click save when
+                                                            you&apos;re done.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    {/* <FieldGroup>
+                                                        <Field>
+                                                            <Label htmlFor="name-1">
+                                                                Name
+                                                            </Label>
+                                                            <Input
+                                                                id="name-1"
+                                                                name="name"
+                                                                defaultValue="Pedro Duarte"
+                                                            />
+                                                        </Field>
+                                                        <Field>
+                                                            <Label htmlFor="username-1">
+                                                                Username
+                                                            </Label>
+                                                            <Input
+                                                                id="username-1"
+                                                                name="username"
+                                                                defaultValue="@peduarte"
+                                                            />
+                                                        </Field>
+                                                    </FieldGroup> */}
+                                                    <DialogFooter>
+                                                        <DialogClose asChild>
+                                                            <Button variant="outline">
+                                                                Cancel
+                                                            </Button>
+                                                        </DialogClose>
+                                                        <Button type="submit">
+                                                            Save changes
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </form>
+                                        </Dialog>
+
+                                        {/* Delete  */}
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="destructive">
+                                                    <Trash2 />
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent size="sm">
+                                                <AlertDialogHeader>
+                                                    <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                                                        <Trash2Icon />
+                                                    </AlertDialogMedia>
+                                                    <AlertDialogTitle>
+                                                        Delete chat?
+                                                    </AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        This will permanently
+                                                        delete this chat
+                                                        conversation. View{' '}
+                                                        <a href="#">Settings</a>{' '}
+                                                        delete any memories
+                                                        saved during this chat.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel variant="outline">
+                                                        Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction variant="destructive">
+                                                        Delete
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </TableCell>
                                 </TableRow>
                             ))}
