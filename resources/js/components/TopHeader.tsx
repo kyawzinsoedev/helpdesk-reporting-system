@@ -2,6 +2,15 @@ import { Bell, LogOut, Mail, MessageSquare, CircleUser } from 'lucide-react';
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 
 export default function TopHeader() {
@@ -42,10 +51,31 @@ export default function TopHeader() {
                         <MessageSquare className="h-4 w-4" />
                     </Button>
 
-                    <Button variant="outline" size="sm">
+                    {/* <Button variant="outline" size="sm">
                         <CircleUser className="mr-2 h-7 w-7" />
                         UserName
-                    </Button>
+                    </Button> */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">Open</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuGroup>
+                                <DropdownMenuLabel>
+                                    My Account
+                                </DropdownMenuLabel>
+                                <DropdownMenuItem>Profile</DropdownMenuItem>
+                                <DropdownMenuItem>Billing</DropdownMenuItem>
+                            </DropdownMenuGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem>Team</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    Subscription
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
         </div>
