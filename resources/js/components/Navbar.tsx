@@ -20,10 +20,12 @@ export default function Navbar() {
             </Button>
 
             <Button variant="ghost" asChild>
-                <Link href="/settings">Settings</Link>
+                <Link href="/reports">Reports</Link>
             </Button>
 
-            <Button variant="ghost">Report</Button>
+            <Button variant="ghost" asChild>
+                <Link href="/settings">Settings</Link>
+            </Button>
         </div>
     );
 }
