@@ -1,6 +1,5 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import CreateReport from '@/components/reports/CreateReport';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import {
@@ -12,60 +11,79 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import CreateTemplate from '@/components/templates/CreateTemplate';
+
+interface Template {
+    id: number;
+    name: string;
+    created_at: string;
+    report?: {
+        name: string;
+    };
+}
 
 interface Report {
     id: number;
     name: string;
-    created_at: string;
 }
+
 interface Props {
+    templates: Template[];
     reports: Report[];
 }
-export default function Index({ reports }: Props) {
+
+export default function Index({ templates, reports }: Props) {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleDelete = (id: number) => {
-        if (confirm('Are you sure you want to delete this report?')) {
-            router.delete(`/reports/${id}`);
+        if (confirm('Are you sure you want to delete this template?')) {
+            router.delete(`/templates/${id}`);
         }
     };
 
     return (
-        <div>
+        <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <span className="text-xl font-bold">Reports</span>
+                <span className="text-xl font-bold">Templates</span>
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger asChild>
                         <Button>Create</Button>
                     </DialogTrigger>
-                    {/* Create Report Form  */}
-                    <CreateReport setIsOpen={setIsOpen} />
-                    {/* End Create Report Form  */}
+                    <CreateTemplate setIsOpen={setIsOpen} reports={reports} />
                 </Dialog>
             </div>
+
             <Table>
-                <TableCaption>A list of your reporst.</TableCaption>
+                <TableCaption>A list of your templates.</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px]">ID</TableHead>
                         <TableHead>Name</TableHead>
-                        <TableHead>Created At </TableHead>
-                        <TableHead className="flex items-center justify-center text-right">
-                            Action
-                        </TableHead>
+                        <TableHead>Report</TableHead>
+                        <TableHead>Created At</TableHead>
+                        <TableHead className="text-center">Action</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {reports?.length > 0 ? (
-                        reports.map((report) => (
-                            <TableRow key={report.id}>
+                    {templates?.length > 0 ? (
+                        templates.map((template) => (
+                            <TableRow key={template.id}>
                                 <TableCell className="font-medium">
-                                    {report.id}
+                                    {template.id}
                                 </TableCell>
-                                <TableCell>{report.name}</TableCell>
+                                <TableCell>{template.name}</TableCell>
+                                <TableCell>
+                                    {template.report ? (
+                                        template.report.name
+                                    ) : (
+                                        <span className="text-xs text-muted-foreground italic">
+                                            No Report
+                                        </span>
+                                    )}
+                                </TableCell>
                                 <TableCell>
                                     {new Date(
-                                        report.created_at,
+                                        template.created_at,
                                     ).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell className="flex items-center justify-center gap-3">
@@ -75,7 +93,9 @@ export default function Index({ reports }: Props) {
                                     <Button
                                         variant="destructive"
                                         size="sm"
-                                        onClick={() => handleDelete(report.id)}
+                                        onClick={() =>
+                                            handleDelete(template.id)
+                                        }
                                     >
                                         Delete
                                     </Button>
@@ -85,10 +105,10 @@ export default function Index({ reports }: Props) {
                     ) : (
                         <TableRow>
                             <TableCell
-                                colSpan={4}
+                                colSpan={5}
                                 className="py-10 text-center text-muted-foreground"
                             >
-                                No reports found.
+                                No templates found.
                             </TableCell>
                         </TableRow>
                     )}

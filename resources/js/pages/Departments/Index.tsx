@@ -123,7 +123,7 @@ export default function Index() {
                     {departments?.length > 0 ? (
                         <TableBody>
                             {departments?.map((department) => (
-                                <TableRow>
+                                <TableRow key={department.id}>
                                     <TableCell className="font-medium">
                                         {department.id}
                                     </TableCell>

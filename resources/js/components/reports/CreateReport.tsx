@@ -27,7 +27,7 @@ export default function CreateReport({ setIsOpen }: CreateReportProps) {
                 setIsOpen(false);
             },
         });
-        console.log('hit');
+        // console.log('hit');
     };
 
     return (

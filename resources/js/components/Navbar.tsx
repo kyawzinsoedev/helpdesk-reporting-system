@@ -24,6 +24,10 @@ export default function Navbar() {
             </Button>
 
             <Button variant="ghost" asChild>
+                <Link href="/templates">Templates</Link>
+            </Button>
+
+            <Button variant="ghost" asChild>
                 <Link href="/settings">Settings</Link>
             </Button>
         </div>

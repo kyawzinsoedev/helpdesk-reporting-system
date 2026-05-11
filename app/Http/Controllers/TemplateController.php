@@ -2,63 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Report;
+use App\Models\Template;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TemplateController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of templates.
      */
     public function index()
     {
-        //
+        $templates = Template::with('report')->latest()->get();
+
+        $reports = Report::select('id', 'name')->get();
+
+        return Inertia::render('Templates/Index', [
+            'templates' => $templates,
+            'reports' => $reports
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store a newly created template in storage.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'report_id' => 'required|exists:reports,id',
+        ]);
+
+        Template::create($validated);
+
+        return redirect()->back()->with('message', 'Template created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * Update the specified template in storage.
      */
-    public function show(string $id)
+    public function update(Request $request, Template $template)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'report_id' => 'required|exists:reports,id',
+        ]);
+
+        $template->update($validated);
+
+        return redirect()->back()->with('message', 'Template updated successfully.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Remove the specified template from storage.
      */
-    public function edit(string $id)
+    public function destroy(Template $template)
     {
-        //
-    }
+        $template->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->back()->with('message', 'Template deleted successfully.');
     }
 }
