@@ -9,7 +9,6 @@ class Report extends Model
     protected $fillable = [
         'name',
     ];
-
     public function templates()
     {
         return $this->hasMany(Template::class);

@@ -13,10 +13,19 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $reports = Report::latest()->get();
+        $reports = Report::with('templates')->get();
 
         return Inertia::render('Reports/Index', [
             'reports' => $reports
+        ]);
+    }
+
+    public function show(Request $request, Report $report)
+    {
+
+        $report->load('templates');
+        return Inertia::render('Reports/Index', [
+            'report' => $report,
         ]);
     }
 

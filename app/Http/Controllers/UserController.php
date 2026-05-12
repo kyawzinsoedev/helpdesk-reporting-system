@@ -16,11 +16,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('department')->latest()->paginate(10);
+        // $users = User::with('department')->latest()->paginate(10);
 
-        return Inertia::render('Users/Index', [
-            'users' => $users,
-        ]);
+        // return Inertia::render('Users/Index', [
+        //     'users' => $users,
+        // ]);
+
+        return Inertia::render('Users/Index');
     }
 
     /**

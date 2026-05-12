@@ -1,8 +1,6 @@
 import { Link } from '@inertiajs/react';
-import React from 'react';
+import DropDownReport from './dropdown-reports/DropDownReport';
 import { Button } from './ui/button';
-
-// import user from '@/routes/user';
 
 export default function Navbar() {
     return (
@@ -20,8 +18,10 @@ export default function Navbar() {
             </Button>
 
             <Button variant="ghost" asChild>
-                <Link href="/reports">Reports</Link>
+                <Link href="/reports">Input Reports</Link>
             </Button>
+
+            <DropDownReport />
 
             <Button variant="ghost" asChild>
                 <Link href="/templates">Templates</Link>
