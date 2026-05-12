@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import DropDownReport from './dropdown-reports/DropDownReport';
 import { Button } from './ui/button';
+import DropDownUserAdmin from './dropdown-user-admin/DropDownUserAdmin';
 
 export default function Navbar() {
     return (
@@ -9,9 +10,11 @@ export default function Navbar() {
                 <Link href="/dashboard">Home</Link>
             </Button>
 
-            <Button variant="ghost" asChild>
+            {/* <Button variant="ghost" asChild>
                 <Link href="/users">User Admin</Link>
-            </Button>
+            </Button> */}
+
+            <DropDownUserAdmin />
 
             <Button variant="ghost" asChild>
                 <Link href="/departments">Departments</Link>

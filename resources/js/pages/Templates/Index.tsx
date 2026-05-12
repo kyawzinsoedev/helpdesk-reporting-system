@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
+import CreateTemplate from '@/components/templates/CreateTemplate';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import {
@@ -11,7 +12,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import CreateTemplate from '@/components/templates/CreateTemplate';
 
 interface Template {
     id: number;
@@ -25,6 +25,7 @@ interface Template {
 interface Report {
     id: number;
     name: string;
+    username: string;
 }
 
 interface Props {
