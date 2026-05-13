@@ -1,6 +1,6 @@
 import { Trash2Icon, Eye, Pencil, Trash2 } from 'lucide-react';
-
-import React from 'react';
+import React, { useState } from 'react';
+import CreateDepartment from '@/components/departments/CreateDepartment';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -35,83 +35,46 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import departments from '@/routes/departments';
 
-import { Field, FieldGroup } from '@/components/ui/field';
-
-export default function Index() {
-    const departments = [
-        {
-            id: 1,
-            name: 'Information Technology',
-            department_code: 'IT-001',
-            total_users: 12,
-            status: 'Active',
-        },
-        {
-            id: 2,
-            name: 'Human Resources',
-            department_code: 'HR-002',
-            total_users: 5,
-            status: 'Active',
-        },
-        {
-            id: 3,
-            name: 'Finance & Accounting',
-            department_code: 'FIN-003',
-            total_users: 8,
-            status: 'Active',
-        },
-        {
-            id: 4,
-            name: 'Marketing & Sales',
-            department_code: 'MKT-004',
-            total_users: 15,
-            status: 'Active',
-        },
-        {
-            id: 5,
-            name: 'Operations Management',
-            department_code: 'OPS-005',
-            total_users: 20,
-            status: 'Inactive',
-        },
-    ];
+interface Department {
+    id: number;
+    name: string;
+    department_code: string;
+}
+interface Props {
+    departments: Department[];
+}
+export default function Index({ departments }: Props) {
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <>
-            <div className="flex items-center justify-between">
-                <span className="text-xl font-bold">Department</span>
-                {/* <Button>Create</Button> */}
-                <Dialog>
-                    <form>
-                        <DialogTrigger asChild>
-                            <Button>Create</Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-sm">
-                            <DialogHeader>
-                                <DialogTitle>Create Department</DialogTitle>
-                                <DialogDescription>
-                                    Click save when you&apos;re done.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button variant="outline">Cancel</Button>
-                                </DialogClose>
-                                <Button type="submit">Save</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </form>
+        <div className="space-y-4">
+            <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight">
+                        Department Management
+                    </h1>
+                    <p className="text-sm text-muted-foreground">
+                        Manage your organization's department.
+                    </p>
+                </div>
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                    <DialogTrigger asChild>
+                        <Button>Create Department</Button>
+                    </DialogTrigger>
+                    <CreateDepartment
+                        departments={departments}
+                        setIsOpen={setIsOpen}
+                    />
                 </Dialog>
             </div>
-            <div>
+            <div className="overflow-hidden rounded-md border bg-card shadow-sm">
                 <Table>
                     {departments?.length > 0 && (
                         <TableCaption>A list of your departments.</TableCaption>
                     )}
                     <TableHeader>
-                        <TableRow>
+                        <TableRow className="bg-muted/50">
                             <TableHead className="w-[100px]">ID:</TableHead>
                             <TableHead>Name</TableHead>
                             <TableHead>Department Code</TableHead>
@@ -259,6 +222,6 @@ export default function Index() {
                     )}
                 </Table>
             </div>
-        </>
+        </div>
     );
 }

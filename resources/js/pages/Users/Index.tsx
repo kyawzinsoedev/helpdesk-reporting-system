@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import {
     MoreHorizontal,
@@ -9,8 +8,10 @@ import {
     Phone,
     Building2,
 } from 'lucide-react';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -28,13 +29,59 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import CreateUser from '@/components/users/CreateUser';
 import type { UserPagination } from '@/types';
+
+export interface Role {
+    id: number;
+    name: string;
+    guard_name: string;
+}
+
+export interface Department {
+    id: number;
+    name: string;
+}
+
+export interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
+    phone: string;
+    birthday: string;
+    gender: 'male' | 'female';
+    address: string;
+    status: 'active' | 'draft' | string;
+    department_id: number;
+
+    department?: Department;
+    roles?: Role[];
+
+    // Timestamps
+    created_at: string;
+    updated_at: string;
+}
+
+export interface UserPagination {
+    data: User[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    links: {
+        url: string | null;
+        label: string;
+        active: boolean;
+    }[];
+}
 
 interface Props {
     users: UserPagination;
 }
 
 export default function UserIndex({ users }: Props) {
+    const [isOpen, setIsOpen] = useState(false);
     const handleDelete = (id: number) => {
         if (confirm('Are you sure you want to delete this user?')) {
             router.delete(`/users/${id}`);
@@ -50,14 +97,16 @@ export default function UserIndex({ users }: Props) {
                         User Management
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                        Manage your organization's users and their roles.
+                        Manage your organization's user.
                     </p>
                 </div>
-                <Button asChild className="shrink-0 shadow-sm">
-                    <Link href="/users/create">
-                        <UserPlus className="mr-2 h-4 w-4" /> Add User
-                    </Link>
-                </Button>
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                    <DialogTrigger asChild>
+                        <Button>Create User</Button>
+                    </DialogTrigger>
+
+                    <CreateUser setIsOpen={setIsOpen} users={users} />
+                </Dialog>
             </div>
 
             {/* Filter Section */}
@@ -81,14 +130,14 @@ export default function UserIndex({ users }: Props) {
                             <TableHead>Contact</TableHead>
                             <TableHead>Department</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead className="text-right">
+                            <TableHead className="text-center">
                                 Actions
                             </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {users.data.length > 0 ? (
-                            users.data.map((user) => (
+                            users.data.map((user: User) => (
                                 <TableRow
                                     key={user.id}
                                     className="transition-colors hover:bg-muted/30"
@@ -135,7 +184,7 @@ export default function UserIndex({ users }: Props) {
                                             {user.status}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-center">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button

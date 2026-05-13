@@ -20,15 +20,7 @@ export default function Navbar() {
                 <Link href="/departments">Departments</Link>
             </Button>
 
-            <Button variant="ghost" asChild>
-                <Link href="/reports">Input Reports</Link>
-            </Button>
-
             <DropDownReport />
-
-            <Button variant="ghost" asChild>
-                <Link href="/templates">Templates</Link>
-            </Button>
 
             <Button variant="ghost" asChild>
                 <Link href="/settings">Settings</Link>

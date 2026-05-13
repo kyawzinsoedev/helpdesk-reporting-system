@@ -13,13 +13,13 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        // $departments = Department::latest('created_at')->get();
+        $departments = Department::latest('created_at')->get();
 
-        // return Inertia::render('Departments/Index', [
-        //     'departments' => $departments
-        // ]);
+        return Inertia::render('Departments/Index', [
+            'departments' => $departments
+        ]);
 
-        return Inertia::render('Departments/Index');
+        // return Inertia::render('Departments/Index');
     }
 
     /**

@@ -43,57 +43,61 @@ export default function Index({ reports }: Props) {
                     {/* End Create Report Form  */}
                 </Dialog>
             </div>
-            <Table>
-                <TableCaption>A list of your reporst.</TableCaption>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-[100px]">ID</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Created At </TableHead>
-                        <TableHead className="flex items-center justify-center text-right">
-                            Action
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {reports?.length > 0 ? (
-                        reports.map((report) => (
-                            <TableRow key={report.id}>
-                                <TableCell className="font-medium">
-                                    {report.id}
-                                </TableCell>
-                                <TableCell>{report.name}</TableCell>
-                                <TableCell>
-                                    {new Date(
-                                        report.created_at,
-                                    ).toLocaleDateString()}
-                                </TableCell>
-                                <TableCell className="flex items-center justify-center gap-3">
-                                    <Button variant="outline" size="sm">
-                                        Edit
-                                    </Button>
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => handleDelete(report.id)}
-                                    >
-                                        Delete
-                                    </Button>
+            <div className="overflow-hidden rounded-md border bg-card shadow-sm">
+                <Table>
+                    <TableCaption>A list of your reporst.</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[100px]">ID</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Created At </TableHead>
+                            <TableHead className="flex items-center justify-center text-right">
+                                Action
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {reports?.length > 0 ? (
+                            reports.map((report) => (
+                                <TableRow key={report.id}>
+                                    <TableCell className="font-medium">
+                                        {report.id}
+                                    </TableCell>
+                                    <TableCell>{report.name}</TableCell>
+                                    <TableCell>
+                                        {new Date(
+                                            report.created_at,
+                                        ).toLocaleDateString()}
+                                    </TableCell>
+                                    <TableCell className="flex items-center justify-center gap-3">
+                                        <Button variant="outline" size="sm">
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleDelete(report.id)
+                                            }
+                                        >
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={4}
+                                    className="py-10 text-center text-muted-foreground"
+                                >
+                                    No reports found.
                                 </TableCell>
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell
-                                colSpan={4}
-                                className="py-10 text-center text-muted-foreground"
-                            >
-                                No reports found.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
         </div>
     );
 }
