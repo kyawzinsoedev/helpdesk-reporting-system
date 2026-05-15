@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class DepartmentController extends Controller
@@ -74,7 +75,12 @@ class DepartmentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'department_code' => 'required|string|max:255|unique:departments,department_code' . $department->id,
+            'department_code' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('departments', 'department_code')->ignore($department->id),
+            ],
         ]);
 
         $department->update($validated);

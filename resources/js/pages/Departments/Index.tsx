@@ -1,6 +1,9 @@
-import { Trash2Icon, Eye, Pencil, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+
 import CreateDepartment from '@/components/departments/CreateDepartment';
+import EditDepartment from '@/components/departments/EditDepartment';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -9,11 +12,12 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogMedia,
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+
 import { Button } from '@/components/ui/button';
+
 import {
     Dialog,
     DialogClose,
@@ -24,8 +28,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
 import {
     Table,
     TableBody,
@@ -41,41 +44,67 @@ interface Department {
     name: string;
     department_code: string;
 }
+
 interface Props {
     departments: Department[];
 }
+
 export default function Index({ departments }: Props) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editingDepartment, setEditingDepartment] =
+        useState<Department | null>(null);
+
+    const handleEditClick = (department: Department) => {
+        setEditingDepartment(department);
+        setIsEditOpen(true);
+    };
+
+    const handleEditClose = () => {
+        setIsEditOpen(false);
+        setEditingDepartment(null);
+    };
+
+    const handleDelete = (id: number) => {
+        console.log('Delete department:', id);
+    };
 
     return (
         <div className="space-y-4">
+            {/* Header */}
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
                         Department Management
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                        Manage your organization's department.
+                        Manage your organization's departments.
                     </p>
                 </div>
-                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+
+                {/* Create */}
+                <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
                         <Button>Create Department</Button>
                     </DialogTrigger>
+
                     <CreateDepartment
                         departments={departments}
-                        setIsOpen={setIsOpen}
+                        setIsOpen={setIsCreateOpen}
                     />
                 </Dialog>
             </div>
+
+            {/* Table */}
             <div className="overflow-hidden rounded-md border bg-card shadow-sm">
                 <Table>
-                    {departments?.length > 0 && (
+                    {departments.length > 0 && (
                         <TableCaption>A list of your departments.</TableCaption>
                     )}
+
                     <TableHeader>
                         <TableRow className="bg-muted/50">
-                            <TableHead className="w-[100px]">ID:</TableHead>
+                            <TableHead className="w-[100px]">ID</TableHead>
                             <TableHead>Name</TableHead>
                             <TableHead>Department Code</TableHead>
                             <TableHead className="text-center">
@@ -83,131 +112,112 @@ export default function Index({ departments }: Props) {
                             </TableHead>
                         </TableRow>
                     </TableHeader>
-                    {departments?.length > 0 ? (
-                        <TableBody>
-                            {departments?.map((department) => (
+
+                    <TableBody>
+                        {departments.length > 0 ? (
+                            departments.map((department) => (
                                 <TableRow key={department.id}>
                                     <TableCell className="font-medium">
                                         {department.id}
                                     </TableCell>
+
                                     <TableCell>{department.name}</TableCell>
+
                                     <TableCell>
                                         {department.department_code}
                                     </TableCell>
-                                    <TableCell className="flex items-center justify-center gap-2 text-center">
-                                        {/* Show Details  */}
-                                        <Dialog>
-                                            <form>
-                                                <DialogTrigger asChild>
-                                                    <Button variant="outline">
-                                                        <Eye />
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="sm:max-w-sm">
-                                                    <DialogHeader>
-                                                        <DialogTitle>
-                                                            Details About
-                                                            Department
-                                                        </DialogTitle>
-                                                        <DialogDescription>
-                                                            Click save when
-                                                            you&apos;re done.
-                                                        </DialogDescription>
-                                                    </DialogHeader>
 
-                                                    <DialogFooter>
-                                                        <DialogClose asChild>
-                                                            <Button variant="outline">
-                                                                Close
-                                                            </Button>
-                                                        </DialogClose>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </form>
-                                        </Dialog>
-                                        {/* Edit Button */}
+                                    <TableCell className="flex items-center justify-center gap-2">
+                                        {/* View */}
                                         <Dialog>
-                                            <form>
-                                                <DialogTrigger asChild>
-                                                    <Button variant="outline">
-                                                        <Pencil />
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="sm:max-w-sm">
-                                                    <DialogHeader>
-                                                        <DialogTitle>
-                                                            Edit Department
-                                                        </DialogTitle>
-                                                        <DialogDescription>
-                                                            Click save when
-                                                            you&apos;re done.
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-                                                    {/* <FieldGroup>
-                                                        <Field>
-                                                            <Label htmlFor="name-1">
-                                                                Name
-                                                            </Label>
-                                                            <Input
-                                                                id="name-1"
-                                                                name="name"
-                                                                defaultValue="Pedro Duarte"
-                                                            />
-                                                        </Field>
-                                                        <Field>
-                                                            <Label htmlFor="username-1">
-                                                                Username
-                                                            </Label>
-                                                            <Input
-                                                                id="username-1"
-                                                                name="username"
-                                                                defaultValue="@peduarte"
-                                                            />
-                                                        </Field>
-                                                    </FieldGroup> */}
-                                                    <DialogFooter>
-                                                        <DialogClose asChild>
-                                                            <Button variant="outline">
-                                                                Cancel
-                                                            </Button>
-                                                        </DialogClose>
-                                                        <Button type="submit">
-                                                            Save changes
+                                            <DialogTrigger asChild>
+                                                <Button variant="outline">
+                                                    <Eye />
+                                                </Button>
+                                            </DialogTrigger>
+
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>
+                                                        Department Details
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        Full information about
+                                                        this department.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+
+                                                <div className="space-y-2 text-sm">
+                                                    <p>
+                                                        <strong>ID:</strong>{' '}
+                                                        {department.id}
+                                                    </p>
+                                                    <p>
+                                                        <strong>Name:</strong>{' '}
+                                                        {department.name}
+                                                    </p>
+                                                    <p>
+                                                        <strong>Code:</strong>{' '}
+                                                        {
+                                                            department.department_code
+                                                        }
+                                                    </p>
+                                                </div>
+
+                                                <DialogFooter>
+                                                    <DialogClose asChild>
+                                                        <Button variant="outline">
+                                                            Close
                                                         </Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </form>
+                                                    </DialogClose>
+                                                </DialogFooter>
+                                            </DialogContent>
                                         </Dialog>
 
-                                        {/* Delete  */}
+                                        {/* Edit */}
+                                        <Button
+                                            variant="outline"
+                                            onClick={() =>
+                                                handleEditClick(department)
+                                            }
+                                        >
+                                            <Pencil />
+                                        </Button>
+
+                                        {/* Delete */}
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
                                                 <Button variant="destructive">
                                                     <Trash2 />
                                                 </Button>
                                             </AlertDialogTrigger>
-                                            <AlertDialogContent size="sm">
+
+                                            <AlertDialogContent>
                                                 <AlertDialogHeader>
-                                                    <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
-                                                        <Trash2Icon />
-                                                    </AlertDialogMedia>
                                                     <AlertDialogTitle>
-                                                        Delete chat?
+                                                        Delete {department.name}
+                                                        ?
                                                     </AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        This will permanently
-                                                        delete this chat
-                                                        conversation. View{' '}
-                                                        <a href="#">Settings</a>{' '}
-                                                        delete any memories
-                                                        saved during this chat.
+                                                        This action cannot be
+                                                        undone. This will
+                                                        permanently delete the
+                                                        department.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
+
                                                 <AlertDialogFooter>
-                                                    <AlertDialogCancel variant="outline">
+                                                    <AlertDialogCancel>
                                                         Cancel
                                                     </AlertDialogCancel>
-                                                    <AlertDialogAction variant="destructive">
+                                                    <AlertDialogAction
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                department.id,
+                                                            )
+                                                        }
+                                                        className="bg-red-600 hover:bg-red-700"
+                                                    >
                                                         Delete
                                                     </AlertDialogAction>
                                                 </AlertDialogFooter>
@@ -215,13 +225,32 @@ export default function Index({ departments }: Props) {
                                         </AlertDialog>
                                     </TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    ) : (
-                        <TableCaption>No Departments Found !</TableCaption>
-                    )}
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={4}
+                                    className="text-center text-muted-foreground"
+                                >
+                                    No Departments Found!
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
                 </Table>
             </div>
+
+            {/* Edit Dialog */}
+            <Dialog open={isEditOpen} onOpenChange={handleEditClose}>
+                {editingDepartment && (
+                    <EditDepartment
+                        key={editingDepartment.id}
+                        department={editingDepartment}
+                        departments={departments}
+                        setIsEditOpen={setIsEditOpen}
+                    />
+                )}
+            </Dialog>
         </div>
     );
 }
