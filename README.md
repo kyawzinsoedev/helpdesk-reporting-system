@@ -1,6 +1,6 @@
-# Help Desk Management System
+# Help Desk Reporting System
 
-A modern Help Desk Management System built with Laravel, React Starter Kit, Inertia.js, TailwindCSS, and MySQL.
+A modern Help Desk Reporting System built with Laravel, React Starter Kit, Inertia.js, TailwindCSS, and MySQL.
 
 ---
 
@@ -148,7 +148,7 @@ Close Ticket
 ## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/helpdesk-management-system.git
+git clone https://github.com/your-username/helpdesk-reporting-system.git
 ```
 
 ---
