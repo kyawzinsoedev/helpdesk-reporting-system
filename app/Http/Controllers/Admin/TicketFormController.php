@@ -59,11 +59,7 @@ class TicketFormController extends Controller
             'name' => $validated['name'],
             'type' => $validated['type'],
             'required' => $request->required ?? false,
-            'options' => $validated['options']
-                ? json_encode(
-                    explode(',', $validated['options'])
-                )
-                : null,
+            'options' => $validated['options'] ?? null,
         ]);
 
         return back();

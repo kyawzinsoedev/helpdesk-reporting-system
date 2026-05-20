@@ -57,7 +57,11 @@ export default function Index({ forms }: Props) {
                                 <TableCell>{form.name}</TableCell>
                                 <TableCell>{form.description}</TableCell>
                                 <TableCell className="text-center">
-                                    <Button>Manage Fiels</Button>
+                                    <Button asChild>
+                                        <Link href={fields.index(form.id).url}>
+                                            Manage Fields
+                                        </Link>
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))

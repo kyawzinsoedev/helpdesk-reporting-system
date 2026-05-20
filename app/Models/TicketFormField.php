@@ -16,6 +16,9 @@ class TicketFormField extends Model
         'sort_order',
     ];
 
+    protected $casts = [
+        'options' => 'array',
+    ];
     public function form()
     {
         return $this->belongsTo(TicketForm::class);
