@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Models\TicketForm;
 use App\Models\TicketAnswer;
+use App\Models\TicketFormField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -41,13 +42,15 @@ class TicketController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'priority' => 'required|in:low,medium,high',
-            'answers' => 'required|array',
-            'answers.*.field_id' => 'required|integer|exists:ticket_form_fields,id',
+            'fields' => 'nullable|array',
+            'fields.*.field_id' => 'required|integer',
+            'fields.*.value' => 'nullable',
         ]);
 
         DB::beginTransaction();
 
         try {
+
             $ticket = Ticket::create([
                 'user_id' => Auth::id(),
                 'ticket_form_id' => $request->ticket_form_id,
@@ -57,23 +60,68 @@ class TicketController extends Controller
                 'status' => 'open',
             ]);
 
-            foreach ($request->answers as $answerData) {
-                $value = $answerData['value'];
+            /**
+             * GET FORM FIELDS
+             */
+            $formFields = TicketFormField::where('ticket_form_id', $request->ticket_form_id)
+                ->get()
+                ->keyBy('id');
+
+            /**
+             * NORMALIZE INPUT
+             */
+            $fields = $request->fields ?? [];
+
+            foreach ($fields as $input) {
+
+                $fieldId = $input['field_id'] ?? null;
+                $value = $input['value'] ?? null;
+
+                /**
+                 * VALIDATE FIELD EXISTS
+                 */
+                if (!$fieldId || !isset($formFields[$fieldId])) {
+                    continue;
+                }
+
+                /**
+                 * HANDLE FILE UPLOAD
+                 */
+                if ($value instanceof \Illuminate\Http\UploadedFile) {
+                    $value = $value->store('ticket-files', 'public');
+                }
+
+                /**
+                 * SKIP EMPTY VALUES
+                 */
+                if ($value === null || $value === '') {
+                    continue;
+                }
 
                 TicketAnswer::create([
                     'ticket_id' => $ticket->id,
-                    'ticket_form_field_id' => $answerData['field_id'],
-                    'answer' => is_array($value) ? json_encode($value) : $value,
+                    'ticket_form_field_id' => $fieldId,
+
+                    /**
+                     * IMPORTANT FIX:
+                     * DO NOT json_encode manually if column is JSON
+                     */
+                    'value' => $value,
                 ]);
             }
 
             DB::commit();
 
-            return redirect()->route('tickets.index');
+            return redirect()
+                ->route('tickets.index')
+                ->with('success', 'Ticket created successfully.');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => $e->getMessage()]);
+
+            return back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
         }
     }
 

@@ -23,6 +23,14 @@ export default function Navbar() {
             <DropDownReport />
 
             <Button variant="ghost" asChild>
+                <Link href="/forms">Forms</Link>
+            </Button>
+
+            <Button variant="ghost" asChild>
+                <Link href="/tickets">Tickets</Link>
+            </Button>
+
+            <Button variant="ghost" asChild>
                 <Link href="/settings">Settings</Link>
             </Button>
         </div>

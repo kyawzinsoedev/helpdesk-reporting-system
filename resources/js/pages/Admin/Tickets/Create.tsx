@@ -14,38 +14,77 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 
 import tickets from '@/routes/tickets';
-import fields from '@/routes/forms/fields';
 
+/**
+ * FIELD TYPES
+ */
 interface Field {
     id: number;
     label: string;
     name: string;
     type: string;
     required: boolean;
-    options: string[] | null;
+    options: { label: string; value: string }[] | null;
     sort_order: number;
 }
+
 interface TicketForm {
     id: number;
     name: string;
     description: string;
-    fields: {
-        [Field: string]: any;
-    };
+    fields: Field[];
 }
+
 interface Props {
     ticketForms: TicketForm[];
 }
+
+/**
+ * STRONG TYPE SYSTEM (NEW)
+ */
+type FieldValue = string | number | File | null;
+
+interface FieldAnswer {
+    field_id: number;
+    value: FieldValue;
+}
+
 export default function CreateTicket({ ticketForms }: Props) {
     const [selectedForm, setSelectedForm] = useState<TicketForm | null>(null);
 
-    const handleFieldChange = (name: string, value: any) => {
-        setData('fields', (prev: Field) => ({
-            ...prev,
-            [name]: value,
-        }));
+    const { data, setData, post, processing, errors } = useForm<{
+        ticket_form_id: string;
+        title: string;
+        description: string;
+        priority: string;
+        fields: FieldAnswer[];
+    }>({
+        ticket_form_id: '',
+        title: '',
+        description: '',
+        priority: '',
+        fields: [],
+    });
+
+    /**
+     * UPDATE FIELD VALUE (SAFE)
+     */
+    const handleFieldChange = (field_id: number, value: FieldValue) => {
+        const updated = data.fields.filter((f) => f.field_id !== field_id);
+
+        setData('fields', [...updated, { field_id, value }]);
     };
 
+    /**
+     * GET FIELD VALUE
+     */
+    const getFieldValue = (field_id: number) => {
+        return data.fields.find((f) => f.field_id === field_id)?.value || '';
+    };
+
+    /**
+     * RENDER FIELD
+     */
     const renderField = (field: Field) => {
         switch (field.type) {
             case 'text':
@@ -53,13 +92,10 @@ export default function CreateTicket({ ticketForms }: Props) {
                     <div className="space-y-2">
                         <Label>{field.label}</Label>
                         <Input
-                            type="text"
-                            placeholder={field.name}
-                            required={field.required}
-                            value={data.fields[field.name]}
-                            onChange={(e) => {
-                                handleFieldChange(field.name, e.target.value);
-                            }}
+                            value={getFieldValue(field.id) as string}
+                            onChange={(e) =>
+                                handleFieldChange(field.id, e.target.value)
+                            }
                         />
                     </div>
                 );
@@ -68,7 +104,13 @@ export default function CreateTicket({ ticketForms }: Props) {
                 return (
                     <div className="space-y-2">
                         <Label>{field.label}</Label>
-                        <Input type="date" />
+                        <Input
+                            type="date"
+                            value={getFieldValue(field.id) as string}
+                            onChange={(e) =>
+                                handleFieldChange(field.id, e.target.value)
+                            }
+                        />
                     </div>
                 );
 
@@ -77,10 +119,9 @@ export default function CreateTicket({ ticketForms }: Props) {
                     <div className="space-y-2">
                         <Label>{field.label}</Label>
                         <Textarea
-                            placeholder={field.name}
-                            value={data.fields[field.name] || ''}
+                            value={getFieldValue(field.id) as string}
                             onChange={(e) =>
-                                handleFieldChange(field.name, e.target.value)
+                                handleFieldChange(field.id, e.target.value)
                             }
                         />
                     </div>
@@ -90,8 +131,12 @@ export default function CreateTicket({ ticketForms }: Props) {
                 return (
                     <div className="space-y-2">
                         <Label>{field.label}</Label>
-
-                        <Select>
+                        <Select
+                            value={getFieldValue(field.id) as string}
+                            onValueChange={(value) =>
+                                handleFieldChange(field.id, value)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue
                                     placeholder={`Select ${field.label}`}
@@ -100,8 +145,11 @@ export default function CreateTicket({ ticketForms }: Props) {
 
                             <SelectContent>
                                 {field.options?.map((opt) => (
-                                    <SelectItem key={opt} value={opt}>
-                                        {opt}
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
+                                        {opt.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -115,12 +163,13 @@ export default function CreateTicket({ ticketForms }: Props) {
                         <Label>{field.label}</Label>
                         <Input
                             type="number"
-                            placeholder={field.name}
-                            value={data.fields[field.name] || ''}
+                            value={getFieldValue(field.id) as number}
                             onChange={(e) =>
                                 handleFieldChange(
-                                    field.name,
-                                    Number(e.target.value),
+                                    field.id,
+                                    e.target.value === ''
+                                        ? ''
+                                        : Number(e.target.value),
                                 )
                             }
                         />
@@ -131,7 +180,15 @@ export default function CreateTicket({ ticketForms }: Props) {
                 return (
                     <div className="space-y-2">
                         <Label>{field.label}</Label>
-                        <Input type="file" />
+                        <Input
+                            type="file"
+                            onChange={(e) =>
+                                handleFieldChange(
+                                    field.id,
+                                    e.target.files?.[0] || null,
+                                )
+                            }
+                        />
                     </div>
                 );
 
@@ -140,160 +197,120 @@ export default function CreateTicket({ ticketForms }: Props) {
         }
     };
 
-    type FormFields = Record<string, any>;
-
-    const { data, setData, post, processing, errors } = useForm<{
-        title: string;
-        description: string;
-        fields: FormFields;
-    }>({
-        title: '',
-        description: '',
-        fields: {},
-    });
-
+    /**a
+     * SUBMIT
+     */
     const handleTicketForm = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('hit');
-        console.log(data.fields[1]);
-        post(tickets.store().url);
+        console.log('Before post ', data);
+        post(tickets.store().url, {
+            forceFormData: true,
+        });
+        console.log('After post ', data);
     };
 
     return (
         <div className="mx-auto max-w-4xl space-y-6 p-6">
             <div>
                 <h1 className="text-3xl font-bold">Create Ticket</h1>
-
                 <p className="text-muted-foreground">
                     Submit a new support request
                 </p>
             </div>
-            <form action="" onSubmit={handleTicketForm}>
+
+            <form onSubmit={handleTicketForm}>
                 <div className="space-y-6 rounded-2xl border p-6 shadow-sm">
-                    {/* Select Ticket Form */}
+                    {/* FORM SELECT */}
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between gap-5">
-                            <div className="w-full space-y-2">
-                                <Label>Ticket Form</Label>
+                        <Label>Ticket Form</Label>
 
-                                <Select
-                                    onValueChange={(value) => {
-                                        const form = ticketForms.find(
-                                            (t) => t.id.toString() === value,
-                                        );
+                        <Select
+                            onValueChange={(value) => {
+                                const form = ticketForms.find(
+                                    (t) => t.id.toString() === value,
+                                );
 
-                                        setSelectedForm(form || null);
-                                    }}
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Choose Ticket Form" />
-                                    </SelectTrigger>
+                                setSelectedForm(form || null);
 
-                                    <SelectContent>
-                                        {ticketForms.length > 0 &&
-                                            ticketForms.map((t) => (
-                                                <SelectItem
-                                                    key={t.id}
-                                                    value={t.id.toString()}
-                                                >
-                                                    {t.name}
-                                                </SelectItem>
-                                            ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                                setData('ticket_form_id', value);
+                                setData('fields', []);
+                            }}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Choose Ticket Form" />
+                            </SelectTrigger>
 
-                            <div className="w-full space-y-2">
-                                <Label>Priority</Label>
-
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select Priority" />
-                                    </SelectTrigger>
-
-                                    <SelectContent>
-                                        <SelectItem value="low">Low</SelectItem>
-
-                                        <SelectItem value="medium">
-                                            Medium
-                                        </SelectItem>
-
-                                        <SelectItem value="high">
-                                            High
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label>Title</Label>
-
-                            <Input
-                                value={data.title}
-                                onChange={(e) =>
-                                    setData('title', e.target.value)
-                                }
-                                placeholder="Enter ticket title"
-                            />
-                            {errors.title && (
-                                <p className="text-sm text-red-500">
-                                    {errors.title}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label>Description</Label>
-
-                            <Textarea
-                                value={data.description}
-                                placeholder="Describe your issue..."
-                                className="min-h-[80px]"
-                                onChange={(e) =>
-                                    setData('description', e.target.value)
-                                }
-                            />
-                            {errors.description && (
-                                <p className="text-sm text-red-500">
-                                    {errors.description}
-                                </p>
-                            )}
-                        </div>
+                            <SelectContent>
+                                {ticketForms.map((t) => (
+                                    <SelectItem
+                                        key={t.id}
+                                        value={t.id.toString()}
+                                    >
+                                        {t.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
 
+                    {/* PRIORITY */}
+                    <div className="space-y-2">
+                        <Label>Priority</Label>
+
+                        <Select
+                            value={data.priority}
+                            onValueChange={(value) =>
+                                setData('priority', value)
+                            }
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select Priority" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                <SelectItem value="low">Low</SelectItem>
+                                <SelectItem value="medium">Medium</SelectItem>
+                                <SelectItem value="high">High</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {/* TITLE */}
+                    <div className="space-y-2">
+                        <Label>Title</Label>
+                        <Input
+                            value={data.title}
+                            onChange={(e) => setData('title', e.target.value)}
+                        />
+                    </div>
+
+                    {/* DESCRIPTION */}
+                    <div className="space-y-2">
+                        <Label>Description</Label>
+                        <Textarea
+                            value={data.description}
+                            onChange={(e) =>
+                                setData('description', e.target.value)
+                            }
+                        />
+                    </div>
+
+                    {/* DYNAMIC FIELDS */}
                     {selectedForm && (
-                        <>
-                            {/* Dynamic Fields UI */}
-                            <div className="space-y-5 rounded-xl border p-5">
-                                <div>
-                                    <h2 className="text-lg font-semibold">
-                                        Additional Information for{' '}
-                                        {selectedForm.name}
-                                    </h2>
+                        <div className="space-y-5 rounded-xl border p-5">
+                            {selectedForm.fields.map((field) => (
+                                <div key={field.id}>{renderField(field)}</div>
+                            ))}
+                        </div>
+                    )}
 
-                                    <p className="text-sm text-muted-foreground">
-                                        Fill required form fields
-                                    </p>
-                                </div>
-
-                                {/* Text Field */}
-                                {selectedForm.fields.map((field) => (
-                                    <div key={field.id}>
-                                        {renderField(field)}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Submit */}
-                            <div className="flex justify-end">
-                                <Button type="submit">
-                                    {processing
-                                        ? 'Processing...'
-                                        : 'Submit Ticket'}
-                                </Button>
-                            </div>
-                        </>
+                    {/* SUBMIT */}
+                    {selectedForm && (
+                        <div className="flex justify-end">
+                            <Button type="submit" disabled={processing}>
+                                {processing ? 'Processing...' : 'Submit Ticket'}
+                            </Button>
+                        </div>
                     )}
                 </div>
             </form>

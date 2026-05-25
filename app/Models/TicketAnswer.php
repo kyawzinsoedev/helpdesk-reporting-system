@@ -9,7 +9,7 @@ class TicketAnswer extends Model
     protected $fillable = [
         'ticket_id',
         'ticket_form_field_id',
-        'value',
+        // 'value',
     ];
 
     public function ticket()
@@ -24,4 +24,8 @@ class TicketAnswer extends Model
             'ticket_form_field_id'
         );
     }
+
+    protected $casts = [
+        'value' => 'array',
+    ];
 }

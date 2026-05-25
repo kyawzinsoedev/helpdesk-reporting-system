@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->foreignId('ticket_form_field_id')
                 ->constrained();
 
-            $table->text('value')->nullable();
+            $table->json('value');
 
             $table->timestamps();
         });
