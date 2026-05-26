@@ -1,10 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\TicketFormController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -20,12 +17,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('users', UserController::class);
 
     Route::resource('departments', DepartmentController::class);
-
-    Route::resource('reports', ReportController::class);
-
-    Route::resource('templates', TemplateController::class);
-
-    Route::resource('categories', CategoryController::class);
 
     Route::resource('forms', TicketFormController::class);
 

@@ -48,13 +48,8 @@ export default function DropDownUserAdmin() {
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <DropdownMenuItem asChild className="cursor-pointer">
-                            <Link href="/reports" className="w-full">
-                                Report Management
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild className="cursor-pointer">
-                            <Link href="/templates" className="w-full">
-                                Template Management
+                            <Link href="/forms" className="w-full">
+                                Ticket Form Management
                             </Link>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>

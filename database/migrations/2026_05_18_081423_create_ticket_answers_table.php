@@ -17,10 +17,10 @@ return new class extends Migration {
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->foreignId('ticket_form_field_id')
-                ->constrained();
+            // $table->foreignId('ticket_form_field_id')
+            //     ->constrained();
 
-            $table->json('value');
+            $table->json('answers');
 
             $table->timestamps();
         });

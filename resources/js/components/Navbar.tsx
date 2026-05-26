@@ -10,20 +10,10 @@ export default function Navbar() {
                 <Link href="/dashboard">Home</Link>
             </Button>
 
-            {/* <Button variant="ghost" asChild>
-                <Link href="/users">User Admin</Link>
-            </Button> */}
-
             <DropDownUserAdmin />
 
             <Button variant="ghost" asChild>
                 <Link href="/departments">Departments</Link>
-            </Button>
-
-            <DropDownReport />
-
-            <Button variant="ghost" asChild>
-                <Link href="/forms">Forms</Link>
             </Button>
 
             <Button variant="ghost" asChild>

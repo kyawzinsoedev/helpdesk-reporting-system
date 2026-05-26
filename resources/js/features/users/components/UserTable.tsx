@@ -1,6 +1,4 @@
-import { Pencil, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 
 import {
     Table,
@@ -11,6 +9,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import type { User } from '@/features/users/types/user';
+import DeleteUserDialog from './DeleteUserDialog';
+import UserFormModal from './UserFormModal';
 
 interface Props {
     users: {
@@ -65,13 +65,9 @@ export default function UserTable({ users }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
-                                    <Button variant="outline" size="icon">
-                                        <Pencil className="h-4 w-4" />
-                                    </Button>
+                                    <UserFormModal mode="edit" />
 
-                                    <Button variant="destructive" size="icon">
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                    <DeleteUserDialog user={user} />
                                 </div>
                             </TableCell>
                         </TableRow>

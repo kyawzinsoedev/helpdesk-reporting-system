@@ -8,24 +8,15 @@ class TicketAnswer extends Model
 {
     protected $fillable = [
         'ticket_id',
-        'ticket_form_field_id',
-        // 'value',
+        'answers',
+    ];
+
+    protected $casts = [
+        'answers' => 'array',
     ];
 
     public function ticket()
     {
         return $this->belongsTo(Ticket::class);
     }
-
-    public function field()
-    {
-        return $this->belongsTo(
-            TicketFormField::class,
-            'ticket_form_field_id'
-        );
-    }
-
-    protected $casts = [
-        'value' => 'array',
-    ];
 }

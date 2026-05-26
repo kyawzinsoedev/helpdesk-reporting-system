@@ -38,7 +38,6 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'reports' => \App\Models\Report::with('templates')->get(),
             'auth' => [
                 'user' => $request->user(),
             ],

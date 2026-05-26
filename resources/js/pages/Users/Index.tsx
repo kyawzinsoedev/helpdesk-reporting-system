@@ -1,6 +1,6 @@
-import UserFilter from '@/features/users/components/userFilter';
-import UserForm from '@/features/users/components/userForm';
-import UserTable from '@/features/users/components/userTable';
+import UserFilter from '@/features/users/components/UserFilter';
+import UserFormModal from '@/features/users/components/UserFormModal';
+import UserTable from '@/features/users/components/UserTable';
 import type { User } from '@/features/users/types/user';
 
 const users = {
@@ -37,7 +37,9 @@ export default function UserIndex() {
                         Manage your organization's user.
                     </p>
                 </div>
-                <UserForm />
+
+                {/* Form Section  */}
+                <UserFormModal mode="create" />
             </div>
 
             {/* Filter Section */}
@@ -45,8 +47,6 @@ export default function UserIndex() {
 
             {/* Table Section */}
             <UserTable users={users} />
-
-            {/* Pagination links များကို အောက်တွင် ထည့်ပေးရန် */}
         </div>
     );
 }

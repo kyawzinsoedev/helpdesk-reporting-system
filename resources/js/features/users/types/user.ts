@@ -20,11 +20,8 @@ export interface User {
     address: string;
     status: 'active' | 'draft' | string;
     department_id: number;
-
-    // Relationship တစ်ခုတည်းဆိုရင် Array မဟုတ်ဘဲ Object ပဲသုံးပါ
     department?: Department;
     roles?: Role[];
-
     created_at: string;
     updated_at: string;
 }
