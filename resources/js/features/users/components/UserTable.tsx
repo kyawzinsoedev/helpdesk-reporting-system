@@ -9,6 +9,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import type { User } from '@/features/users/types/user';
+import type { Department } from '../types/departments';
+import type { Role } from '../types/roles';
 import DeleteUserDialog from './DeleteUserDialog';
 import UserFormModal from './UserFormModal';
 
@@ -16,9 +18,11 @@ interface Props {
     users: {
         data: User[];
     };
+    departments: Department[];
+    roles: Role[];
 }
 
-export default function UserTable({ users }: Props) {
+export default function UserTable({ users, departments, roles }: Props) {
     return (
         <div className="overflow-hidden rounded-md border bg-card shadow-sm">
             <Table>
@@ -65,7 +69,12 @@ export default function UserTable({ users }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
-                                    <UserFormModal mode="edit" />
+                                    <UserFormModal
+                                        mode="edit"
+                                        user={user}
+                                        departments={departments}
+                                        roles={roles}
+                                    />
 
                                     <DeleteUserDialog user={user} />
                                 </div>

@@ -1,30 +1,20 @@
 import UserFilter from '@/features/users/components/UserFilter';
 import UserFormModal from '@/features/users/components/UserFormModal';
 import UserTable from '@/features/users/components/UserTable';
+import type { Department } from '@/features/users/types/departments';
+import type { Role } from '@/features/users/types/roles';
 import type { User } from '@/features/users/types/user';
 
-const users = {
-    data: [
-        {
-            id: 1,
-            name: 'John Doe',
-            username: 'johndoe',
-            email: 'john@example.com',
-            phone: '+95 912345678',
-            birthday: '1995-05-20',
-            gender: 'male',
-            address: 'Yangon',
-            status: 'active',
-            department_id: 1,
-            department: { id: 1, name: 'IT Department' },
-            roles: [{ id: 1, name: 'Admin', guard_name: 'web' }],
-            created_at: '2026-05-14',
-            updated_at: '2026-05-14',
-        },
-    ],
-} as { data: User[] };
-
-export default function UserIndex() {
+interface UserIndexProps {
+    users: { data: User[] };
+    departments: Department[];
+    roles: Role[];
+}
+export default function UserIndex({
+    users,
+    departments,
+    roles,
+}: UserIndexProps) {
     return (
         <div className="space-y-6 p-6">
             {/* Header Section */}
@@ -39,14 +29,18 @@ export default function UserIndex() {
                 </div>
 
                 {/* Form Section  */}
-                <UserFormModal mode="create" />
+                <UserFormModal
+                    mode="create"
+                    departments={departments}
+                    roles={roles}
+                />
             </div>
 
             {/* Filter Section */}
             <UserFilter />
 
             {/* Table Section */}
-            <UserTable users={users} />
+            <UserTable users={users} departments={departments} roles={roles} />
         </div>
     );
 }
