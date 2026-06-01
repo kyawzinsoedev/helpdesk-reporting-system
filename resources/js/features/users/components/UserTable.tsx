@@ -13,6 +13,7 @@ import type { Department } from '../types/departments';
 import type { Role } from '../types/roles';
 import DeleteUserDialog from './DeleteUserDialog';
 import UserFormModal from './UserFormModal';
+import ResetUserPassword from './ResetUserPassword';
 
 interface Props {
     users: {
@@ -58,7 +59,7 @@ export default function UserTable({ users, departments, roles }: Props) {
                             <TableCell>
                                 <Badge
                                     variant={
-                                        user.status === 'Active'
+                                        user.status === 'active'
                                             ? 'default'
                                             : 'secondary'
                                     }
@@ -69,6 +70,8 @@ export default function UserTable({ users, departments, roles }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
+                                    <ResetUserPassword user={user} />
+
                                     <UserFormModal
                                         mode="edit"
                                         user={user}

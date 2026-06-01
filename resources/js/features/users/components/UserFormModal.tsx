@@ -33,12 +33,12 @@ export default function UserFormModal({
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {mode === 'create' ? (
-                    <Button>
+                    <Button title="Add User">
                         <Plus className="mr-2 h-4 w-4" />
                         Add User
                     </Button>
                 ) : (
-                    <Button variant="outline" size="icon">
+                    <Button variant="outline" size="icon" title="Edit User">
                         <Pencil className="h-4 w-4" />
                     </Button>
                 )}

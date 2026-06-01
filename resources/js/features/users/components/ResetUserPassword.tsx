@@ -1,5 +1,6 @@
 import { useForm } from '@inertiajs/react';
-import { Trash2 } from 'lucide-react';
+import { UserKey } from 'lucide-react';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -13,38 +14,38 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-interface DeleteUserDialogProps {
+interface ResetUserDialogProps {
     user: {
         id: number;
         name?: string;
     };
 }
 
-export default function DeleteUserDialog({ user }: DeleteUserDialogProps) {
-    const { delete: destroy, processing } = useForm();
+export default function ResetUserPassword({ user }: ResetUserDialogProps) {
+    const { put, processing } = useForm();
 
-    const handleDelete = () => {
-        destroy(`/users/${user.id}`);
+    const handleReset = () => {
+        put(`/users/${user.id}/reset-password`);
     };
 
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="icon" title="Delete User">
-                    <Trash2 className="h-4 w-4" />
+                <Button variant="outline" size="icon" title="Reset Password">
+                    <UserKey className="h-4 w-4" />
                 </Button>
             </AlertDialogTrigger>
 
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Delete User</AlertDialogTitle>
+                    <AlertDialogTitle>Reset Password</AlertDialogTitle>
 
                     <AlertDialogDescription>
-                        Are you sure you want to delete{' '}
-                        <span className="font-semibold">{user.name}</span>
+                        Are you sure you want to reset password for{' '}
+                        <span className="font-semibold">
+                            {user.name ?? 'name'}
+                        </span>
                         ?
-                        <br />
-                        This action cannot be undone.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
 
@@ -52,7 +53,12 @@ export default function DeleteUserDialog({ user }: DeleteUserDialogProps) {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                     <AlertDialogAction asChild>
-                        <Button onClick={handleDelete} disabled={processing}>
+                        <Button
+                            variant="outline"
+                            title="Reset Password"
+                            onClick={handleReset}
+                            disabled={processing}
+                        >
                             Reset
                         </Button>
                     </AlertDialogAction>

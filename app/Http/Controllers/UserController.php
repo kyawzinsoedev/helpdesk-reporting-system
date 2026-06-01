@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
@@ -46,8 +47,9 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
+
         // default password
-        $validated['password'] = Hash::make('helpdesk@2026');
+        $validated['password'] = Hash::make(Str::random(10));
 
         $validated['gender'] = $validated['gender'] ?? 'male';
 
@@ -76,21 +78,14 @@ class UserController extends Controller
             'address' => 'required|string',
             'status' => 'required|in:active,draft',
             'department_id' => 'required|exists:departments,id',
-            'password' => 'nullable|string|min:6|confirmed',
             'role' => 'required|exists:roles,name',
         ]);
 
-        // Update password only if provided
-        if ($request->filled('password')) {
-            $validated['password'] = Hash::make($request->password);
-        } else {
-            unset($validated['password']);
-        }
+        $validated['gender'] = $validated['gender'] ?? 'male';
 
         $user->update($validated);
 
         // Sync role
-        $role = Role::findById($request->role_id);
         $user->syncRoles($validated['role']);
 
         return redirect()
@@ -106,5 +101,20 @@ class UserController extends Controller
         $user->delete();
 
         return back()->with('success', 'User deleted successfully');
+    }
+
+    public function resetPassword(User $user)
+    {
+        // 1. Generate new random password
+        $newPassword = Str::random(10);
+
+        // 2. Save hashed password
+        $user->password = Hash::make($newPassword);
+        $user->save();
+
+        // 3. (Optional) send email to user
+        Mail::to($user->email)->send(new \App\Mail\PasswordResetMail($user, $newPassword));
+
+        return back()->with('success', 'Password reset successfully. New password generated.');
     }
 }

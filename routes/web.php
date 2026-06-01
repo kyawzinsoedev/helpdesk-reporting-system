@@ -14,18 +14,20 @@ Route::inertia('/', 'welcome', [
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 
+    // Users
     Route::resource('users', UserController::class);
+    Route::put('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
+    ;
 
+    // Departments
     Route::resource('departments', DepartmentController::class);
 
+    // Tickets Form
     Route::resource('forms', TicketFormController::class);
+    Route::get('/forms/{form}/fields', [TicketFormController::class, 'fields'])->name('forms.fields.index');
+    Route::post('/forms/{form}/fields', [TicketFormController::class, 'storeField'])->name('forms.fields.store');
 
-    Route::get('/forms/{form}/fields', [TicketFormController::class, 'fields'])
-        ->name('forms.fields.index');
-
-    Route::post('/forms/{form}/fields', [TicketFormController::class, 'storeField'])
-        ->name('forms.fields.store');
-
+    // Tickets
     Route::resource('tickets', TicketController::class);
 
 });
