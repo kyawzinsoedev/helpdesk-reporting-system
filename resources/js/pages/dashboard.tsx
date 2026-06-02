@@ -1,129 +1,82 @@
-import { usePage } from '@inertiajs/react';
-import React, { useState } from 'react';
-
-import { Checkbox } from '@/components/ui/checkbox';
-import { Separator } from '@/components/ui/separator';
-
-interface Template {
-    id: number;
-    name: string;
-}
-
-interface Report {
-    id: number;
-    name: string;
-    templates: Template[];
-}
+import { Head } from '@inertiajs/react';
 
 export default function Dashboard() {
-    const { reports } = usePage<{ reports: Report[] }>().props;
-
-    const [selectedTemplates, setSelectedTemplates] = useState<number[]>([]);
-
-    const handleTemplateCheck = (templateId: number) => {
-        setSelectedTemplates((prev) =>
-            prev.includes(templateId)
-                ? prev.filter((id) => id !== templateId)
-                : [...prev, templateId],
-        );
-    };
-
-    const handleReportCheck = (report: Report) => {
-        const templateIds = report.templates.map((t) => t.id);
-        const allSelected = templateIds.every((id) =>
-            selectedTemplates.includes(id),
-        );
-
-        if (allSelected) {
-            setSelectedTemplates((prev) =>
-                prev.filter((id) => !templateIds.includes(id)),
-            );
-        } else {
-            setSelectedTemplates((prev) =>
-                Array.from(new Set([...prev, ...templateIds])),
-            );
-        }
-    };
-
     return (
-        <div className="max-w-6xl p-4">
-            <span className="text-xl font-bold">Department</span>
+        <>
+            <Head title="Dashboard" />
 
-            <div className="space-y-2 p-2">
-                {reports?.map((report) => {
-                    const isAllSelected =
-                        report.templates.length > 0 &&
-                        report.templates.every((t) =>
-                            selectedTemplates.includes(t.id),
-                        );
-
-                    return (
-                        <div key={report.id} className="group">
-                            {/* Report Header Row */}
-                            <div className="flex items-center space-x-3 py-2">
-                                <Checkbox
-                                    id={`report-${report.id}`}
-                                    checked={isAllSelected}
-                                    onCheckedChange={() =>
-                                        handleReportCheck(report)
-                                    }
-                                    className="h-4 w-4 border-2 border-primary"
-                                />
-                                <label
-                                    htmlFor={`report-${report.id}`}
-                                    className="text-md cursor-pointer font-bold select-none"
-                                >
-                                    {report.name}
-                                </label>
-                                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-muted-foreground">
-                                    {report.templates.length} templates
-                                </span>
-                            </div>
-
-                            {/* Templates List Under the Report */}
-                            <div className="mt-2 ml-8 grid grid-cols-1 gap-3 pb-4 sm:grid-cols-2">
-                                {report.templates.map((template) => (
-                                    <div
-                                        key={template.id}
-                                        className="flex items-center space-x-3 rounded-md border border-transparent p-2 transition-colors hover:bg-slate-50"
-                                    >
-                                        <Checkbox
-                                            id={`temp-${template.id}`}
-                                            checked={selectedTemplates.includes(
-                                                template.id,
-                                            )}
-                                            onCheckedChange={() =>
-                                                handleTemplateCheck(template.id)
-                                            }
-                                        />
-                                        <label
-                                            htmlFor={`temp-${template.id}`}
-                                            className="cursor-pointer text-sm font-medium text-slate-600 select-none"
-                                        >
-                                            {template.name}
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                            <Separator className="group-last:hidden" />
-                        </div>
-                    );
-                })}
-
-                {reports?.length === 0 && (
-                    <p className="py-10 text-center text-muted-foreground">
-                        No reports found.
+            <div className="space-y-6 p-6">
+                {/* Page Header */}
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        Dashboard
+                    </h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Welcome back! Here is your overview.
                     </p>
-                )}
-            </div>
+                </div>
 
-            {/* Selection Summary */}
-            <div className="mt-6 text-sm text-muted-foreground">
-                Total Selected Templates:{' '}
-                <span className="font-bold text-primary">
-                    {selectedTemplates.length}
-                </span>
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="rounded-xl border bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <p className="text-sm text-gray-500">Users</p>
+                        <h2 className="mt-2 text-2xl font-bold">1,240</h2>
+                    </div>
+
+                    <div className="rounded-xl border bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <p className="text-sm text-gray-500">Sales</p>
+                        <h2 className="mt-2 text-2xl font-bold">$12,340</h2>
+                    </div>
+
+                    <div className="rounded-xl border bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <p className="text-sm text-gray-500">Orders</p>
+                        <h2 className="mt-2 text-2xl font-bold">320</h2>
+                    </div>
+
+                    <div className="rounded-xl border bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <p className="text-sm text-gray-500">Products</p>
+                        <h2 className="mt-2 text-2xl font-bold">85</h2>
+                    </div>
+                </div>
+
+                {/* Main Content Area */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    {/* Left Panel */}
+                    <div className="rounded-xl border bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <h3 className="mb-4 text-lg font-semibold">
+                            Recent Activity
+                        </h3>
+
+                        <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
+                            <li>✔ New user registered</li>
+                            <li>✔ Order #1024 completed</li>
+                            <li>✔ Product stock updated</li>
+                            <li>✔ Payment received</li>
+                        </ul>
+                    </div>
+
+                    {/* Right Panel */}
+                    <div className="rounded-xl border bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <h3 className="mb-4 text-lg font-semibold">
+                            Quick Actions
+                        </h3>
+
+                        <div className="space-y-3">
+                            <button className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                                Add New User
+                            </button>
+
+                            <button className="w-full rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700">
+                                Add Product
+                            </button>
+
+                            <button className="w-full rounded-lg bg-gray-800 px-4 py-2 text-white hover:bg-gray-900">
+                                View Reports
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import { UserKey } from 'lucide-react';
-
+import { toast } from 'sonner';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -25,7 +25,15 @@ export default function ResetUserPassword({ user }: ResetUserDialogProps) {
     const { put, processing } = useForm();
 
     const handleReset = () => {
-        put(`/users/${user.id}/reset-password`);
+        put(`/users/${user.id}/reset-password`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Password reset successfully');
+            },
+            onError: () => {
+                toast.error('Failed to reset password');
+            },
+        });
     };
 
     return (

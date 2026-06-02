@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -113,7 +115,25 @@ class UserController extends Controller
         $user->save();
 
         // 3. (Optional) send email to user
-        Mail::to($user->email)->send(new \App\Mail\PasswordResetMail($user, $newPassword));
+        try {
+            Mail::to($user->email)->send(new \App\Mail\PasswordResetMail($user, $newPassword));
+
+            Log::channel('mail')->info('Password reset email sent', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'sent_by' => auth()->id(),
+            ]);
+
+        } catch (\Exception $e) {
+
+            Log::channel('mail')->error('Password reset email failed', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
 
         return back()->with('success', 'Password reset successfully. New password generated.');
     }

@@ -21,6 +21,12 @@ class PasswordResetMail extends Mailable
 
     public function build()
     {
-        return back()->with('success', 'Password reset and email sent successfully.');
+        return $this->subject('Password Reset Notification')
+            ->html("
+            <h2>Hello {$this->user->name}</h2>
+            <p>Your password has been reset.</p>
+            <p><strong>New Password:</strong> {$this->password}</p>
+            <p>Please change it after login.</p>
+        ");
     }
 }

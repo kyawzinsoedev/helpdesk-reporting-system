@@ -1,3 +1,4 @@
+import { router } from '@inertiajs/react';
 import { Bell, Mail, MessageSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +12,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
 import { Separator } from '@/components/ui/separator';
 
 export default function TopHeader() {
@@ -81,7 +83,7 @@ export default function TopHeader() {
                     </Button> */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline">Open</Button>
+                            <Button variant="outline">Profile</Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuGroup>
@@ -89,7 +91,13 @@ export default function TopHeader() {
                                     My Account
                                 </DropdownMenuLabel>
                                 <DropdownMenuItem>Profile</DropdownMenuItem>
-                                <DropdownMenuItem>Billing</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <button
+                                        onClick={() => router.post('/logout')}
+                                    >
+                                        Logout
+                                    </button>
+                                </DropdownMenuItem>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
