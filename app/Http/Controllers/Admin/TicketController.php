@@ -202,13 +202,11 @@ class TicketController extends Controller
 
     public function destroy(Ticket $ticket)
     {
-        if ($ticket->user_id !== Auth::id()) {
-            abort(403);
-        }
 
-        $ticket->answers()->delete();
+        // $ticket->answers()->delete();
         $ticket->delete();
 
-        return redirect()->route('tickets.index');
+        return redirect()->route('tickets.index')->with('success', 'Ticket deleted successfully!');
     }
+
 }

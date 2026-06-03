@@ -26,7 +26,7 @@ export default function DeleteTicketDialog({
     const { delete: destroy, processing } = useForm();
 
     const handleDelete = () => {
-        destroy(`/ticket/${ticket.id}`);
+        destroy(`/tickets/${ticket.id}`);
     };
 
     return (
