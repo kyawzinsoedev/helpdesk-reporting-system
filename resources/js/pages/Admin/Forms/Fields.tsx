@@ -55,194 +55,240 @@ export default function Fields({ form }: Props) {
     // };
 
     return (
-        <div className="space-y-6 p-6">
-            <h1 className="text-2xl font-bold">{form.name} Form Builder</h1>
+        <div className="mx-auto max-w-5xl space-y-8">
+            {/* HEADER */}
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">
+                    {form.name} Form Builder
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                    Create and manage dynamic form fields
+                </p>
+            </div>
 
-            {/* FORM BUILDER */}
-            <form onSubmit={submit} className="space-y-4 rounded-lg border p-4">
-                {/* FIELD TYPE */}
-                <div className="space-y-2">
-                    <Label>Field Type</Label>
+            {/* BUILDER CARD */}
+            <div className="rounded-xl border p-6 shadow-sm">
+                <form onSubmit={submit} className="space-y-5">
+                    {/* FIELD TYPE */}
+                    <div className="space-y-2">
+                        <Label>Field Type</Label>
+                        <Select
+                            value={data.type}
+                            onValueChange={(value) => {
+                                setData('type', value);
 
-                    <Select
-                        value={data.type}
-                        onValueChange={(value) => {
-                            setData('type', value);
-
-                            // reset options when switching type
-                            if (
-                                ['select', 'radio', 'checkbox'].includes(value)
-                            ) {
-                                setData('options', [{ label: '', value: '' }]);
-                            } else {
-                                setData('options', []);
-                            }
-                        }}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select field type" />
-                        </SelectTrigger>
-
-                        <SelectContent>
-                            <SelectItem value="text">Text</SelectItem>
-                            <SelectItem value="textarea">Textarea</SelectItem>
-                            <SelectItem value="number">Number</SelectItem>
-                            <SelectItem value="email">Email</SelectItem>
-                            <SelectItem value="phone">Phone</SelectItem>
-                            <SelectItem value="password">Password</SelectItem>
-
-                            <SelectItem value="select">Select</SelectItem>
-                            <SelectItem value="radio">Radio</SelectItem>
-                            <SelectItem value="checkbox">Checkbox</SelectItem>
-
-                            <SelectItem value="date">Date</SelectItem>
-                            <SelectItem value="file">File Upload</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                {/* LABEL */}
-                <div className="space-y-2">
-                    <Label>Label</Label>
-                    <Input
-                        value={data.label}
-                        onChange={(e) => setData('label', e.target.value)}
-                        placeholder="Enter label (e.g. Email Address)"
-                    />
-                    {errors.label && (
-                        <p className="text-sm text-red-500">{errors.label}</p>
-                    )}
-                </div>
-
-                {/* FIELD NAME */}
-                <div className="space-y-2">
-                    <Label>Field Name</Label>
-                    <Input
-                        value={data.name}
-                        onChange={(e) =>
-                            setData(
-                                'name',
-                                e.target.value
-                                    .toLowerCase()
-                                    .replace(/\s/g, '_'),
-                            )
-                        }
-                        placeholder="email_address"
-                    />
-                </div>
-
-                {/* OPTIONS BUILDER (REAL JSON STYLE) */}
-                {showOptions && (
-                    <div className="space-y-3 rounded-md border p-3">
-                        <Label>Options</Label>
-
-                        {data.options.map((opt: any, index: number) => (
-                            <div key={index} className="flex gap-2">
-                                <Input
-                                    placeholder="Label"
-                                    value={opt.label}
-                                    onChange={(e) => {
-                                        const updated = [...data.options];
-                                        updated[index].label = e.target.value;
-                                        setData('options', updated);
-                                    }}
-                                />
-
-                                <Input
-                                    placeholder="Value"
-                                    value={opt.value}
-                                    onChange={(e) => {
-                                        const updated = [...data.options];
-                                        updated[index].value = e.target.value;
-                                        setData('options', updated);
-                                    }}
-                                />
-                            </div>
-                        ))}
-
-                        <Button
-                            type="button"
-                            onClick={() =>
-                                setData('options', [
-                                    ...data.options,
-                                    { label: '', value: '' },
-                                ])
-                            }
+                                if (
+                                    ['select', 'radio', 'checkbox'].includes(
+                                        value,
+                                    )
+                                ) {
+                                    setData('options', [
+                                        { label: '', value: '' },
+                                    ]);
+                                } else {
+                                    setData('options', []);
+                                }
+                            }}
                         >
-                            + Add Option
-                        </Button>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select field type" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                <SelectItem value="text">Text</SelectItem>
+                                <SelectItem value="textarea">
+                                    Textarea
+                                </SelectItem>
+                                <SelectItem value="number">Number</SelectItem>
+                                <SelectItem value="email">Email</SelectItem>
+                                <SelectItem value="phone">Phone</SelectItem>
+                                <SelectItem value="password">
+                                    Password
+                                </SelectItem>
+                                <SelectItem value="select">Select</SelectItem>
+                                <SelectItem value="radio">Radio</SelectItem>
+                                <SelectItem value="checkbox">
+                                    Checkbox
+                                </SelectItem>
+                                <SelectItem value="date">Date</SelectItem>
+                                <SelectItem value="file">
+                                    File Upload
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
-                )}
 
-                {/* REQUIRED */}
-                <div className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        checked={data.required}
-                        onChange={(e) => setData('required', e.target.checked)}
-                    />
-                    <Label>Required</Label>
-                </div>
-
-                {/* SUBMIT */}
-                <Button disabled={processing}>Add Field</Button>
-            </form>
-
-            {/* EXISTING FIELDS */}
-            <div className="space-y-3">
-                {form.fields.map((field: any) => (
-                    <div
-                        key={field.id}
-                        className="flex items-center justify-between rounded-lg border p-4 shadow-sm transition hover:shadow-md"
-                    >
-                        {/* LEFT SIDE */}
-                        <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                                <h3 className="font-medium">{field.label}</h3>
-
-                                <span className="rounded bg-gray-100 px-2 py-0.5 text-[10px] text-gray-600 uppercase">
-                                    {field.type}
-                                </span>
-                            </div>
-
-                            <div className="text-xs text-muted-foreground">
-                                {field.name} •{' '}
-                                {field.required ? 'Required' : 'Optional'}
-                            </div>
-
-                            {field.options?.length > 0 && (
-                                <div className="mt-1 flex flex-wrap gap-1">
-                                    {field.options.map(
-                                        (opt: any, i: number) => (
-                                            <span
-                                                key={i}
-                                                className="rounded bg-blue-50 px-2 py-0.5 text-[10px] text-blue-600"
-                                            >
-                                                {opt.label}
-                                            </span>
-                                        ),
-                                    )}
-                                </div>
+                    {/* LABEL + NAME GRID */}
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                            <Label>Label</Label>
+                            <Input
+                                value={data.label}
+                                onChange={(e) =>
+                                    setData('label', e.target.value)
+                                }
+                                placeholder="Email Address"
+                            />
+                            {errors.label && (
+                                <p className="text-sm text-red-500">
+                                    {errors.label}
+                                </p>
                             )}
                         </div>
 
-                        {/* RIGHT ACTIONS */}
-                        <div className="flex items-center gap-2">
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleEdit(field)}
-                            >
-                                Edit
-                            </Button>
+                        <div className="space-y-2">
+                            <Label>Field Name</Label>
+                            <Input
+                                value={data.name}
+                                onChange={(e) =>
+                                    setData(
+                                        'name',
+                                        e.target.value
+                                            .toLowerCase()
+                                            .replace(/\s/g, '_'),
+                                    )
+                                }
+                                placeholder="email_address"
+                            />
+                        </div>
+                    </div>
+
+                    {/* OPTIONS */}
+                    {showOptions && (
+                        <div className="space-y-3 rounded-lg border bg-muted/30 p-4">
+                            <Label className="font-semibold">Options</Label>
+
+                            <div className="space-y-2">
+                                {data.options.map((opt: any, index: number) => (
+                                    <div
+                                        key={index}
+                                        className="grid grid-cols-2 gap-2"
+                                    >
+                                        <Input
+                                            placeholder="Label"
+                                            value={opt.label}
+                                            onChange={(e) => {
+                                                const updated = [
+                                                    ...data.options,
+                                                ];
+                                                updated[index].label =
+                                                    e.target.value;
+                                                setData('options', updated);
+                                            }}
+                                        />
+
+                                        <Input
+                                            placeholder="Value"
+                                            value={opt.value}
+                                            onChange={(e) => {
+                                                const updated = [
+                                                    ...data.options,
+                                                ];
+                                                updated[index].value =
+                                                    e.target.value;
+                                                setData('options', updated);
+                                            }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
 
                             <Button
+                                type="button"
+                                variant="outline"
                                 size="sm"
-                                variant="destructive"
-                                // onClick={() => handleDelete(field.id)}
+                                onClick={() =>
+                                    setData('options', [
+                                        ...data.options,
+                                        { label: '', value: '' },
+                                    ])
+                                }
                             >
-                                Delete
+                                + Add Option
                             </Button>
+                        </div>
+                    )}
+
+                    {/* REQUIRED */}
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            checked={data.required}
+                            onChange={(e) =>
+                                setData('required', e.target.checked)
+                            }
+                        />
+                        <Label>Required field</Label>
+                    </div>
+
+                    {/* SUBMIT */}
+                    <div className="flex justify-end">
+                        <Button disabled={processing} className="px-6">
+                            Add Field
+                        </Button>
+                    </div>
+                </form>
+            </div>
+
+            {/* FIELD LIST */}
+            <div className="space-y-4">
+                {form.fields.map((field: any) => (
+                    <div
+                        key={field.id}
+                        className="rounded-xl border bg-white p-5 shadow-sm transition hover:shadow-md dark:bg-gray-900"
+                    >
+                        <div className="flex items-start justify-between">
+                            {/* LEFT */}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-base font-semibold">
+                                        {field.label}
+                                    </h3>
+
+                                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-600 uppercase dark:bg-gray-800">
+                                        {field.type}
+                                    </span>
+                                </div>
+
+                                <div className="text-xs text-muted-foreground">
+                                    {field.name} •{' '}
+                                    {field.required ? 'Required' : 'Optional'}
+                                </div>
+
+                                {field.options?.length > 0 && (
+                                    <div className="flex flex-wrap gap-1 pt-1">
+                                        {field.options.map(
+                                            (opt: any, i: number) => (
+                                                <span
+                                                    key={i}
+                                                    className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] text-blue-600 dark:bg-blue-950"
+                                                >
+                                                    {opt.label}
+                                                </span>
+                                            ),
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* RIGHT */}
+                            <div className="flex gap-2">
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleEdit(field)}
+                                >
+                                    Edit
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => handleDelete(field.id)}
+                                >
+                                    Delete
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 ))}

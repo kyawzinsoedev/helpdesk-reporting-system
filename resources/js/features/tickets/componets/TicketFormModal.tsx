@@ -10,6 +10,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import type { Ticket } from '../types/tickets';
+import TicketForm from './TicketForm';
 
 interface TicketFormModalProps {
     mode?: 'create' | 'edit';
@@ -51,11 +52,7 @@ export default function TicketFormModal({
                     </DialogDescription>
                 </DialogHeader>
 
-                {/* <TicketForm
-                    mode={mode}
-                    ticket={ticket}
-                    setOpen={setOpen}
-                /> */}
+                <TicketForm mode={mode} ticket={ticket} setOpen={setOpen} />
             </DialogContent>
         </Dialog>
     );
