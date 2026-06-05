@@ -202,6 +202,9 @@ class TicketController extends Controller
 
     public function destroy(Ticket $ticket)
     {
+        if ($ticket->user_id !== Auth::id()) {
+            abort(403);
+        }
 
         // $ticket->answers()->delete();
         $ticket->delete();
