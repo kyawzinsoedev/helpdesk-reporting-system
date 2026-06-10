@@ -72,18 +72,7 @@ export default function TicketForm({
 
     useEffect(() => {
         if (ticketForms && mode === 'edit') {
-            setData({
-                name: user?.name || '',
-                username: user?.username || '',
-                email: user?.email || '',
-                phone: user?.phone || '',
-                birthday: user?.birthday || '',
-                gender: user?.gender || 'male',
-                address: user?.address || '',
-                status: user?.status || 'active',
-                department_id: user?.department_id || 0,
-                role: user?.roles?.[0]?.name || '',
-            });
+            setData({});
         }
     }, [ticketForms, mode, setData]);
 

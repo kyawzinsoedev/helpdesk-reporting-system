@@ -20,6 +20,7 @@ class TicketController extends Controller
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
+        // dd($tickets);
 
         return Inertia::render('Admin/Tickets/Index', [
             'tickets' => $tickets
