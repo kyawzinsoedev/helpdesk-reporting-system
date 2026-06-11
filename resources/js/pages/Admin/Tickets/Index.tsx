@@ -1,11 +1,13 @@
 import TicketFormModal from '@/features/tickets/componets/TicketFormModal';
 import TicketTable from '@/features/tickets/componets/TicketTable';
+import type { TicketFormStructure } from '@/features/tickets/schemas/ticketSchema';
 import type { Ticket } from '../../../../js/features/tickets/types/tickets';
 
 interface Props {
     tickets: Ticket[];
+    ticketForms: TicketFormStructure[];
 }
-export default function Index({ tickets }: Props) {
+export default function Index({ tickets, ticketForms }: Props) {
     return (
         <div className="space-y-4">
             {/* Header */}
@@ -20,7 +22,7 @@ export default function Index({ tickets }: Props) {
                 </div>
 
                 {/* Create From  */}
-                <TicketFormModal mode="create" />
+                <TicketFormModal mode="create" ticketForms={ticketForms} />
             </div>
 
             {/* Table */}

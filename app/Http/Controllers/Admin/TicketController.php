@@ -20,18 +20,15 @@ class TicketController extends Controller
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
-        // dd($tickets);
 
-        return Inertia::render('Admin/Tickets/Index', [
-            'tickets' => $tickets
-        ]);
-    }
-
-    public function create()
-    {
         $ticketForms = TicketForm::with('fields')->get();
 
-        return Inertia::render('Admin/Tickets/Create', [
+        // dd('Tickets for index = ', $tickets);
+
+        // dd('Ticket for Create  = ', $ticketForms);
+
+        return Inertia::render('Admin/Tickets/Index', [
+            'tickets' => $tickets,
             'ticketForms' => $ticketForms
         ]);
     }

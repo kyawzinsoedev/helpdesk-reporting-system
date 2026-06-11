@@ -9,16 +9,18 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import type { TicketFormStructure } from '../schemas/ticketSchema';
 import type { Ticket } from '../types/tickets';
 import TicketForm from './TicketForm';
 
 interface TicketFormModalProps {
+    ticketForms?: TicketFormStructure[];
     mode?: 'create' | 'edit';
-
     ticket?: Ticket;
 }
 
 export default function TicketFormModal({
+    ticketForms,
     mode = 'create',
     ticket,
 }: TicketFormModalProps) {
@@ -39,7 +41,7 @@ export default function TicketFormModal({
                 )}
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-2xl">
+            <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle>
                         {mode === 'create' ? 'Create Ticket' : 'Edit Ticket'}
@@ -52,7 +54,12 @@ export default function TicketFormModal({
                     </DialogDescription>
                 </DialogHeader>
 
-                <TicketForm mode={mode} ticket={ticket} setOpen={setOpen} />
+                <TicketForm
+                    mode={mode}
+                    ticket={ticket}
+                    ticketForms={ticketForms}
+                    setOpen={setOpen}
+                />
             </DialogContent>
         </Dialog>
     );
