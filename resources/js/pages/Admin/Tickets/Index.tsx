@@ -9,7 +9,7 @@ interface Props {
 }
 export default function Index({ tickets, ticketForms }: Props) {
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 p-6">
             {/* Header */}
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                 <div>
