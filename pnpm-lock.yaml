@@ -11,6 +11,9 @@ importers:
       '@headlessui/react':
         specifier: ^2.2.0
         version: 2.2.10(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@hookform/resolvers':
+        specifier: ^5.4.0
+        version: 5.4.0(react-hook-form@7.78.0(react@19.2.6))
       '@inertiajs/react':
         specifier: ^3.0.0
         version: 3.1.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -90,8 +93,8 @@ importers:
         specifier: ^3.1
         version: 3.1.0(vite@8.0.11(@types/node@22.19.18)(jiti@2.7.0))
       lucide-react:
-        specifier: ^0.475.0
-        version: 0.475.0(react@19.2.6)
+        specifier: ^1.17.0
+        version: 1.17.0(react@19.2.6)
       radix-ui:
         specifier: ^1.4.3
         version: 1.4.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -101,6 +104,9 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.6(react@19.2.6)
+      react-hook-form:
+        specifier: ^7.78.0
+        version: 7.78.0(react@19.2.6)
       sonner:
         specifier: ^2.0.0
         version: 2.0.7(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -122,6 +128,9 @@ importers:
       ziggy-js:
         specifier: ^2.6.2
         version: 2.6.2
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@eslint/js':
         specifier: ^9.19.0
@@ -344,6 +353,11 @@ packages:
     peerDependencies:
       react: ^18 || ^19 || ^19.0.0-rc
       react-dom: ^18 || ^19 || ^19.0.0-rc
+
+  '@hookform/resolvers@5.4.0':
+    resolution: {integrity: sha512-EIsqr/t/qbinPIhGjMdtvutIN1Kk4uwbROE9/UQ93CAVGR7GkA7Y92+fX80OzXi/OB67jVFYwKGO1WzkxmkFZw==}
+    peerDependencies:
+      react-hook-form: ^7.55.0
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -1315,6 +1329,9 @@ packages:
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
+
+  '@standard-schema/utils@0.3.0':
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
   '@stylistic/eslint-plugin@5.10.0':
     resolution: {integrity: sha512-nPK52ZHvot8Ju/0A4ucSX1dcPV2/1clx0kLcH5wDmrE4naKso7TUC/voUyU1O9OTKTrR6MYip6LP0ogEMQ9jPQ==}
@@ -2454,8 +2471,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@0.475.0:
-    resolution: {integrity: sha512-NJzvVu1HwFVeZ+Gwq2q00KygM1aBhy/ZrhY9FsAgJtpB+E4R7uxRk9M2iKvHa6/vNxZydIB59htha4c2vvwvVg==}
+  lucide-react@1.17.0:
+    resolution: {integrity: sha512-9FA9evdox/JQL5PT57fdA1x/yg8T7knJ98+zjTL3UfKza6pflQUUh3XtaQIHKvnsJw1lmsEyHVlt5jchYxOQ5w==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -2685,6 +2702,12 @@ packages:
     resolution: {integrity: sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==}
     peerDependencies:
       react: ^19.2.6
+
+  react-hook-form@7.78.0:
+    resolution: {integrity: sha512-EEZqc+N23moyzTlz61Pj+JvcXo76ICkpfOZo8JZw+sM4+wLQGh6nI2Ms+PdMOYNluFu0ghlM7B8mCzhRYtJCnA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -3321,6 +3344,11 @@ snapshots:
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       use-sync-external-store: 1.6.0(react@19.2.6)
+
+  '@hookform/resolvers@5.4.0(react-hook-form@7.78.0(react@19.2.6))':
+    dependencies:
+      '@standard-schema/utils': 0.3.0
+      react-hook-form: 7.78.0(react@19.2.6)
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -4290,6 +4318,8 @@ snapshots:
     optional: true
 
   '@rtsao/scc@1.1.0': {}
+
+  '@standard-schema/utils@0.3.0': {}
 
   '@stylistic/eslint-plugin@5.10.0(eslint@9.39.4(jiti@2.7.0))':
     dependencies:
@@ -5518,7 +5548,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@0.475.0(react@19.2.6):
+  lucide-react@1.17.0(react@19.2.6):
     dependencies:
       react: 19.2.6
 
@@ -5743,6 +5773,10 @@ snapshots:
     dependencies:
       react: 19.2.6
       scheduler: 0.27.0
+
+  react-hook-form@7.78.0(react@19.2.6):
+    dependencies:
+      react: 19.2.6
 
   react-is@16.13.1: {}
 

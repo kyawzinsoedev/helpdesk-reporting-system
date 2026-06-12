@@ -50,7 +50,7 @@ export default function Index({ forms }: Props) {
                         </p>
                     ) : (
                         forms.map((form) => (
-                            <TableRow>
+                            <TableRow key={form.id}>
                                 <TableCell className="font-medium">
                                     {form.id}
                                 </TableCell>
