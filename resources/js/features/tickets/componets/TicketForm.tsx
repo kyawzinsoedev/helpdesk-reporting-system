@@ -82,7 +82,7 @@ export default function TicketForm({
             className="mx-auto w-full max-w-3xl"
         >
             <div className="space-y-6">
-                {/* 📋 STEP 1: PRIMARY INFORMATION CARD */}
+                {/* PRIMARY INFORMATION CARD */}
                 <div className="rounded-2xl border bg-background p-6 shadow-sm transition-all hover:shadow-md">
                     <div className="mb-4 flex items-center gap-3 border-b pb-3">
                         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
@@ -235,7 +235,7 @@ export default function TicketForm({
                     </div>
                 </div>
 
-                {/* ⚡ STEP 3: DYNAMIC FIELDS CARD (Conditional Rendering) */}
+                {/* DYNAMIC FIELDS CARD (Conditional Rendering) */}
                 {currentFormStructure &&
                     currentFormStructure.fields &&
                     currentFormStructure.fields.length > 0 && (
@@ -271,7 +271,6 @@ export default function TicketForm({
                                                 : 'sm:col-span-1'
                                         }`}
                                     >
-                                        {/* Checkbox မှလွဲ၍ ကျန်သည့် Type များအတွက် ပုံမှန် Label ပြသခြင်း */}
                                         {field.type !== 'checkbox' && (
                                             <Label className="text-sm font-medium text-foreground/90">
                                                 {field.label}
@@ -413,55 +412,6 @@ export default function TicketForm({
                                                         />
                                                     );
 
-                                                    // case 'checkbox':
-                                                    return (
-                                                        <Controller
-                                                            name={
-                                                                `custom_fields.${field.name}` as const
-                                                            }
-                                                            control={control}
-                                                            rules={{
-                                                                required:
-                                                                    !!field.required,
-                                                            }}
-                                                            render={({
-                                                                field: controllerField,
-                                                            }) => (
-                                                                // Shadcn Checkbox Component (Label ကို ညာဘက်မှာကပ်ပြီး Row ပုံစံပြသခြင်း)
-                                                                <div className="mt-1 flex items-start space-x-2 rounded-md border bg-background/50 p-3 shadow-sm">
-                                                                    <Checkbox
-                                                                        id={
-                                                                            field.name
-                                                                        }
-                                                                        checked={
-                                                                            !!controllerField.value
-                                                                        }
-                                                                        onCheckedChange={
-                                                                            controllerField.onChange
-                                                                        }
-                                                                    />
-                                                                    <div className="grid gap-1.5 leading-none">
-                                                                        <Label
-                                                                            htmlFor={
-                                                                                field.name
-                                                                            }
-                                                                            className="cursor-pointer text-sm leading-none font-medium"
-                                                                        >
-                                                                            {
-                                                                                field.label
-                                                                            }
-                                                                            {!!field.required && (
-                                                                                <span className="ml-0.5 text-destructive">
-                                                                                    *
-                                                                                </span>
-                                                                            )}
-                                                                        </Label>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        />
-                                                    );
-
                                                 case 'checkbox':
                                                     return (
                                                         <Controller
@@ -553,7 +503,6 @@ export default function TicketForm({
                                                             }}
                                                         />
                                                     );
-                                                // text, number, date, email စသည့် standard input များအားလုံးအတွက်
                                                 default:
                                                     return (
                                                         <Input
