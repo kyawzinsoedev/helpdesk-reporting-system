@@ -14,18 +14,48 @@ use Inertia\Inertia;
 
 class TicketController extends Controller
 {
+    // public function index()
+
+    // {
+    //     $tickets = Ticket::with(['form', 'answers'])
+    //         ->where('user_id', Auth::id())
+    //         ->latest()
+    //         ->get();
+
+    //     $ticketForms = TicketForm::with('fields')->get();
+
+    //     // dd('Tickets for index = ', $tickets);
+
+    //     dd('Ticket for Create  = ', $ticketForms->toArray());
+
+    //     return Inertia::render('Admin/Tickets/Index', [
+    //         'tickets' => $tickets,
+    //         'ticketForms' => $ticketForms
+    //     ]);
+    // }
     public function index()
     {
         $tickets = Ticket::with(['form', 'answers'])
             ->where('user_id', Auth::id())
             ->latest()
-            ->get();
+            ->get()
+            ->map(function ($ticket) {
+
+                // Convert answers → custom_fields (IMPORTANT FIX)
+                $customFields = [];
+
+                foreach ($ticket->answers as $answer) {
+                    foreach ($answer->answers as $field) {
+                        $customFields[$field['field_name']] = $field['value'];
+                    }
+                }
+
+                $ticket->custom_fields = $customFields;
+
+                return $ticket;
+            });
 
         $ticketForms = TicketForm::with('fields')->get();
-
-        // dd('Tickets for index = ', $tickets);
-
-        // dd('Ticket for Create  = ', $ticketForms);
 
         return Inertia::render('Admin/Tickets/Index', [
             'tickets' => $tickets,
@@ -40,22 +70,12 @@ class TicketController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'priority' => 'required|in:low,medium,high',
-
-            /**
-             * DYNAMIC FIELDS
-             */
-            'fields' => 'nullable|array',
-            'fields.*.field_id' => 'required|integer',
-            'fields.*.value' => 'nullable',
+            'custom_fields' => 'nullable|array',
         ]);
 
         DB::beginTransaction();
 
         try {
-
-            /**
-             * CREATE TICKET
-             */
             $ticket = Ticket::create([
                 'user_id' => Auth::id(),
                 'ticket_form_id' => $request->ticket_form_id,
@@ -65,65 +85,28 @@ class TicketController extends Controller
                 'status' => 'open',
             ]);
 
-            /**
-             * LOAD FORM FIELDS
-             */
-            $formFields = TicketFormField::where(
-                'ticket_form_id',
-                $request->ticket_form_id
-            )
+            $formFields = TicketFormField::where('ticket_form_id', $request->ticket_form_id)
                 ->get()
-                ->keyBy('id');
+                ->keyBy('name');
 
-            /**
-             * FINAL ANSWERS ARRAY
-             */
             $answers = [];
 
-            /**
-             * NORMALIZE INPUT
-             */
-            foreach ($request->fields ?? [] as $input) {
+            foreach ($request->custom_fields ?? [] as $fieldName => $value) {
 
-                $fieldId = $input['field_id'] ?? null;
-                $value = $input['value'] ?? null;
-
-                /**
-                 * SKIP INVALID FIELD
-                 */
-                if (
-                    !$fieldId ||
-                    !isset($formFields[$fieldId])
-                ) {
+                if (!isset($formFields[$fieldName])) {
                     continue;
                 }
 
-                /**
-                 * CURRENT FIELD
-                 */
-                $field = $formFields[$fieldId];
+                $field = $formFields[$fieldName];
 
-                /**
-                 * HANDLE FILE UPLOAD
-                 */
                 if ($value instanceof \Illuminate\Http\UploadedFile) {
-
-                    $value = $value->store(
-                        'ticket-files',
-                        'public'
-                    );
+                    $value = $value->store('ticket-files', 'public');
                 }
 
-                /**
-                 * SKIP EMPTY VALUES
-                 */
-                if ($value === null || $value === '') {
+                if ($value === null || $value === '' || $value === []) {
                     continue;
                 }
 
-                /**
-                 * BUILD SNAPSHOT JSON
-                 */
                 $answers[] = [
                     'field_id' => $field->id,
                     'field_name' => $field->name,
@@ -133,9 +116,6 @@ class TicketController extends Controller
                 ];
             }
 
-            /**
-             * SAVE SINGLE JSON RESPONSE
-             */
             TicketAnswer::create([
                 'ticket_id' => $ticket->id,
                 'answers' => $answers,
@@ -148,7 +128,6 @@ class TicketController extends Controller
                 ->with('success', 'Ticket created successfully.');
 
         } catch (\Exception $e) {
-
             DB::rollBack();
 
             return back()->withErrors([
@@ -157,53 +136,81 @@ class TicketController extends Controller
         }
     }
 
-    public function show(Ticket $ticket)
-    {
-        if ($ticket->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        return Inertia::render('Admin/Tickets/Show', [
-            'ticket' => $ticket->load(['form', 'answers.field'])
-        ]);
-    }
-
-    public function edit(Ticket $ticket)
-    {
-        if ($ticket->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        return Inertia::render('Admin/Tickets/Edit', [
-            'ticket' => $ticket->load('answers'),
-            'formFields' => TicketForm::with('fields')->find($ticket->ticket_form_id)
-        ]);
-    }
-
     public function update(Request $request, Ticket $ticket)
     {
-        if ($ticket->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
             'priority' => 'sometimes|required|in:low,medium,high',
             'status' => 'sometimes|required|in:open,pending,resolved,closed',
+            'custom_fields' => 'nullable|array',
         ]);
 
-        $ticket->update($request->only(['title', 'description', 'priority', 'status']));
+        DB::beginTransaction();
 
-        return redirect()->route('tickets.index');
+        try {
+            // 1. Update main ticket
+            $ticket->update(
+                $request->only(['title', 'description', 'priority', 'status'])
+            );
+
+            // 2. Get form fields
+            $formFields = TicketFormField::where('ticket_form_id', $ticket->ticket_form_id)
+                ->get()
+                ->keyBy('name');
+
+            $answers = [];
+
+            foreach ($request->custom_fields ?? [] as $fieldName => $value) {
+
+                if (!isset($formFields[$fieldName])) {
+                    continue;
+                }
+
+                $field = $formFields[$fieldName];
+
+                if ($value instanceof \Illuminate\Http\UploadedFile) {
+                    $value = $value->store('ticket-files', 'public');
+                }
+
+                if ($value === null || $value === '' || $value === []) {
+                    continue;
+                }
+
+                $answers[] = [
+                    'field_id' => $field->id,
+                    'field_name' => $field->name,
+                    'field_label' => $field->label,
+                    'field_type' => $field->type,
+                    'value' => $value,
+                ];
+            }
+
+            // 3. Replace old answers (IMPORTANT)
+            $ticket->answers()->delete();
+
+            TicketAnswer::create([
+                'ticket_id' => $ticket->id,
+                'answers' => $answers,
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('tickets.index')
+                ->with('success', 'Ticket updated successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back()->withErrors([
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function destroy(Ticket $ticket)
     {
-        if ($ticket->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         // $ticket->answers()->delete();
         $ticket->delete();
 

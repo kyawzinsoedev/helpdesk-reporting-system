@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-// import { router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
     Select,
     SelectContent,
@@ -19,7 +20,7 @@ import type {
     TicketFormData,
     TicketFormStructure,
 } from '../schemas/ticketSchema';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useEffect } from 'react';
 
 interface Props {
     mode?: 'create' | 'edit';
@@ -38,10 +39,11 @@ export default function TicketForm({
         control,
         register,
         handleSubmit,
+        // reset,
         formState: { errors, isSubmitting },
     } = useForm<TicketFormData>({
         defaultValues: {
-            ticket_form_id: ticket?.ticket_form_id ?? undefined,
+            ticket_form_id: ticket ? Number(ticket.ticket_form_id) : undefined,
             title: ticket?.title ?? '',
             description: ticket?.description ?? '',
             priority: ticket?.priority ?? 'low',
@@ -51,30 +53,61 @@ export default function TicketForm({
         resolver: zodResolver(ticketSchema),
     });
 
+    // useEffect(() => {
+    //     if (mode === 'edit' && ticket) {
+    //         reset({
+    //             ticket_form_id: Number(ticket.ticket_form_id),
+    //             title: ticket.title ?? '',
+    //             description: ticket.description ?? '',
+    //             priority: ticket.priority ?? 'low',
+    //             status: ticket.status ?? undefined,
+    //             custom_fields: ticket.custom_fields ?? {},
+    //         });
+    //     }
+    // }, [mode, ticket, reset]);
+
     const selectedFormId = useWatch({
         control,
         name: 'ticket_form_id',
     });
 
     const currentFormStructure = ticketForms?.find(
-        (form) => form.id === selectedFormId,
+        (form) => Number(form.id) === Number(selectedFormId),
     );
 
-    // console.log('Tickets ', ticket);
-
-    // console.log('Tickets Forms ', ticketForms);
-
     const onSubmit = async (data: TicketFormData) => {
-        console.log('Ticket Form Data = ', data);
-        toast.message('Ticket Created Successfully');
-        setOpen(false);
-        // router.post('tickets', data, {
-        //     onSuccess: () => {
-        //         toast.message('Ticket Created Successfully');
-        //         setOpen(false);
-        //     },
-        // });
+        if (mode === 'edit' && ticket?.id) {
+            router.put(`/tickets/${ticket.id}`, data, {
+                onSuccess: () => {
+                    toast.message('Ticket Updated Successfully');
+                    setOpen(false);
+                },
+            });
+        } else {
+            router.post('/tickets', data, {
+                onSuccess: () => {
+                    toast.message('Ticket Created Successfully');
+                    setOpen(false);
+                },
+            });
+        }
     };
+
+    // console.log('ticket', ticket);
+    // console.log('selectedFormId', selectedFormId);
+    // console.log('ticketForms', ticketForms);
+    // console.log('currentFormStructure', currentFormStructure);
+    // console.log('currentFormStructure?.fields', currentFormStructure?.fields);
+    // console.log(
+    //     'form ids',
+    //     ticketForms?.map((f) => ({
+    //         id: f.id,
+    //         type: typeof f.id,
+    //     })),
+    // );
+    // console.log(
+    //     ticketForms?.find((form) => Number(form.id) === Number(selectedFormId)),
+    // );
 
     return (
         <form
@@ -519,8 +552,6 @@ export default function TicketForm({
                             </div>
                         </div>
                     )}
-
-                {/* 🏁 FLOATING/STICKY STYLE ACTIONS BOTTOM */}
                 <div className="flex items-center justify-end gap-3 rounded-2xl border bg-muted/30 p-4 shadow-sm">
                     <Button
                         type="button"

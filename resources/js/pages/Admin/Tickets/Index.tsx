@@ -26,7 +26,7 @@ export default function Index({ tickets, ticketForms }: Props) {
             </div>
 
             {/* Table */}
-            <TicketTable tickets={tickets} />
+            <TicketTable tickets={tickets} ticketForms={ticketForms} />
         </div>
     );
 }

@@ -6,15 +6,17 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import type { TicketFormStructure } from '../schemas/ticketSchema';
 import type { Ticket } from '../types/tickets';
 import DeleteTicketDialog from './DeleteTicketDialog';
 import TicketFormModal from './TicketFormModal';
 
 interface Props {
     tickets: Ticket[];
+    ticketForms: TicketFormStructure[];
 }
 
-export default function TicketTable({ tickets }: Props) {
+export default function TicketTable({ tickets, ticketForms }: Props) {
     return (
         <div className="overflow-hidden rounded-md border bg-card shadow-sm">
             <Table>
@@ -62,6 +64,7 @@ export default function TicketTable({ tickets }: Props) {
                                     <TicketFormModal
                                         mode="edit"
                                         ticket={ticket}
+                                        ticketForms={ticketForms}
                                     />
 
                                     <DeleteTicketDialog ticket={ticket} />
