@@ -8,6 +8,8 @@ export interface Ticket {
         name: string;
     };
 
+    custom_fields?: Record<string, any>;
+
     title: string;
 
     description: string;

@@ -14,25 +14,7 @@ use Inertia\Inertia;
 
 class TicketController extends Controller
 {
-    // public function index()
 
-    // {
-    //     $tickets = Ticket::with(['form', 'answers'])
-    //         ->where('user_id', Auth::id())
-    //         ->latest()
-    //         ->get();
-
-    //     $ticketForms = TicketForm::with('fields')->get();
-
-    //     // dd('Tickets for index = ', $tickets);
-
-    //     dd('Ticket for Create  = ', $ticketForms->toArray());
-
-    //     return Inertia::render('Admin/Tickets/Index', [
-    //         'tickets' => $tickets,
-    //         'ticketForms' => $ticketForms
-    //     ]);
-    // }
     public function index()
     {
         $tickets = Ticket::with(['form', 'answers'])

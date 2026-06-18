@@ -12,10 +12,6 @@ export default function Navbar() {
             <DropDownUserAdmin />
 
             <Button variant="ghost" asChild>
-                <Link href="/departments">Departments</Link>
-            </Button>
-
-            <Button variant="ghost" asChild>
                 <Link href="/tickets">Tickets</Link>
             </Button>
 

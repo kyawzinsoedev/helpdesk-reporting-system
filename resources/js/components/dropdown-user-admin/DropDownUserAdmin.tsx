@@ -44,6 +44,11 @@ export default function DropDownUserAdmin() {
                                 Role Management
                             </Link>
                         </DropdownMenuItem>
+                        <DropdownMenuItem asChild className="cursor-pointer">
+                            <Link href="/departments" className="w-full">
+                                Departments
+                            </Link>
+                        </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>

@@ -24,9 +24,11 @@ export default function TicketTable({ tickets, ticketForms }: Props) {
                     <TableRow>
                         <TableHead>Id</TableHead>
 
-                        <TableHead className="w-[300px]">Title</TableHead>
+                        <TableHead>Title</TableHead>
 
                         <TableHead>Ticket's Form</TableHead>
+
+                        <TableHead>Fields</TableHead>
 
                         <TableHead>Priority</TableHead>
 
@@ -54,6 +56,24 @@ export default function TicketTable({ tickets, ticketForms }: Props) {
                             </TableCell>
 
                             <TableCell>{ticket.form?.name ?? '-'}</TableCell>
+
+                            <TableCell>
+                                <div className="flex flex-col gap-1">
+                                    {ticket?.custom_fields &&
+                                        Object.entries(
+                                            ticket.custom_fields,
+                                        ).map(([key, value]) => (
+                                            <div key={key} className="text-sm">
+                                                <span className="font-medium">
+                                                    {key}:
+                                                </span>{' '}
+                                                <span className="text-muted-foreground">
+                                                    {String(value)}
+                                                </span>
+                                            </div>
+                                        ))}
+                                </div>
+                            </TableCell>
 
                             <TableCell>{ticket.priority ?? '-'}</TableCell>
 
