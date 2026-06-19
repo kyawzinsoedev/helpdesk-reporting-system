@@ -28,7 +28,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/forms/{form}/fields', [TicketFormController::class, 'storeField'])->name('forms.fields.store');
 
     // Tickets
+    Route::post('tickets', [TicketController::class, 'assign'])->name('tickets.assign');
     Route::resource('tickets', TicketController::class);
+
 
 });
 

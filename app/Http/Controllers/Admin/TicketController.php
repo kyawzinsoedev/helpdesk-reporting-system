@@ -199,4 +199,38 @@ class TicketController extends Controller
         return redirect()->route('tickets.index')->with('success', 'Ticket deleted successfully!');
     }
 
+    public function assign(Request $request, $id)
+    {
+        $request->validate([
+            'assign_to' => 'required|exists:users,id',
+        ]);
+
+        $ticket = Ticket::findOrFail($id);
+
+        DB::beginTransaction();
+
+        try {
+
+            $ticket->update([
+                'assign_to' => $request->assign_to,
+                'status' => 'assigned',
+            ]);
+
+            TicketHistory::create([
+                'ticket_id' => $ticket->id,
+                'user_id' => auth()->id(),
+                'status' => 'assigned',
+                'comment' => 'Ticket was successfully assigned to ' . $ticket->assignedStaff->name . '.',
+            ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Ticket assigned successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
 }

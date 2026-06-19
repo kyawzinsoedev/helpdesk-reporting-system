@@ -14,12 +14,17 @@ return new class extends Migration {
             $table->id();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+
+            $table->foreignId('assign_to')->nullable()->constrained('users')->noActionOnDelete();
+
             $table->foreignId('ticket_form_id')->constrained()->cascadeOnDelete();
 
             $table->string('title')->nullable();
+
             $table->text('description')->nullable();
 
             $table->string('priority')->default('low');
+
             $table->string('status')->default('open');
 
             $table->timestamps();

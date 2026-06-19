@@ -10,7 +10,7 @@ class Ticket extends Model
         'user_id',
         'ticket_form_id',
         'title',
-        'description', 
+        'description',
         'priority',
         'status',
     ];
@@ -29,4 +29,15 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function histories()
+    {
+        return $this->hasMany(TicketHistory::class);
+    }
+
+    public function assignedStaff()
+    {
+        return $this->belongsTo(User::class, 'assign_to');
+    }
+
 }
