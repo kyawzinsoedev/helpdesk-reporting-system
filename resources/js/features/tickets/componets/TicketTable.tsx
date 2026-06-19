@@ -6,17 +6,20 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import type { Staff } from '@/pages/Admin/Tickets/Index';
 import type { TicketFormStructure } from '../schemas/ticketSchema';
 import type { Ticket } from '../types/tickets';
+import AssignTicketDialog from './AssignTicketDialog';
 import DeleteTicketDialog from './DeleteTicketDialog';
 import TicketFormModal from './TicketFormModal';
 
 interface Props {
     tickets: Ticket[];
     ticketForms: TicketFormStructure[];
+    staffs: Staff[];
 }
 
-export default function TicketTable({ tickets, ticketForms }: Props) {
+export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
     return (
         <div className="overflow-hidden rounded-md border bg-card shadow-sm">
             <Table>
@@ -81,6 +84,11 @@ export default function TicketTable({ tickets, ticketForms }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
+                                    <AssignTicketDialog
+                                        ticket={ticket}
+                                        staffs={staffs}
+                                    />
+
                                     <TicketFormModal
                                         mode="edit"
                                         ticket={ticket}

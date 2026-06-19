@@ -3,11 +3,19 @@ import TicketTable from '@/features/tickets/componets/TicketTable';
 import type { TicketFormStructure } from '@/features/tickets/schemas/ticketSchema';
 import type { Ticket } from '../../../../js/features/tickets/types/tickets';
 
+export interface Staff {
+    id: number;
+    name: string;
+    department_id: string | number;
+    department_name: string;
+    status: string;
+}
 interface Props {
     tickets: Ticket[];
     ticketForms: TicketFormStructure[];
+    staffs: Staff[];
 }
-export default function Index({ tickets, ticketForms }: Props) {
+export default function Index({ tickets, ticketForms, staffs }: Props) {
     return (
         <div className="space-y-4 p-6">
             {/* Header */}
@@ -26,7 +34,11 @@ export default function Index({ tickets, ticketForms }: Props) {
             </div>
 
             {/* Table */}
-            <TicketTable tickets={tickets} ticketForms={ticketForms} />
+            <TicketTable
+                tickets={tickets}
+                ticketForms={ticketForms}
+                staffs={staffs}
+            />
         </div>
     );
 }

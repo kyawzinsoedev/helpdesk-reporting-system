@@ -9,6 +9,7 @@ class Ticket extends Model
     protected $fillable = [
         'user_id',
         'ticket_form_id',
+        'assign_to',
         'title',
         'description',
         'priority',

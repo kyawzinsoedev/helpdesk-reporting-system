@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('gender')->nullable();
             $table->text('address')->nullable();
-            $table->enum('status', ['active', 'draft'])->default('active');
+            $table->enum('status', ['active', 'inactive'])->default('active');
 
             // Foreign Keys
             $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();

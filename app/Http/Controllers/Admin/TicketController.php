@@ -7,6 +7,8 @@ use App\Models\Ticket;
 use App\Models\TicketForm;
 use App\Models\TicketAnswer;
 use App\Models\TicketFormField;
+use App\Models\TicketHistory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +19,7 @@ class TicketController extends Controller
 
     public function index()
     {
-        $tickets = Ticket::with(['form', 'answers'])
+        $tickets = Ticket::with(['form', 'answers', 'assignedStaff'])
             ->where('user_id', Auth::id())
             ->latest()
             ->get()
@@ -39,9 +41,25 @@ class TicketController extends Controller
 
         $ticketForms = TicketForm::with('fields')->get();
 
+        $staffs = User::with('department')
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'department_id' => $user->department_id,
+                    'department_name' => $user->department?->name ?? 'No Department',
+                    'status' => $user->status,
+                ];
+            });
+
+        // dd($staffs->toArray());
+
         return Inertia::render('Admin/Tickets/Index', [
             'tickets' => $tickets,
-            'ticketForms' => $ticketForms
+            'ticketForms' => $ticketForms,
+            'staffs' => $staffs,
         ]);
     }
 
@@ -110,6 +128,7 @@ class TicketController extends Controller
                 ->with('success', 'Ticket created successfully.');
 
         } catch (\Exception $e) {
+            // dd($e->getMessage());
             DB::rollBack();
 
             return back()->withErrors([
@@ -199,36 +218,43 @@ class TicketController extends Controller
         return redirect()->route('tickets.index')->with('success', 'Ticket deleted successfully!');
     }
 
-    public function assign(Request $request, $id)
+    public function assign(Request $request, Ticket $ticket)
     {
         $request->validate([
             'assign_to' => 'required|exists:users,id',
+            'ticket_name' => 'nullable|string',
         ]);
-
-        $ticket = Ticket::findOrFail($id);
 
         DB::beginTransaction();
 
         try {
-
             $ticket->update([
                 'assign_to' => $request->assign_to,
                 'status' => 'assigned',
             ]);
 
+            $staff = User::findOrFail($request->assign_to);
+            $staff->update([
+                'status' => 'inactive',
+            ]);
+            $ticket->load('assignedStaff');
+
+            $ticketNameContext = $request->ticket_name ? " (Form Name: {$request->ticket_name})" : "";
+
             TicketHistory::create([
                 'ticket_id' => $ticket->id,
                 'user_id' => auth()->id(),
                 'status' => 'assigned',
-                'comment' => 'Ticket was successfully assigned to ' . $ticket->assignedStaff->name . '.',
+                'comment' => "Ticket{$ticketNameContext} was successfully assigned to " . $ticket->assignedStaff->name . " and staff status set to inactive.",
             ]);
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Ticket assigned successfully.');
+            return redirect()->back()->with('success', 'Ticket assigned and staff status updated successfully.');
 
         } catch (\Exception $e) {
             DB::rollBack();
+            dd($e->getMessage());
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }

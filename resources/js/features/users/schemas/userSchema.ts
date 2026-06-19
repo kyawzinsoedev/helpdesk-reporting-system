@@ -17,7 +17,7 @@ export const userSchema = z.object({
 
     address: z.string().optional(),
 
-    status: z.enum(['active', 'draft']).default('active'),
+    status: z.enum(['active', 'inactive']).default('active'),
 
     department_id: z.number().min(1, 'Department is required'),
 

@@ -18,7 +18,7 @@ export interface User {
 
     address?: string;
 
-    status: 'active' | 'draft';
+    status: 'active' | 'inactive';
 
     department_id?: number;
 

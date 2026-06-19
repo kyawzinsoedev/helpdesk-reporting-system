@@ -44,7 +44,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'gender' => 'nullable|in:male,female',
             'address' => 'required|string',
-            'status' => 'required|in:active,draft',
+            'status' => 'required|in:active,inactive',
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|exists:roles,name',
         ]);
@@ -78,7 +78,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'gender' => 'nullable|in:male,female',
             'address' => 'required|string',
-            'status' => 'required|in:active,draft',
+            'status' => 'required|in:active,inactive',
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|exists:roles,name',
         ]);

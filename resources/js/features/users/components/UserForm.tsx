@@ -185,13 +185,13 @@ export default function UserForm({
                         onChange={(e) =>
                             setData(
                                 'status',
-                                e.target.value as 'active' | 'draft',
+                                e.target.value as 'active' | 'inactive',
                             )
                         }
                         className="w-full rounded-md border bg-background px-3 py-2"
                     >
                         <option value="active">Active</option>
-                        <option value="draft">Draft</option>
+                        <option value="inactive">Inactive</option>
                     </select>
 
                     {errors.status && (
