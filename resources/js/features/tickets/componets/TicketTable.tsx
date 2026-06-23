@@ -12,6 +12,7 @@ import type { Ticket } from '../types/tickets';
 import AssignTicketDialog from './AssignTicketDialog';
 import DeleteTicketDialog from './DeleteTicketDialog';
 import TicketFormModal from './TicketFormModal';
+import ProcessTicketDialog from './ProcessTicketDialog';
 
 interface Props {
     tickets: Ticket[];
@@ -84,6 +85,11 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
+                                    <ProcessTicketDialog
+                                        ticket={ticket}
+                                        // staffs={staffs}
+                                    />
+
                                     <AssignTicketDialog
                                         ticket={ticket}
                                         staffs={staffs}

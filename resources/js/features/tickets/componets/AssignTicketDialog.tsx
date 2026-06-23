@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { UserRound } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -22,7 +23,6 @@ import {
 
 import type { Staff } from '@/pages/Admin/Tickets/Index';
 import type { Ticket } from '../types/tickets';
-import { toast } from 'sonner';
 
 interface AssignProps {
     ticket: Ticket;
