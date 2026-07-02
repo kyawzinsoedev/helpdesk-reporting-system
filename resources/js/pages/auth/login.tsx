@@ -36,7 +36,7 @@ export default function Login({
                 </div>
 
                 <Form
-                    {...store.form()}
+                    {...store()}
                     resetOnSuccess={['password']}
                     className="space-y-5"
                 >

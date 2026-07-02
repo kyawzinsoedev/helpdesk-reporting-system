@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
+import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -16,12 +17,17 @@ export default defineConfig({
                 }),
             ],
         }),
+
         inertia(),
+
+        wayfinder(),
+
         react({
             babel: {
                 plugins: ['babel-plugin-react-compiler'],
             },
         }),
+
         tailwindcss(),
     ],
 });
