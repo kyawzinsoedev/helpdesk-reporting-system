@@ -14,6 +14,7 @@ class Ticket extends Model
         'description',
         'priority',
         'status',
+        'remark',
     ];
 
     public function form()
@@ -40,5 +41,4 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class, 'assign_to');
     }
-
 }

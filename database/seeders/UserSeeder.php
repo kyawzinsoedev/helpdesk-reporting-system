@@ -15,17 +15,16 @@ class UserSeeder extends Seeder
         $userRole = Role::firstOrCreate(['name' => 'user']);
 
         $admin = User::firstOrCreate(
-            ['email' => 'kyawzinsoe@ayabank.com'],
+            ['email' => 'neednova69@gmail.com'],
             [
                 'username' => 'kyawzinsoe',
                 'name' => 'Kyaw Zin Soe',
-                'email' => 'kyawzinsoe@ayabank.com',
+                'email' => 'neednova69@gmail.com',
                 'password' => Hash::make('kyaw@123'), // default password
                 'status' => 'active',
             ]
         );
 
         $admin->assignRole($adminRole);
-
     }
 }

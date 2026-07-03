@@ -18,6 +18,7 @@ class TicketFormController extends Controller
         ]);
     }
 
+
     public function create()
     {
         return Inertia::render('Admin/Forms/Create');

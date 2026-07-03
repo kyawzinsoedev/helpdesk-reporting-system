@@ -34,7 +34,11 @@ export default function Index({ forms }: Props) {
             </div>
 
             <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
+                <TableCaption className="mb-3">
+                    {forms?.length === 0
+                        ? 'No Froms Abaliable.'
+                        : 'A list of your recent invoices.'}
+                </TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px]">ID</TableHead>
@@ -44,28 +48,22 @@ export default function Index({ forms }: Props) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {forms.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">
-                            No forms available.
-                        </p>
-                    ) : (
-                        forms.map((form) => (
-                            <TableRow key={form.id}>
-                                <TableCell className="font-medium">
-                                    {form.id}
-                                </TableCell>
-                                <TableCell>{form.name}</TableCell>
-                                <TableCell>{form.description}</TableCell>
-                                <TableCell className="text-center">
-                                    <Button asChild>
-                                        <Link href={fields.index(form.id).url}>
-                                            Manage Fields
-                                        </Link>
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    )}
+                    {forms.map((form) => (
+                        <TableRow key={form.id}>
+                            <TableCell className="font-medium">
+                                {form.id}
+                            </TableCell>
+                            <TableCell>{form.name}</TableCell>
+                            <TableCell>{form.description}</TableCell>
+                            <TableCell className="text-center">
+                                <Button asChild>
+                                    <Link href={fields.index(form.id).url}>
+                                        Manage Fields
+                                    </Link>
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </div>

@@ -16,8 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Users
     Route::resource('users', UserController::class);
-    Route::put('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
-    ;
+    Route::put('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');;
 
     // Departments
     Route::resource('departments', DepartmentController::class);
@@ -29,9 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Tickets
     Route::patch('tickets/{ticket}/assign', [TicketController::class, 'assign'])->name('tickets.assign');
+    Route::patch('tickets/{ticket}/process', [TicketController::class, 'process'])->name('tickets.process');
     Route::resource('tickets', TicketController::class);
-
-
 });
 
 require __DIR__ . '/settings.php';

@@ -1,6 +1,7 @@
 import {
     Table,
     TableBody,
+    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -24,6 +25,11 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
     return (
         <div className="overflow-hidden rounded-md border bg-card shadow-sm">
             <Table>
+                <TableCaption className="mb-3">
+                    {tickets?.length === 0
+                        ? 'No Tickets Abaliable'
+                        : 'A list of your recent tickets.'}
+                </TableCaption>
                 <TableHeader className="bg-muted/50">
                     <TableRow>
                         <TableHead>Id</TableHead>
@@ -32,7 +38,7 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
 
                         <TableHead>Ticket's Form</TableHead>
 
-                        <TableHead>Fields</TableHead>
+                        {/* <TableHead>Fields</TableHead> */}
 
                         <TableHead>Priority</TableHead>
 
@@ -61,7 +67,7 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
 
                             <TableCell>{ticket.form?.name ?? '-'}</TableCell>
 
-                            <TableCell>
+                            {/* <TableCell>
                                 <div className="flex flex-col gap-1">
                                     {ticket?.custom_fields &&
                                         Object.entries(
@@ -77,7 +83,7 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
                                             </div>
                                         ))}
                                 </div>
-                            </TableCell>
+                            </TableCell> */}
 
                             <TableCell>{ticket.priority ?? '-'}</TableCell>
 
@@ -85,10 +91,7 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
-                                    <ProcessTicketDialog
-                                        ticket={ticket}
-                                        // staffs={staffs}
-                                    />
+                                    <ProcessTicketDialog ticket={ticket} />
 
                                     <AssignTicketDialog
                                         ticket={ticket}

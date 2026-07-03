@@ -1,6 +1,7 @@
 import {
     Table,
     TableBody,
+    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -18,6 +19,11 @@ export default function DepartmentTable({ departments }: Props) {
     return (
         <div className="overflow-hidden rounded-md border bg-card shadow-sm">
             <Table>
+                <TableCaption className="mb-3">
+                    {departments?.length === 0
+                        ? 'No Department Abaliable'
+                        : 'A list of your recent departments.'}
+                </TableCaption>
                 <TableHeader className="bg-muted/50">
                     <TableRow>
                         <TableHead>Id</TableHead>
@@ -29,7 +35,6 @@ export default function DepartmentTable({ departments }: Props) {
                         <TableHead className="text-center">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
-
                 <TableBody>
                     {departments?.map((department) => (
                         <TableRow key={department.id}>

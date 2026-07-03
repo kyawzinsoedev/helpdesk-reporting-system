@@ -19,7 +19,7 @@ class TicketController extends Controller
 
     public function index()
     {
-        $tickets = Ticket::with(['form', 'answers', 'assignedStaff'])
+        $tickets = Ticket::with(['form', 'user', 'answers', 'assignedStaff'])
             ->where('user_id', Auth::id())
             ->latest()
             ->get()
@@ -126,7 +126,6 @@ class TicketController extends Controller
             return redirect()
                 ->route('tickets.index')
                 ->with('success', 'Ticket created successfully.');
-
         } catch (\Exception $e) {
             // dd($e->getMessage());
             DB::rollBack();
@@ -200,7 +199,6 @@ class TicketController extends Controller
             return redirect()
                 ->route('tickets.index')
                 ->with('success', 'Ticket updated successfully.');
-
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -251,7 +249,6 @@ class TicketController extends Controller
             DB::commit();
 
             return redirect()->back()->with('success', 'Ticket assigned and staff status updated successfully.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e->getMessage());
@@ -259,4 +256,16 @@ class TicketController extends Controller
         }
     }
 
+    public function process(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'remark' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $ticket->update([
+            'status' => 'processing',
+        ]);
+
+        return back()->with('success', 'Ticket processed successfully.');
+    }
 }
