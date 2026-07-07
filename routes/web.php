@@ -29,6 +29,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Tickets
     Route::patch('tickets/{ticket}/assign', [TicketController::class, 'assign'])->name('tickets.assign');
     Route::patch('tickets/{ticket}/process', [TicketController::class, 'process'])->name('tickets.process');
+    Route::patch('tickets/{ticket}/resolve', [TicketController::class, 'resolve'])->name('tickets.resolve');
+    Route::patch('tickets/{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
     Route::resource('tickets', TicketController::class);
 });
 

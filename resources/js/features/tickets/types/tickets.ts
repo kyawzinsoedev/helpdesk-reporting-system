@@ -1,5 +1,12 @@
+export interface Staff {
+    id: number;
+    name: string;
+    username: string;
+}
 export interface Ticket {
     id: number;
+
+    assigned_staff?: Staff | null;
 
     ticket_form_id: number;
 
@@ -27,4 +34,6 @@ export interface Ticket {
         name: string;
         email?: string;
     };
+
+    remark?: string;
 }

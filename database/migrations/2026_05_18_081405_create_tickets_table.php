@@ -27,7 +27,7 @@ return new class extends Migration {
 
             $table->string('status')->default('open');
 
-            $table->string('remark');
+            $table->text('remark')->nullable();
 
             $table->timestamps();
         });

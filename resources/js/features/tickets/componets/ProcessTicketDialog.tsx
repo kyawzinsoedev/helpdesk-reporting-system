@@ -31,7 +31,7 @@ interface Props {
 }
 
 export default function ProcessTicketDialog({ ticket }: Props) {
-    // console.log('ticket', ticket);
+    // console.log('Ticket From Process Ticket Dialog', ticket);
 
     type FormData = {
         remark: string;
@@ -40,19 +40,28 @@ export default function ProcessTicketDialog({ ticket }: Props) {
     const { register, handleSubmit, reset } = useForm<FormData>();
 
     const onSubmit = (data: FormData) => {
+        let endpoint = `/tickets/${ticket.id}/process`;
+        let successMessage = 'Processed successfully';
+        if (ticket.status === 'processing') {
+            endpoint = `/tickets/${ticket.id}/resolve`;
+            successMessage = 'Resolved successfully';
+        } else if (ticket.status === 'resolved') {
+            endpoint = `/tickets/${ticket.id}/close`;
+            successMessage = 'Closed successfully';
+        }
         router.patch(
-            `/tickets/${ticket.id}/process`,
+            endpoint,
             {
                 remark: data.remark,
             },
             {
                 preserveScroll: true,
                 onSuccess: () => {
-                    toast.success('Process successfully');
+                    toast.success(successMessage);
                     reset();
                 },
                 onError: () => {
-                    toast.error('Failed to process');
+                    toast.error('Failed to update action');
                 },
             },
         );
@@ -134,6 +143,24 @@ export default function ProcessTicketDialog({ ticket }: Props) {
                                     </p>
                                     <p>{ticket.user?.name}</p>
                                 </div>
+
+                                {ticket?.assigned_staff && (
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">
+                                            Assign Staff
+                                        </p>
+                                        <p>{ticket?.assigned_staff.name}</p>
+                                    </div>
+                                )}
+
+                                {ticket?.remark && (
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">
+                                            Remark
+                                        </p>
+                                        <p>{ticket?.remark}</p>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
 
@@ -162,27 +189,42 @@ export default function ProcessTicketDialog({ ticket }: Props) {
                         </Card>
 
                         {/* Actions  */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Remark & Process</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <Textarea
-                                    placeholder="Type your remark."
-                                    {...register('remark')}
-                                />
-                            </CardContent>
-                            <CardFooter className="flex justify-end gap-3">
-                                <Button
-                                    type="button"
-                                    variant={'outline'}
-                                    onClick={() => router.visit('/tickets')}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit">Process</Button>
-                            </CardFooter>
-                        </Card>
+                        {ticket?.status !== 'closed' && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Remark & Process</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <Textarea
+                                        placeholder="Type your remark."
+                                        {...register('remark')}
+                                    />
+                                </CardContent>
+                                <CardFooter className="flex justify-end gap-3">
+                                    <Button
+                                        type="button"
+                                        variant={'outline'}
+                                        onClick={() => router.visit('/tickets')}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        disabled={ticket.status === 'closed'}
+                                    >
+                                        {ticket.status === 'open'
+                                            ? 'Processing'
+                                            : ticket.status === 'processing'
+                                              ? 'Resolving'
+                                              : ticket.status === 'resolved'
+                                                ? 'Close'
+                                                : ticket.status === 'closed'
+                                                  ? 'Done'
+                                                  : 'Unknown'}
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        )}
                     </form>
                 </div>
             </DialogContent>

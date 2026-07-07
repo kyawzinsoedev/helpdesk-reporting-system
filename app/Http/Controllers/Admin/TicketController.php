@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail;
 
 class TicketController extends Controller
 {
@@ -54,7 +55,7 @@ class TicketController extends Controller
                 ];
             });
 
-        // dd($staffs->toArray());
+        // dd($tickets->toArray());
 
         return Inertia::render('Admin/Tickets/Index', [
             'tickets' => $tickets,
@@ -264,8 +265,51 @@ class TicketController extends Controller
 
         $ticket->update([
             'status' => 'processing',
+            'remark' => $validated['remark'],
         ]);
 
         return back()->with('success', 'Ticket processed successfully.');
+    }
+
+    public function resolve(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'remark' => ['required', 'string', 'max:1000'],
+        ]);
+        // send mail to create user ( now that is resolved and need to change status as clsoe )
+        DB::transaction(function () use ($validated, $ticket) {
+
+            $ticket->update([
+                'status' => 'resolved',
+                'remark' => $validated['remark'],
+            ]);
+
+            if ($ticket->user && $ticket->user->email) {
+                Mail::raw("Your ticket '{$ticket->title}' has been resolved. Remark: {$validated['remark']}", function ($message) use ($ticket) {
+                    $message->to($ticket->user->email)
+                        ->subject("Ticket Resolved: #{$ticket->id}");
+                });
+            }
+        });
+
+        $ticket->update([
+            'status' => 'resolved',
+            'remark' => $validated['remark'],
+        ]);
+
+        return back()->with('success', 'Ticket resolved successfully.');
+    }
+
+    public function close(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'remark' => ['required', 'string', 'max:1000'],
+        ]);
+        $ticket->update([
+            'status' => 'closed',
+            'remark' => $validated['remark'],
+        ]);
+
+        return back()->with('success', 'Ticket closed successfully.');
     }
 }

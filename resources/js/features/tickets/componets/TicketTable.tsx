@@ -22,6 +22,7 @@ interface Props {
 }
 
 export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
+    // console.log('Ticket From Ticket Table ', tickets);
     return (
         <div className="overflow-hidden rounded-md border bg-card shadow-sm">
             <Table>

@@ -16,6 +16,7 @@ interface Props {
     staffs: Staff[];
 }
 export default function Index({ tickets, ticketForms, staffs }: Props) {
+    // console.log('Ticket form index ', tickets);
     return (
         <div className="space-y-4 p-6">
             {/* Header */}
