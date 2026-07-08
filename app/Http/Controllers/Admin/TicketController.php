@@ -43,7 +43,7 @@ class TicketController extends Controller
         $ticketForms = TicketForm::with('fields')->get();
 
         $staffs = User::with('department')
-            ->where('status', 'active')
+            // ->where('status', 'active')
             ->get()
             ->map(function ($user) {
                 return [
@@ -253,6 +253,42 @@ class TicketController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e->getMessage());
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
+    public function removeAssign(Ticket $ticket, $staffId)
+    {
+        $staff = User::find($staffId);
+
+        if (!$staff) {
+            return redirect()->back()->with('error', 'Staff member not found.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $ticket->update([
+                'assign_to' => null,
+                'status' => 'open',
+            ]);
+
+            $staff->update([
+                'status' => 'active',
+            ]);
+
+            TicketHistory::create([
+                'ticket_id' => $ticket->id,
+                'user_id'   => auth()->id(),
+                'status'    => 'unassigned',
+                'comment'   => "Staff member " . $staff->name . " was removed from this ticket. Staff status set back to active.",
+            ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Staff removed from ticket successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }

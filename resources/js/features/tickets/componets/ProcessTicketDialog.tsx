@@ -210,17 +210,22 @@ export default function ProcessTicketDialog({ ticket }: Props) {
                                     </Button>
                                     <Button
                                         type="submit"
-                                        disabled={ticket.status === 'closed'}
+                                        disabled={
+                                            ticket.status === 'closed' ||
+                                            ticket.status === 'open'
+                                        }
                                     >
                                         {ticket.status === 'open'
-                                            ? 'Processing'
-                                            : ticket.status === 'processing'
-                                              ? 'Resolving'
-                                              : ticket.status === 'resolved'
-                                                ? 'Close'
-                                                : ticket.status === 'closed'
-                                                  ? 'Done'
-                                                  : 'Unknown'}
+                                            ? 'Open'
+                                            : ticket.status === 'assigned'
+                                              ? 'Processing'
+                                              : ticket.status === 'processing'
+                                                ? 'Resolving'
+                                                : ticket.status === 'resolved'
+                                                  ? 'Close'
+                                                  : ticket.status === 'closed'
+                                                    ? 'Done'
+                                                    : 'Unknown'}
                                     </Button>
                                 </CardFooter>
                             </Card>
