@@ -39,8 +39,8 @@ interface AssignProps {
 }
 
 export default function AssignTicketDialog({ ticket, staffs }: AssignProps) {
-    console.log('Ticket From Assign ticket dialog ', ticket);
-    console.log('Staffs From Assign ticket dialog', staffs);
+    // console.log('Ticket From Assign ticket dialog ', ticket);
+    // console.log('Staffs From Assign ticket dialog', staffs);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
 

@@ -5,16 +5,11 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create roles if they don't exist
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $userRole = Role::firstOrCreate(['name' => 'user']);
-
         // ==========================
         // Admin User
         // ==========================
@@ -33,10 +28,10 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $admin->syncRoles([$adminRole]);
+        $admin->syncRoles(['Super Admin']);
 
         // ==========================
-        // User 1
+        // Manager User
         // ==========================
         $user1 = User::firstOrCreate(
             ['email' => 'user1@example.com'],
@@ -53,10 +48,10 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $user1->syncRoles([$userRole]);
+        $user1->syncRoles(['Manager']);
 
         // ==========================
-        // User 2
+        // Staff User
         // ==========================
         $user2 = User::firstOrCreate(
             ['email' => 'user2@example.com'],
@@ -73,6 +68,6 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $user2->syncRoles([$userRole]);
+        $user2->syncRoles(['Staff']);
     }
 }

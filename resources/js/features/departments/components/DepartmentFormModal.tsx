@@ -39,7 +39,10 @@ export default function DepartmentFormModal({
                 )}
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-2xl">
+            <DialogContent
+                onOpenAutoFocus={(e) => e.preventDefault()}
+                className="sm:max-w-2xl"
+            >
                 <DialogHeader>
                     <DialogTitle>
                         {mode === 'create'
