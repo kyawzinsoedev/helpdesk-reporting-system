@@ -3,17 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class DepartmentController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $this->authorize('viewAny', Department::class);
         $departments = Department::latest('created_at')->get();
 
         return Inertia::render('Departments/Index', [
@@ -28,6 +31,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Department::class);
         return Inertia::render('Departments/Create');
     }
 
@@ -36,6 +40,7 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Department::class);
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:departments,name',
             'department_code' => 'required|string|max:255|unique:departments,department_code',
@@ -53,6 +58,7 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
+        $this->authorize('view', $department);
         return Inertia::render('Departments/Show', [
             'department' => $department
         ]);
@@ -63,6 +69,7 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
+        $this->authorize('update', $department);
         return Inertia::render('Departments/Edit', [
             'department' => $department
         ]);
@@ -73,6 +80,7 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
+        $this->authorize('update', $department);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'department_code' => [
@@ -95,6 +103,7 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
+        $this->authorize('delete', $department);
         $department->delete();
 
         return redirect()

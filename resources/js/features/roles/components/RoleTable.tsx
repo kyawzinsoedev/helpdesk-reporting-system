@@ -11,6 +11,7 @@ import {
 import { Permission, Role } from '@/pages/Admin/Roles/Index';
 import RoleFormModal from './RoleFormModal';
 import DeleteRoleDialog from './DeleteRoleDialog';
+import Can from '@/features/permissions/Can';
 
 interface Props {
     roles: Role[];
@@ -70,7 +71,7 @@ export default function RoleTable({ roles, permissions }: Props) {
                                                 >
                                                     <Badge
                                                         variant="outline"
-                                                        className="min-w-20 justify-center capitalize"
+                                                        className="min-w-20 justify-center bg-indigo-300 capitalize"
                                                     >
                                                         {module}
                                                     </Badge>
@@ -102,7 +103,9 @@ export default function RoleTable({ roles, permissions }: Props) {
                                             role={role}
                                         />
 
-                                        <DeleteRoleDialog role={role} />
+                                        <Can permission="roles.delete">
+                                            <DeleteRoleDialog role={role} />
+                                        </Can>
                                     </div>
                                 </TableCell>
                             </TableRow>

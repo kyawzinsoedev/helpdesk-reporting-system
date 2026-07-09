@@ -9,6 +9,7 @@ use App\Models\TicketAnswer;
 use App\Models\TicketFormField;
 use App\Models\TicketHistory;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +18,11 @@ use Illuminate\Support\Facades\Mail;
 
 class TicketController extends Controller
 {
-
+    use AuthorizesRequests;
     public function index()
     {
+        $this->authorize('viewAny', Ticket::class);
+
         $tickets = Ticket::with(['form', 'user', 'answers', 'assignedStaff'])
             ->where('user_id', Auth::id())
             ->latest()
@@ -66,6 +69,8 @@ class TicketController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Ticket::class);
+
         $request->validate([
             'ticket_form_id' => 'required|exists:ticket_forms,id',
             'title' => 'required|string|max:255',
@@ -139,6 +144,8 @@ class TicketController extends Controller
 
     public function update(Request $request, Ticket $ticket)
     {
+        $this->authorize('update', $ticket);
+
         $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
@@ -211,6 +218,8 @@ class TicketController extends Controller
 
     public function destroy(Ticket $ticket)
     {
+        $this->authorize('delete', $ticket);
+
         // $ticket->answers()->delete();
         $ticket->delete();
 
@@ -219,6 +228,8 @@ class TicketController extends Controller
 
     public function assign(Request $request, Ticket $ticket)
     {
+        $this->authorize('assign', $ticket);
+
         $request->validate([
             'assign_to' => 'required|exists:users,id',
             'ticket_name' => 'nullable|string',
@@ -259,6 +270,8 @@ class TicketController extends Controller
 
     public function removeAssign(Ticket $ticket, $staffId)
     {
+        $this->authorize('manageWorkflow', $ticket);
+
         $staff = User::find($staffId);
 
         if (!$staff) {
@@ -295,6 +308,8 @@ class TicketController extends Controller
 
     public function process(Request $request, Ticket $ticket)
     {
+        $this->authorize('manageWorkflow', $ticket);
+
         $validated = $request->validate([
             'remark' => ['required', 'string', 'max:1000'],
         ]);
@@ -309,6 +324,8 @@ class TicketController extends Controller
 
     public function resolve(Request $request, Ticket $ticket)
     {
+        $this->authorize('manageWorkflow', $ticket);
+
         $validated = $request->validate([
             'remark' => ['required', 'string', 'max:1000'],
         ]);
@@ -327,17 +344,13 @@ class TicketController extends Controller
                 });
             }
         });
-
-        $ticket->update([
-            'status' => 'resolved',
-            'remark' => $validated['remark'],
-        ]);
-
         return back()->with('success', 'Ticket resolved successfully.');
     }
 
     public function close(Request $request, Ticket $ticket)
     {
+        $this->authorize('manageWorkflow', $ticket);
+
         $validated = $request->validate([
             'remark' => ['required', 'string', 'max:1000'],
         ]);

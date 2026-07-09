@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -10,11 +11,12 @@ use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use AuthorizesRequests;
+
     public function index()
     {
+        $this->authorize('viewAny', Role::class);
+
         return Inertia::render('Admin/Roles/Index', [
             'roles' => Role::with('permissions')->get(),
             'permissions' => Permission::all(),
@@ -26,6 +28,8 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Role::class);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
             'permissions' => ['array'],
@@ -41,20 +45,11 @@ class RoleController extends Controller
         return back()->with('success', 'Role created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Role $role)
     {
+        $this->authorize('create', Role::class);
+
         $validated = $request->validate([
             'name' => [
                 'required',
@@ -80,13 +75,10 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        $this->authorize('delete', $role);
+
         $role->delete();
 
         return back()->with('success', 'Role deleted successfully.');
-    }
-
-    public function assignPermission()
-    {
-        //
     }
 }

@@ -44,10 +44,7 @@ export default function UserFormModal({
                 )}
             </DialogTrigger>
 
-            <DialogContent
-                onOpenAutoFocus={(e) => e.preventDefault()}
-                className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
-            >
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle>
                         {mode === 'create' ? 'Create User' : 'Edit User'}

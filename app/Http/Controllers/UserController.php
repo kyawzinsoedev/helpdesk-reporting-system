@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Department;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -14,11 +15,13 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * List users
      */
     public function index()
     {
+        $this->authorize('viewAny', User::class);
         $users = User::with(['department', 'roles'])
             ->latest()
             ->paginate(10);
@@ -36,6 +39,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
@@ -70,6 +74,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
@@ -100,6 +105,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
         $user->delete();
 
         return back()->with('success', 'User deleted successfully');
@@ -107,6 +113,7 @@ class UserController extends Controller
 
     public function resetPassword(User $user)
     {
+        $this->authorize('delete', $user);
         // 1. Generate new random password
         $newPassword = Str::random(10);
 
@@ -123,7 +130,6 @@ class UserController extends Controller
                 'email' => $user->email,
                 'sent_by' => auth()->id(),
             ]);
-
         } catch (\Exception $e) {
 
             Log::channel('mail')->error('Password reset email failed', [

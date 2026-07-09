@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TicketForm;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TicketFormController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
+        $this->authorize('viewAny', TicketForm::class);
+
         $forms = TicketForm::latest()->get();
 
         return Inertia::render('Admin/Forms/Index', [
@@ -21,11 +26,13 @@ class TicketFormController extends Controller
 
     public function create()
     {
+        $this->authorize('create', TicketForm::class);
         return Inertia::render('Admin/Forms/Create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', TicketForm::class);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -39,6 +46,8 @@ class TicketFormController extends Controller
 
     public function fields(TicketForm $form)
     {
+        $this->authorize('manageFields', $form);
+
         $form->load('fields');
 
         return Inertia::render('Admin/Forms/Fields', [
@@ -48,6 +57,8 @@ class TicketFormController extends Controller
 
     public function storeField(Request $request, TicketForm $form)
     {
+        $this->authorize('manageFields', $form);
+
         $validated = $request->validate([
             'label' => 'required',
             'name' => 'required',
