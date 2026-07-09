@@ -1,3 +1,4 @@
+import Can from '@/features/permissions/Can';
 import RoleFormModal from '@/features/roles/components/RoleFormModal';
 import RoleTable from '@/features/roles/components/RoleTable';
 
@@ -28,7 +29,9 @@ export default function RoleIndex({ roles, permissions }: Props) {
                     </p>
                 </div>
 
-                <RoleFormModal permissions={permissions} />
+                <Can permission="roles.create">
+                    <RoleFormModal permissions={permissions} />
+                </Can>
             </div>
 
             <RoleTable permissions={permissions} roles={roles} />

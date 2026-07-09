@@ -36,13 +36,14 @@ class RoleSeeder extends Seeder
             'tickets.view',
             'tickets.assign',
 
-            'reports.view',
         ]);
 
         // Staff
         $staff->syncPermissions([
-            'tickets.view',
-            'tickets.resolve',
+            'departments.view',
+            'departments.create',
+            'departments.update',
+            'departments.delete',
         ]);
     }
 }

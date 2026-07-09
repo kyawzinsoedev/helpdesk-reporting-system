@@ -9,6 +9,7 @@ import type {
     Department,
     DepartmentFormData,
 } from '@/features/departments/shcemas/departmentSchema';
+import Can from '@/features/permissions/Can';
 
 interface DepartmentFormProps {
     mode?: 'create' | 'edit';
@@ -92,11 +93,19 @@ export default function DepartmentForm({
 
             {/* Submit */}
             <div className="flex justify-end">
-                <Button type="submit" disabled={processing}>
-                    {mode === 'create'
-                        ? 'Create Department'
-                        : 'Update Department'}
-                </Button>
+                <Can
+                    permission={
+                        mode === 'create'
+                            ? 'departments.create'
+                            : 'departments.update'
+                    }
+                >
+                    <Button type="submit" disabled={processing}>
+                        {mode === 'create'
+                            ? 'Create Department'
+                            : 'Update Department'}
+                    </Button>
+                </Can>
             </div>
         </form>
     );

@@ -28,10 +28,6 @@ class RolePolicy
      */
     public function update(User $authUser, Role $role): bool
     {
-        if ($role->name === 'admin' && !$authUser->hasRole('admin')) {
-            return false;
-        }
-
         return $authUser->can('roles.update');
     }
 

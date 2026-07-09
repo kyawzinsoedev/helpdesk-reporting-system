@@ -1,6 +1,7 @@
 import DepartmentFormModal from '@/features/departments/components/DepartmentFormModal';
 import DepartmentTable from '@/features/departments/components/DepartmentTable';
 import type { Department } from '@/features/departments/shcemas/departmentSchema';
+import Can from '@/features/permissions/Can';
 
 interface Props {
     departments: Department[];
@@ -20,7 +21,9 @@ export default function Index({ departments }: Props) {
                 </div>
 
                 {/* Create From  */}
-                <DepartmentFormModal mode="create" />
+                <Can permission="departments.create">
+                    <DepartmentFormModal mode="create" />
+                </Can>
             </div>
 
             {/* Table */}

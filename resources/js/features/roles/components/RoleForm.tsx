@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Permission, Role } from '@/pages/Admin/Roles/Index';
 import { toast } from 'sonner';
+import Can from '@/features/permissions/Can';
 
 interface RoleFormProps {
     mode?: 'create' | 'edit';
@@ -187,13 +188,19 @@ export default function RoleForm({
 
             {/* Submit Button */}
             <div className="flex justify-end">
-                <Button type="submit" disabled={processing}>
-                    {processing
-                        ? 'Saving...'
-                        : mode === 'create'
-                          ? 'Save'
-                          : 'Update'}
-                </Button>
+                <Can
+                    permission={
+                        mode === 'create' ? 'roles.create' : 'roles.update'
+                    }
+                >
+                    <Button type="submit" disabled={processing}>
+                        {processing
+                            ? 'Saving...'
+                            : mode === 'create'
+                              ? 'Save'
+                              : 'Update'}
+                    </Button>
+                </Can>
             </div>
         </form>
     );

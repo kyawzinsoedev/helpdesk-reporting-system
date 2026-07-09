@@ -71,7 +71,7 @@ export default function RoleTable({ roles, permissions }: Props) {
                                                 >
                                                     <Badge
                                                         variant="outline"
-                                                        className="min-w-20 justify-center bg-indigo-300 capitalize"
+                                                        className="min-w-25 justify-center bg-indigo-300 capitalize"
                                                     >
                                                         {module}
                                                     </Badge>
@@ -97,11 +97,13 @@ export default function RoleTable({ roles, permissions }: Props) {
 
                                 <TableCell>
                                     <div className="flex justify-center gap-2">
-                                        <RoleFormModal
-                                            mode="edit"
-                                            permissions={permissions}
-                                            role={role}
-                                        />
+                                        <Can permission="roles.update">
+                                            <RoleFormModal
+                                                mode="edit"
+                                                permissions={permissions}
+                                                role={role}
+                                            />
+                                        </Can>
 
                                         <Can permission="roles.delete">
                                             <DeleteRoleDialog role={role} />

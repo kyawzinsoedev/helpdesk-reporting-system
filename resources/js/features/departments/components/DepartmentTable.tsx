@@ -10,6 +10,7 @@ import {
 import DepartmentFormModal from '@/features/departments/components/DepartmentFormModal';
 import type { Department } from '../shcemas/departmentSchema';
 import DeleteDepartmentDialog from './DeleteDepartmentDialog';
+import Can from '@/features/permissions/Can';
 
 interface Props {
     departments: Department[];
@@ -58,14 +59,19 @@ export default function DepartmentTable({ departments }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
-                                    <DepartmentFormModal
-                                        mode="edit"
-                                        department={department}
-                                    />
+                                    <Can permission="departments.update">
+                                        {' '}
+                                        <DepartmentFormModal
+                                            mode="edit"
+                                            department={department}
+                                        />
+                                    </Can>
 
-                                    <DeleteDepartmentDialog
-                                        department={department}
-                                    />
+                                    <Can permission="departments.delete">
+                                        <DeleteDepartmentDialog
+                                            department={department}
+                                        />
+                                    </Can>
                                 </div>
                             </TableCell>
                         </TableRow>

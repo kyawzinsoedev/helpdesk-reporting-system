@@ -12,6 +12,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import Can from '@/features/permissions/Can';
 
 interface DeleteDepartmentDialogProps {
     department: {
@@ -54,12 +55,14 @@ export default function DeleteDepartmentDialog({
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-                    <AlertDialogAction
-                        onClick={handleDelete}
-                        disabled={processing}
-                    >
-                        Delete
-                    </AlertDialogAction>
+                    <Can permission="departments.delete">
+                        <AlertDialogAction
+                            onClick={handleDelete}
+                            disabled={processing}
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </Can>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

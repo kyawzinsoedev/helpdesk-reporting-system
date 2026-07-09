@@ -41,7 +41,6 @@ export default function DepartmentFormModal({
 
             <DialogContent
                 onOpenAutoFocus={(e) => e.preventDefault()}
-                ntent
                 className="sm:max-w-2xl"
             >
                 <DialogHeader>

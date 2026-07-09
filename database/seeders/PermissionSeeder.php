@@ -22,15 +22,26 @@ class PermissionSeeder extends Seeder
             'roles.update',
             'roles.delete',
 
+            // Departments
+            'departments.view',
+            'departments.create',
+            'departments.update',
+            'departments.delete',
+
+            // Ticket Form
+            'ticket_forms.view',
+            'ticket_forms.create',
+            'ticket_forms.update',
+
             // Tickets
             'tickets.view',
+            'tickets.create',
+            'tickets.update',
+            'tickets.delete',
             'tickets.assign',
+            'tickets.process',
             'tickets.resolve',
             'tickets.close',
-
-            // Reports
-            'reports.view',
-            'reports.export',
         ];
 
         foreach ($permissions as $permission) {
