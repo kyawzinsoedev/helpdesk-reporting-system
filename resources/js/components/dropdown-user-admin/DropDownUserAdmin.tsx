@@ -22,6 +22,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '../ui/button';
+import Can from '@/features/permissions/Can';
 
 export default function DropDownUserAdmin() {
     return (
@@ -34,29 +35,49 @@ export default function DropDownUserAdmin() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
                     <DropdownMenuGroup>
-                        <DropdownMenuItem asChild className="cursor-pointer">
-                            <Link href="/users" className="w-full">
-                                User Management
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild className="cursor-pointer">
-                            <Link href="/roles" className="w-full">
-                                Role Management
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild className="cursor-pointer">
-                            <Link href="/departments" className="w-full">
-                                Departments
-                            </Link>
-                        </DropdownMenuItem>
+                        <Can permission="users.view">
+                            <DropdownMenuItem
+                                asChild
+                                className="cursor-pointer"
+                            >
+                                <Link href="/users" className="w-full">
+                                    User Management
+                                </Link>
+                            </DropdownMenuItem>
+                        </Can>
+                        <Can permission="roles.view">
+                            <DropdownMenuItem
+                                asChild
+                                className="cursor-pointer"
+                            >
+                                <Link href="/roles" className="w-full">
+                                    Role Management
+                                </Link>
+                            </DropdownMenuItem>
+                        </Can>
+                        <Can permission="departments.view">
+                            <DropdownMenuItem
+                                asChild
+                                className="cursor-pointer"
+                            >
+                                <Link href="/departments" className="w-full">
+                                    Departments
+                                </Link>
+                            </DropdownMenuItem>
+                        </Can>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <DropdownMenuItem asChild className="cursor-pointer">
-                            <Link href="/forms" className="w-full">
-                                Ticket Form Management
-                            </Link>
-                        </DropdownMenuItem>
+                        <Can permission="ticket_forms.view">
+                            <DropdownMenuItem
+                                asChild
+                                className="cursor-pointer"
+                            >
+                                <Link href="/forms" className="w-full">
+                                    Ticket Form Management
+                                </Link>
+                            </DropdownMenuItem>
+                        </Can>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>

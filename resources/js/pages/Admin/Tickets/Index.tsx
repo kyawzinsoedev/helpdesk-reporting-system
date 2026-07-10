@@ -2,6 +2,7 @@ import TicketFormModal from '@/features/tickets/componets/TicketFormModal';
 import TicketTable from '@/features/tickets/componets/TicketTable';
 import type { TicketFormStructure } from '@/features/tickets/schemas/ticketSchema';
 import type { Ticket } from '../../../../js/features/tickets/types/tickets';
+import Can from '@/features/permissions/Can';
 
 export interface Staff {
     id: number;
@@ -31,7 +32,10 @@ export default function Index({ tickets, ticketForms, staffs }: Props) {
                 </div>
 
                 {/* Create From  */}
-                <TicketFormModal mode="create" ticketForms={ticketForms} />
+                <Can permission="tickets.create">
+                    {' '}
+                    <TicketFormModal mode="create" ticketForms={ticketForms} />
+                </Can>
             </div>
 
             {/* Table */}

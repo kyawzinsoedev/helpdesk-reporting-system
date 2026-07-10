@@ -14,6 +14,7 @@ import AssignTicketDialog from './AssignTicketDialog';
 import DeleteTicketDialog from './DeleteTicketDialog';
 import TicketFormModal from './TicketFormModal';
 import ProcessTicketDialog from './ProcessTicketDialog';
+import Can from '@/features/permissions/Can';
 
 interface Props {
     tickets: Ticket[];
@@ -92,20 +93,28 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
-                                    <ProcessTicketDialog ticket={ticket} />
+                                    <Can permission="tickets.view">
+                                        <ProcessTicketDialog ticket={ticket} />
+                                    </Can>
 
-                                    <AssignTicketDialog
-                                        ticket={ticket}
-                                        staffs={staffs}
-                                    />
+                                    <Can permission="tickets.assign">
+                                        <AssignTicketDialog
+                                            ticket={ticket}
+                                            staffs={staffs}
+                                        />
+                                    </Can>
 
-                                    <TicketFormModal
-                                        mode="edit"
-                                        ticket={ticket}
-                                        ticketForms={ticketForms}
-                                    />
+                                    <Can permission="tickets.update">
+                                        <TicketFormModal
+                                            mode="edit"
+                                            ticket={ticket}
+                                            ticketForms={ticketForms}
+                                        />
+                                    </Can>
 
-                                    <DeleteTicketDialog ticket={ticket} />
+                                    <Can permission="tickets.delete">
+                                        <DeleteTicketDialog ticket={ticket} />
+                                    </Can>
                                 </div>
                             </TableCell>
                         </TableRow>

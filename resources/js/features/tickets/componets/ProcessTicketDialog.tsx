@@ -25,6 +25,7 @@ import { ticketFormStructureSchema } from '../schemas/ticketSchema';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import Can from '@/features/permissions/Can';
 
 interface Props {
     ticket: Ticket;
@@ -32,6 +33,35 @@ interface Props {
 
 export default function ProcessTicketDialog({ ticket }: Props) {
     // console.log('Ticket From Process Ticket Dialog', ticket);
+
+    const ticketAction = {
+        open: {
+            label: 'Assign',
+            permission: 'tickets.assign',
+        },
+        assigned: {
+            label: 'Process',
+            permission: 'tickets.process',
+        },
+        processing: {
+            label: 'Resolve',
+            permission: 'tickets.resolve',
+        },
+        resolved: {
+            label: 'Close',
+            permission: 'tickets.close',
+        },
+        closed: {
+            label: 'Done',
+            permission: null,
+        },
+    };
+
+    // const action = ticketAction[ticket.status as keyof typeof ticketAction];
+    const action = ticketAction[ticket.status as keyof typeof ticketAction] ?? {
+        label: 'Unknown',
+        permission: null,
+    };
 
     type FormData = {
         remark: string;
@@ -208,7 +238,19 @@ export default function ProcessTicketDialog({ ticket }: Props) {
                                     >
                                         Cancel
                                     </Button>
-                                    <Button
+
+                                    <Can permission={action.permission}>
+                                        <Button
+                                            type="submit"
+                                            disabled={
+                                                ticket.status === 'closed' ||
+                                                ticket.status === 'open'
+                                            }
+                                        >
+                                            {action.label}
+                                        </Button>
+                                    </Can>
+                                    {/* <Button
                                         type="submit"
                                         disabled={
                                             ticket.status === 'closed' ||
@@ -226,7 +268,7 @@ export default function ProcessTicketDialog({ ticket }: Props) {
                                                   : ticket.status === 'closed'
                                                     ? 'Done'
                                                     : 'Unknown'}
-                                    </Button>
+                                    </Button> */}
                                 </CardFooter>
                             </Card>
                         )}

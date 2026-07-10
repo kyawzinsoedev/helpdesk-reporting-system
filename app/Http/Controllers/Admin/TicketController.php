@@ -270,7 +270,7 @@ class TicketController extends Controller
 
     public function removeAssign(Ticket $ticket, $staffId)
     {
-        $this->authorize('manageWorkflow', $ticket);
+        $this->authorize('removeAssign', $ticket);
 
         $staff = User::find($staffId);
 
@@ -308,7 +308,7 @@ class TicketController extends Controller
 
     public function process(Request $request, Ticket $ticket)
     {
-        $this->authorize('manageWorkflow', $ticket);
+        $this->authorize('process', $ticket);
 
         $validated = $request->validate([
             'remark' => ['required', 'string', 'max:1000'],
@@ -324,7 +324,7 @@ class TicketController extends Controller
 
     public function resolve(Request $request, Ticket $ticket)
     {
-        $this->authorize('manageWorkflow', $ticket);
+        $this->authorize('resolve', $ticket);
 
         $validated = $request->validate([
             'remark' => ['required', 'string', 'max:1000'],
@@ -349,7 +349,7 @@ class TicketController extends Controller
 
     public function close(Request $request, Ticket $ticket)
     {
-        $this->authorize('manageWorkflow', $ticket);
+        $this->authorize('close', $ticket);
 
         $validated = $request->validate([
             'remark' => ['required', 'string', 'max:1000'],

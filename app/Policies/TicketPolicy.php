@@ -23,9 +23,13 @@ class TicketPolicy
         return $authUser->can('tickets.create');
     }
 
+    /**
+     * Update ticket
+     */
     public function update(User $authUser, Ticket $ticket): bool
     {
-        return $authUser->id === $ticket->user_id || $authUser->can('tickets.update');
+        return $authUser->id === $ticket->user_id
+            || $authUser->can('tickets.update');
     }
 
     /**
@@ -45,10 +49,37 @@ class TicketPolicy
     }
 
     /**
-     * Process/Resolve/Close ticket
+     * Remove assigned staff
      */
-    public function manageWorkflow(User $authUser, Ticket $ticket): bool
+    public function removeAssign(User $authUser, Ticket $ticket): bool
     {
-        return $authUser->id === $ticket->assign_to || $authUser->can('tickets.manage');
+        return $authUser->can('tickets.assign');
+    }
+
+    /**
+     * Process ticket
+     */
+    public function process(User $authUser, Ticket $ticket): bool
+    {
+        return $authUser->id === $ticket->assign_to
+            || $authUser->can('tickets.process');
+    }
+
+    /**
+     * Resolve ticket
+     */
+    public function resolve(User $authUser, Ticket $ticket): bool
+    {
+        return $authUser->id === $ticket->assign_to
+            || $authUser->can('tickets.resolve');
+    }
+
+    /**
+     * Close ticket
+     */
+    public function close(User $authUser, Ticket $ticket): bool
+    {
+        return $authUser->id === $ticket->assign_to
+            || $authUser->can('tickets.close');
     }
 }

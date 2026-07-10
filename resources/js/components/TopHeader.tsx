@@ -1,17 +1,19 @@
 import { router } from '@inertiajs/react';
-import { Bell, Mail, MessageSquare } from 'lucide-react';
+import { Bell, LogOut, Mail, MessageSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Separator } from '@/components/ui/separator';
 
 export default function TopHeader() {
@@ -77,33 +79,35 @@ export default function TopHeader() {
                         <MessageSquare className="h-4 w-4" />
                     </Button>
 
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline">Profile</Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuGroup>
-                                <DropdownMenuLabel>
-                                    My Account
-                                </DropdownMenuLabel>
-                                <DropdownMenuItem>Profile</DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <button
-                                        onClick={() => router.post('/logout')}
-                                    >
-                                        Logout
-                                    </button>
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem>Team</DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Subscription
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <LogOut className="h-4 w-4" />
+                            </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Are you sure you want to logout?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    You will need to login again to access your
+                                    account.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                                <AlertDialogAction
+                                    onClick={() => router.post('/logout')}
+                                >
+                                    Logout
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             </div>
         </div>

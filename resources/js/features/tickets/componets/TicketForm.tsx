@@ -21,6 +21,7 @@ import type {
     TicketFormStructure,
 } from '../schemas/ticketSchema';
 import { useEffect } from 'react';
+import Can from '@/features/permissions/Can';
 
 interface Props {
     mode?: 'create' | 'edit';
@@ -561,17 +562,26 @@ export default function TicketForm({
                     >
                         Dismiss
                     </Button>
-                    <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="min-w-[140px] font-medium shadow-md transition-all hover:opacity-90"
+
+                    <Can
+                        permission={
+                            mode === 'create'
+                                ? 'tickets.create'
+                                : 'tickets.update'
+                        }
                     >
-                        {isSubmitting
-                            ? 'Processing...'
-                            : mode === 'create'
-                              ? 'Submit Ticket'
-                              : 'Save Update'}
-                    </Button>
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="min-w-[140px] font-medium shadow-md transition-all hover:opacity-90"
+                        >
+                            {isSubmitting
+                                ? 'Processing...'
+                                : mode === 'create'
+                                  ? 'Submit Ticket'
+                                  : 'Save Update'}
+                        </Button>
+                    </Can>
                 </div>
             </div>
         </form>

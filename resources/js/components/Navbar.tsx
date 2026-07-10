@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import DropDownUserAdmin from './dropdown-user-admin/DropDownUserAdmin';
 import { Button } from './ui/button';
+import Can from '@/features/permissions/Can';
 
 export default function Navbar() {
     return (
@@ -10,10 +11,11 @@ export default function Navbar() {
             </Button>
 
             <DropDownUserAdmin />
-
-            <Button variant="ghost" asChild>
-                <Link href="/tickets">Tickets</Link>
-            </Button>
+            <Can permission="tickets.view">
+                <Button variant="ghost" asChild>
+                    <Link href="/tickets">Tickets</Link>
+                </Button>
+            </Can>
 
             <Button variant="ghost" asChild>
                 <Link href="/settings">Settings</Link>
