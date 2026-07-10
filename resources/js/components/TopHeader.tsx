@@ -1,4 +1,4 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Bell, LogOut, Mail, MessageSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,29 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+    Popover,
+    PopoverContent,
+    PopoverDescription,
+    PopoverHeader,
+    PopoverTitle,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
+
+interface Notification {
+    id: string;
+    data: {
+        title: string;
+        message: string;
+        ticket_id: number;
+    };
+    read_at: string | null;
+}
+
+interface HeaderPageProps {
+    notifications: Notification[];
+}
 
 export default function TopHeader() {
     const [currentTime, setCurrentTime] = useState<Date | null>(null);
@@ -46,6 +68,10 @@ export default function TopHeader() {
           })
         : '';
 
+    const { notifications } = usePage<HeaderPageProps>().props;
+
+    const [hasUnread, setHasUnread] = useState(notifications.length > 0);
+
     return (
         <div className="border-b bg-card">
             <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-3 text-sm">
@@ -69,9 +95,57 @@ export default function TopHeader() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon">
+                    {/* <Button variant="ghost" size="icon">
                         <Bell className="h-4 w-4" />
-                    </Button>
+                    </Button> */}
+
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="relative"
+                                onClick={() => setHasUnread(false)}
+                            >
+                                <Bell className="h-4 w-4" />
+
+                                {hasUnread && (
+                                    <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
+                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
+                                        <Badge className="relative inline-flex h-2.5 w-2.5 rounded-full border-2 border-background bg-indigo-600 p-0" />
+                                    </span>
+                                )}
+                            </Button>
+                        </PopoverTrigger>
+
+                        <PopoverContent className="w-80">
+                            <div className="space-y-3">
+                                <h4 className="font-semibold">Notifications</h4>
+
+                                {notifications.length === 0 ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        No notifications
+                                    </p>
+                                ) : (
+                                    notifications.map((notification) => (
+                                        <div
+                                            key={notification.id}
+                                            className="rounded-md border p-3"
+                                        >
+                                            <p className="text-sm font-medium">
+                                                {notification.data.title}
+                                            </p>
+
+                                            <p className="text-xs text-muted-foreground">
+                                                {notification.data.message}
+                                            </p>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+
                     <Button variant="ghost" size="icon">
                         <Mail className="h-4 w-4" />
                     </Button>

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Mail;
+use App\Notifications\TicketAssignedNotification;
 
 class TicketController extends Controller
 {
@@ -244,6 +245,9 @@ class TicketController extends Controller
             ]);
 
             $staff = User::findOrFail($request->assign_to);
+            $staff->notify(
+                new TicketAssignedNotification($ticket)
+            );
             $staff->update([
                 'status' => 'inactive',
             ]);

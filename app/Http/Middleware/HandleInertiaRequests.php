@@ -53,6 +53,13 @@ class HandleInertiaRequests extends Middleware
                     ]
                     : null,
             ],
+            'notifications' => fn() => Auth::check()
+                ? Auth::user()
+                ->unreadNotifications()
+                ->latest()
+                ->take(5)
+                ->get()
+                : [],
             'flash' => [
                 'message' => fn() => $request->session()->get('message'),
             ],
