@@ -15,6 +15,7 @@ class PermissionSeeder extends Seeder
             'users.create',
             'users.update',
             'users.delete',
+            'users.reset-password',
 
             // Roles
             'roles.view',
@@ -32,6 +33,7 @@ class PermissionSeeder extends Seeder
             'ticket_forms.view',
             'ticket_forms.create',
             'ticket_forms.update',
+            'ticket_forms.delete',
 
             // Tickets
             'tickets.view',

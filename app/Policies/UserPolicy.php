@@ -54,4 +54,9 @@ class UserPolicy
 
         return $authUser->can('users.delete');
     }
+
+    public function resetPassword(User $authUser, User $user): bool
+    {
+        return $authUser->can('users.reset-password');
+    }
 }

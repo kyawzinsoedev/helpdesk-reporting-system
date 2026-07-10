@@ -12,13 +12,23 @@ import {
 } from '@/components/ui/select';
 
 import fields from '@/routes/forms/fields';
+import { toast } from 'sonner';
+import Can from '@/features/permissions/Can';
 
 type Props = {
     form: any;
 };
 
 export default function Fields({ form }: Props) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const {
+        data,
+        setData,
+        post,
+        delete: destroy,
+        processing,
+        errors,
+        reset,
+    } = useForm({
         label: '',
         name: '',
         type: 'text',
@@ -46,13 +56,16 @@ export default function Fields({ form }: Props) {
         });
     };
 
-    // const handleDelete = (id: number) => {
-    //     if (!confirm('Are you sure you want to delete this field?')) return;
+    const handleDelete = (id: number) => {
+        if (!confirm('Are you sure you want to delete this field?')) return;
 
-    //     delete(fields.delete({form: from.id}).url,{
-    //         onSuccess:()=>reset(),
-    //     });
-    // };
+        destroy(`/forms/${form.id}/fields/${id}`, {
+            onSuccess: () => {
+                toast.success('Field deleted successfully.');
+                reset();
+            },
+        });
+    };
 
     return (
         <div className="mx-auto max-w-5xl space-y-8">
@@ -222,11 +235,13 @@ export default function Fields({ form }: Props) {
                     </div>
 
                     {/* SUBMIT */}
-                    <div className="flex justify-end">
-                        <Button disabled={processing} className="px-6">
-                            Add Field
-                        </Button>
-                    </div>
+                    <Can permission="ticket_forms.create">
+                        <div className="flex justify-end">
+                            <Button disabled={processing} className="px-6">
+                                Add Field
+                            </Button>
+                        </div>
+                    </Can>
                 </form>
             </div>
 
@@ -273,21 +288,25 @@ export default function Fields({ form }: Props) {
 
                             {/* RIGHT */}
                             <div className="flex gap-2">
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => handleEdit(field)}
-                                >
-                                    Edit
-                                </Button>
+                                <Can permission="ticket_forms.update">
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => handleEdit(field)}
+                                    >
+                                        Edit
+                                    </Button>
+                                </Can>
 
-                                <Button
-                                    size="sm"
-                                    variant="destructive"
-                                    onClick={() => handleDelete(field.id)}
-                                >
-                                    Delete
-                                </Button>
+                                <Can permission="ticket_forms.delete">
+                                    <Button
+                                        size="sm"
+                                        variant="destructive"
+                                        onClick={() => handleDelete(field.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </Can>
                             </div>
                         </div>
                     </div>

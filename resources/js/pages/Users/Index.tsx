@@ -1,3 +1,4 @@
+import Can from '@/features/permissions/Can';
 import UserFilter from '@/features/users/components/UserFilter';
 import UserFormModal from '@/features/users/components/UserFormModal';
 import UserTable from '@/features/users/components/UserTable';
@@ -9,11 +10,15 @@ interface UserIndexProps {
     users: { data: User[] };
     departments: Department[];
     roles: Role[];
+    filters: {
+        search?: string;
+    };
 }
 export default function UserIndex({
     users,
     departments,
     roles,
+    filters,
 }: UserIndexProps) {
     return (
         <div className="space-y-6 p-6">
@@ -29,15 +34,19 @@ export default function UserIndex({
                 </div>
 
                 {/* Form Section  */}
-                <UserFormModal
-                    mode="create"
-                    departments={departments}
-                    roles={roles}
-                />
+                <Can permission="users.create">
+                    <UserFormModal
+                        mode="create"
+                        departments={departments}
+                        roles={roles}
+                    />
+                </Can>
             </div>
 
             {/* Filter Section */}
-            <UserFilter />
+            <Can permission="users.view">
+                <UserFilter filters={filters} />
+            </Can>
 
             {/* Table Section */}
             <UserTable users={users} departments={departments} roles={roles} />

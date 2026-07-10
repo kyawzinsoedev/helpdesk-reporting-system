@@ -30,4 +30,9 @@ class TicketFormPolicy
     {
         return $authUser->can('ticket_forms.update');
     }
+
+    public function delete(User $user, TicketForm $form): bool
+    {
+        return $user->can('forms.delete');
+    }
 }

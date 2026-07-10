@@ -19,17 +19,35 @@ class UserController extends Controller
     /**
      * List users
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', User::class);
+
+        $search = $request->input('search');
+
         $users = User::with(['department', 'roles'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhereHas('department', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Users/Index', [
             'users' => $users,
             'departments' => Department::all(),
             'roles' => Role::all(),
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 
@@ -113,7 +131,7 @@ class UserController extends Controller
 
     public function resetPassword(User $user)
     {
-        $this->authorize('delete', $user);
+        $this->authorize('resetPassword', $user);
         // 1. Generate new random password
         $newPassword = Str::random(10);
 

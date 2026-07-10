@@ -76,4 +76,18 @@ class TicketFormController extends Controller
 
         return back();
     }
+
+    public function destroy(TicketForm $form)
+    {
+        $this->authorize('delete', $form);
+
+        // Delete related fields first if foreign key doesn't cascade
+        $form->fields()->delete();
+
+        $form->delete();
+
+        return redirect()
+            ->route('forms.index') // or redirect('/forms')
+            ->with('success', 'Form deleted successfully.');
+    }
 }

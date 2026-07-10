@@ -14,6 +14,7 @@ import type { Role } from '../types/roles';
 import DeleteUserDialog from './DeleteUserDialog';
 import UserFormModal from './UserFormModal';
 import ResetUserPassword from './ResetUserPassword';
+import Can from '@/features/permissions/Can';
 
 interface Props {
     users: {
@@ -70,16 +71,24 @@ export default function UserTable({ users, departments, roles }: Props) {
 
                             <TableCell>
                                 <div className="flex items-center justify-center gap-2">
-                                    <ResetUserPassword user={user} />
+                                    <Can permission="users.reset-password">
+                                        {' '}
+                                        <ResetUserPassword user={user} />
+                                    </Can>
 
-                                    <UserFormModal
-                                        mode="edit"
-                                        user={user}
-                                        departments={departments}
-                                        roles={roles}
-                                    />
+                                    <Can permission="users.update">
+                                        <UserFormModal
+                                            mode="edit"
+                                            user={user}
+                                            departments={departments}
+                                            roles={roles}
+                                        />
+                                    </Can>
 
-                                    <DeleteUserDialog user={user} />
+                                    <Can permission="users.delete">
+                                        {' '}
+                                        <DeleteUserDialog user={user} />
+                                    </Can>
                                 </div>
                             </TableCell>
                         </TableRow>

@@ -7,6 +7,7 @@ import type { UserFormData } from '../schemas/userSchema';
 import type { Department } from '../types/departments';
 import type { Role } from '../types/roles';
 import type { User } from '../types/user';
+import Can from '@/features/permissions/Can';
 interface UserFormProps {
     mode?: 'create' | 'edit';
     user?: User;
@@ -269,9 +270,15 @@ export default function UserForm({
 
             {/* Submit Button */}
             <div className="flex justify-end">
-                <Button type="submit" disabled={processing}>
-                    {mode === 'create' ? 'Create User' : 'Update User'}
-                </Button>
+                <Can
+                    permission={
+                        mode === 'create' ? 'users.create' : 'users.update'
+                    }
+                >
+                    <Button type="submit" disabled={processing}>
+                        {mode === 'create' ? 'Create User' : 'Update User'}
+                    </Button>
+                </Can>
             </div>
         </form>
     );

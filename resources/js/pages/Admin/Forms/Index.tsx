@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/table';
 import { create as createForm } from '@/routes/forms';
 import fields from '@/routes/forms/fields';
+import Can from '@/features/permissions/Can';
 
 type Form = {
     id: number;
@@ -28,9 +29,11 @@ export default function Index({ forms }: Props) {
             {/* Header Section */}
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold">Ticket Forms</h1>
-                <Button asChild>
-                    <Link href={createForm().url}>Create Form</Link>
-                </Button>
+                <Can permission="ticket_forms.create">
+                    <Button asChild>
+                        <Link href={createForm().url}>Create Form</Link>
+                    </Button>
+                </Can>
             </div>
 
             <Table>
@@ -56,11 +59,13 @@ export default function Index({ forms }: Props) {
                             <TableCell>{form.name}</TableCell>
                             <TableCell>{form.description}</TableCell>
                             <TableCell className="text-center">
-                                <Button asChild>
-                                    <Link href={fields.index(form.id).url}>
-                                        Manage Fields
-                                    </Link>
-                                </Button>
+                                <Can permission="ticket_forms.view">
+                                    <Button asChild>
+                                        <Link href={fields.index(form.id).url}>
+                                            Manage Fields
+                                        </Link>
+                                    </Button>
+                                </Can>
                             </TableCell>
                         </TableRow>
                     ))}
