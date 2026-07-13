@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import {
     Card,
@@ -17,6 +18,13 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import {
     Ticket,
     Clock,
     CheckCircle2,
@@ -24,32 +32,51 @@ import {
     PlusCircle,
     FileText,
     ArrowUpRight,
+    Activity,
 } from 'lucide-react';
 
-export default function Dashboard() {
-    // သာဓကအနေနဲ့ ကိန်းဂဏန်းများနှင့် Ticket ဒေတာများ ထည့်သွင်းထားခြင်း (Backend မှလာမည့် ဒေတာများနှင့် ချိတ်ဆက်နိုင်သည်)
+type Props = {
+    statsData?: {
+        total: number;
+        open: number;
+        in_progress: number;
+        resolved: number;
+    };
+    recentActivities: Array<{
+        id: number;
+        description: string;
+        causer_name: string;
+        date: string;
+    }>;
+};
+
+export default function Dashboard({ statsData, recentActivities = [] }: Props) {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const displayedActivities = recentActivities.slice(0, 5);
+
     const stats = [
         {
             title: 'Total Tickets',
-            value: '148',
+            value: statsData?.total ?? '148',
             icon: Ticket,
             color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/40',
         },
         {
             title: 'Open',
-            value: '12',
+            value: statsData?.open ?? '12',
             icon: AlertCircle,
             color: 'text-destructive bg-destructive/10',
         },
         {
             title: 'In Progress',
-            value: '24',
+            value: statsData?.in_progress ?? '24',
             icon: Clock,
             color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/40',
         },
         {
             title: 'Resolved',
-            value: '112',
+            value: statsData?.resolved ?? '112',
             icon: CheckCircle2,
             color: 'text-green-600 bg-green-50 dark:bg-green-950/40',
         },
@@ -144,87 +171,162 @@ export default function Dashboard() {
 
                 {/* MAIN CONTENT AREA */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                    {/* RECENT TICKETS TABLE (Left & Middle Column) */}
-                    <Card className="lg:col-span-2">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                            <div>
-                                <CardTitle className="text-lg font-semibold">
-                                    Recent Tickets
-                                </CardTitle>
-                                <CardDescription>
-                                    Latest support requests submitted by users.
-                                </CardDescription>
-                            </div>
-                            <Button variant="ghost" size="sm" asChild>
-                                <Link href="/tickets" className="text-xs">
-                                    View All{' '}
-                                    <ArrowUpRight className="ml-1 h-3 w-3" />
-                                </Link>
-                            </Button>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="pl-6">
-                                            Ticket ID
-                                        </TableHead>
-                                        <TableHead>Subject</TableHead>
-                                        <TableHead>Form Type</TableHead>
-                                        <TableHead>Status</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {recentTickets.map((ticket) => (
-                                        <TableRow key={ticket.id}>
-                                            <TableCell className="pl-6 font-mono text-xs font-semibold">
-                                                {ticket.id}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-col">
-                                                    <span className="line-clamp-1 text-sm font-medium">
-                                                        {ticket.subject}
-                                                    </span>
-                                                    <span className="text-xs text-muted-foreground sm:hidden">
-                                                        {ticket.date}
-                                                    </span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge
-                                                    variant="outline"
-                                                    className="text-[11px]"
-                                                >
-                                                    {ticket.form}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge
-                                                    variant={
-                                                        ticket.status ===
-                                                        'resolved'
-                                                            ? 'secondary'
-                                                            : ticket.status ===
-                                                                'in_progress'
-                                                              ? 'default'
-                                                              : 'destructive'
-                                                    }
-                                                    className="text-[10px] tracking-wider uppercase"
-                                                >
-                                                    {ticket.status.replace(
-                                                        '_',
-                                                        ' ',
-                                                    )}
-                                                </Badge>
-                                            </TableCell>
+                    {/* LEFT & MIDDLE COLUMN */}
+                    <div className="space-y-6 lg:col-span-2">
+                        {/* RECENT TICKETS TABLE */}
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                <div>
+                                    <CardTitle className="text-lg font-semibold">
+                                        Recent Tickets
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Latest support requests submitted by
+                                        users.
+                                    </CardDescription>
+                                </div>
+                                <Button variant="ghost" size="sm" asChild>
+                                    <Link href="/tickets" className="text-xs">
+                                        View All{' '}
+                                        <ArrowUpRight className="ml-1 h-3 w-3" />
+                                    </Link>
+                                </Button>
+                            </CardHeader>
+                            <CardContent className="px-5">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="pl-6">
+                                                Ticket ID
+                                            </TableHead>
+                                            <TableHead>Subject</TableHead>
+                                            <TableHead>Form Type</TableHead>
+                                            <TableHead>Status</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {recentTickets.map((ticket) => (
+                                            <TableRow key={ticket.id}>
+                                                <TableCell className="pl-6 font-mono text-xs font-semibold">
+                                                    {ticket.id}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex flex-col">
+                                                        <span className="line-clamp-1 text-sm font-medium">
+                                                            {ticket.subject}
+                                                        </span>
+                                                        <span className="text-xs text-muted-foreground sm:hidden">
+                                                            {ticket.date}
+                                                        </span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge
+                                                        variant="outline"
+                                                        className="text-[11px]"
+                                                    >
+                                                        {ticket.form}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge
+                                                        variant={
+                                                            ticket.status ===
+                                                            'resolved'
+                                                                ? 'secondary'
+                                                                : ticket.status ===
+                                                                    'in_progress'
+                                                                  ? 'default'
+                                                                  : 'destructive'
+                                                        }
+                                                        className="text-[10px] tracking-wider uppercase"
+                                                    >
+                                                        {ticket.status.replace(
+                                                            '_',
+                                                            ' ',
+                                                        )}
+                                                    </Badge>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
 
-                    {/* QUICK ACTIONS & SYSTEM LINKS (Right Column) */}
+                        {/* RECENT ACTIVITY LOGS TABLE */}
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                <div>
+                                    <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+                                        <Activity className="h-5 w-5 text-orange-500" />
+                                        Recent Activities
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Audit logs of actions performed by
+                                        administrators.
+                                    </CardDescription>
+                                </div>
+                                {/* 🌟 VIEW ALL LOGS BUTTON */}
+                                {recentActivities.length > 5 && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-xs"
+                                        onClick={() => setIsDialogOpen(true)}
+                                    >
+                                        View All{' '}
+                                        <ArrowUpRight className="ml-1 h-3 w-3" />
+                                    </Button>
+                                )}
+                            </CardHeader>
+                            <CardContent className="px-5">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="pl-6">
+                                                Actor
+                                            </TableHead>
+                                            <TableHead>
+                                                Activity Action
+                                            </TableHead>
+                                            <TableHead className="pr-6 text-right">
+                                                Time
+                                            </TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {displayedActivities.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell
+                                                    colSpan={3}
+                                                    className="py-6 text-center text-xs text-muted-foreground italic"
+                                                >
+                                                    No recent activities found.
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            displayedActivities.map((log) => (
+                                                <TableRow key={log.id}>
+                                                    <TableCell className="pl-6 text-xs font-medium">
+                                                        {log.causer_name}
+                                                    </TableCell>
+                                                    <TableCell className="text-xs text-gray-700 dark:text-gray-300">
+                                                        {log.description}
+                                                    </TableCell>
+                                                    <TableCell className="pr-6 text-right text-[11px] whitespace-nowrap text-muted-foreground">
+                                                        {log.date}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* RIGHT COLUMN */}
                     <div className="space-y-6">
                         <Card>
                             <CardHeader>
@@ -288,6 +390,68 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="flex max-h-[85vh] max-w-3xl flex-col overflow-hidden p-0">
+                    <DialogHeader className="border-b p-6 pb-4">
+                        <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+                            <Activity className="h-5 w-5 text-orange-500" />
+                            System Audit Logs History
+                        </DialogTitle>
+                        <DialogDescription>
+                            A comprehensive overview of all operational actions
+                            executed by system actors.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {/* SCROLLABLE TABLE BODY AREA */}
+                    <div className="flex-1 overflow-y-auto p-0">
+                        <Table>
+                            <TableHeader className="sticky top-0 z-10 bg-muted/50">
+                                <TableRow>
+                                    <TableHead className="w-[150px] pl-6">
+                                        Actor
+                                    </TableHead>
+                                    <TableHead>
+                                        Activity Action Description
+                                    </TableHead>
+                                    <TableHead className="w-[140px] pr-6 text-right">
+                                        Timestamp
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {recentActivities.map((log) => (
+                                    <TableRow
+                                        key={log.id}
+                                        className="transition-colors hover:bg-muted/40"
+                                    >
+                                        <TableCell className="pl-6 text-xs font-semibold text-gray-900 dark:text-gray-100">
+                                            {log.causer_name}
+                                        </TableCell>
+                                        <TableCell className="py-3 text-xs leading-relaxed text-gray-700 dark:text-gray-300">
+                                            {log.description}
+                                        </TableCell>
+                                        <TableCell className="pr-6 text-right font-mono text-[11px] text-muted-foreground">
+                                            {log.date}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+
+                    {/* MODAL FOOTER */}
+                    <div className="flex justify-end border-t bg-muted/20 p-4">
+                        <Button
+                            variant="secondary"
+                            onClick={() => setIsDialogOpen(false)}
+                        >
+                            Close
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

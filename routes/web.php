@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TicketFormController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\Admin\TicketController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('/', 'dashboard')->name('dashboard');
+    // Route::inertia('/', 'dashboard')->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 
     // Users
     Route::resource('/users', UserController::class);

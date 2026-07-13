@@ -74,7 +74,7 @@ class User extends Authenticatable
         return LogOptions::defaults()
             ->logFillable()
             ->logOnlyDirty()
-            ->dontSubmitEmptyLogs()
-            ->setDescriptionForEvent(fn(string $eventName) => "Form field has been {$eventName}");
+            ->dontSubmitEmptyLogs();
+        // ->setDescriptionForEvent(fn(string $eventName) => "Form field has been {$eventName}");
     }
 }

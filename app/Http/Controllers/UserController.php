@@ -77,17 +77,18 @@ class UserController extends Controller
 
         $validated['gender'] = $validated['gender'] ?? 'male';
 
+
         // create user
         $user = User::create($validated);
+
+        activity()
+            ->performedOn($user)
+            ->causedBy($request->user())
+            ->log($request->user()->name . " created a new user account for '{$user->name}' ({$user->email})");
 
         // Spatie role assignment (CORRECT)
         $user->assignRole($validated['role']);
 
-        activity()
-            ->performedOn($user)
-            ->causedBy(auth()->user())
-            ->withProperties(['role' => $request->role])
-            ->log(auth()->user()->name . " added a new user: " . $user->email);
         return redirect()->route('users.index')
             ->with('success', 'User created successfully');
     }
@@ -113,10 +114,17 @@ class UserController extends Controller
 
         $validated['gender'] = $validated['gender'] ?? 'male';
 
+
+
         $user->update($validated);
 
         // Sync role
         $user->syncRoles($validated['role']);
+
+        activity()
+            ->performedOn($user)
+            ->causedBy($request->user())
+            ->log($request->user()->name . " updated the profile details of user '{$user->name}'");
 
         return redirect()
             ->route('users.index')
@@ -126,15 +134,24 @@ class UserController extends Controller
     /**
      * Delete user
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         $this->authorize('delete', $user);
+
+        activity()
+            ->performedOn($user)
+            ->causedBy($request->user())
+            ->withProperties([
+                'deleted_user_id' => $user->id,
+                'deleted_user_email' => $user->email,
+            ])
+            ->log($request->user()->name . " permanently deleted the user account of '{$user->name}' ({$user->email})");
         $user->delete();
 
         return back()->with('success', 'User deleted successfully');
     }
 
-    public function resetPassword(User $user)
+    public function resetPassword(Request $request, User $user)
     {
         $this->authorize('resetPassword', $user);
         // 1. Generate new random password
@@ -144,6 +161,10 @@ class UserController extends Controller
         $user->password = Hash::make($newPassword);
         $user->save();
 
+        activity()
+            ->performedOn($user)
+            ->causedBy($request->user())
+            ->log($request->user()->name . " triggered a password reset for user '{$user->name}' ({$user->email})");
         // 3. (Optional) send email to user
         try {
             Mail::to($user->email)->send(new \App\Mail\PasswordResetMail($user, $newPassword));
