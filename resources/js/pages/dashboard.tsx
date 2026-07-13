@@ -35,85 +35,67 @@ import {
     Activity,
 } from 'lucide-react';
 
+type TicketItem = {
+    id: string | number;
+    title: string;
+    form: string;
+    priority: string;
+    status: string;
+    date: string;
+};
+
+type ActivityLog = {
+    id: number;
+    description: string;
+    causer_name: string;
+    date: string;
+};
+
 type Props = {
     statsData?: {
         total: number;
         open: number;
+        assign: number;
         in_progress: number;
         resolved: number;
     };
-    recentActivities: Array<{
-        id: number;
-        description: string;
-        causer_name: string;
-        date: string;
-    }>;
+    recentTickets: TicketItem[];
+    recentActivities: ActivityLog[];
 };
 
-export default function Dashboard({ statsData, recentActivities = [] }: Props) {
+export default function Dashboard({
+    statsData,
+    recentTickets = [],
+    recentActivities = [],
+}: Props) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const displayedActivities = recentActivities.slice(0, 5);
 
     const stats = [
         {
-            title: 'Total Tickets',
-            value: statsData?.total ?? '148',
-            icon: Ticket,
-            color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/40',
+            title: 'Open',
+            value: statsData?.open ?? 0,
+            icon: AlertCircle,
+            color: 'text-destructive bg-destructive/10',
         },
         {
-            title: 'Open',
-            value: statsData?.open ?? '12',
+            title: 'Assign',
+            value: statsData?.assign ?? 0,
             icon: AlertCircle,
             color: 'text-destructive bg-destructive/10',
         },
         {
             title: 'In Progress',
-            value: statsData?.in_progress ?? '24',
+            value: statsData?.in_progress ?? 0,
             icon: Clock,
             color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/40',
         },
         {
             title: 'Resolved',
-            value: statsData?.resolved ?? '112',
+            value: statsData?.resolved ?? 0,
             icon: CheckCircle2,
             color: 'text-green-600 bg-green-50 dark:bg-green-950/40',
-        },
-    ];
-
-    const recentTickets = [
-        {
-            id: 'TK-1024',
-            subject: 'Cannot access internal database',
-            form: 'IT Support',
-            priority: 'high',
-            status: 'open',
-            date: '10 mins ago',
-        },
-        {
-            id: 'TK-1023',
-            subject: 'Requesting medical leave clearance',
-            form: 'Leave Request',
-            priority: 'medium',
-            status: 'in_progress',
-            date: '1 hour ago',
-        },
-        {
-            id: 'TK-1022',
-            subject: 'MacBook Pro monitor flickering issue',
-            form: 'IT Support',
-            priority: 'high',
-            status: 'resolved',
-            date: '2 hours ago',
-        },
-        {
-            id: 'TK-1021',
-            subject: 'Need replacement for office desk chair',
-            form: 'Purchase Request',
-            priority: 'low',
-            status: 'open',
-            date: '1 day ago',
         },
     ];
 
@@ -122,7 +104,6 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
             <Head title="Dashboard" />
 
             <div className="mx-auto max-w-7xl space-y-8 p-6">
-                {/* PAGE HEADER */}
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
@@ -143,7 +124,6 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
                     </div>
                 </div>
 
-                {/* STATS GRID */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat, i) => {
                         const Icon = stat.icon;
@@ -169,11 +149,8 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
                     })}
                 </div>
 
-                {/* MAIN CONTENT AREA */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                    {/* LEFT & MIDDLE COLUMN */}
                     <div className="space-y-6 lg:col-span-2">
-                        {/* RECENT TICKETS TABLE */}
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0">
                                 <div>
@@ -205,56 +182,66 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {recentTickets.map((ticket) => (
-                                            <TableRow key={ticket.id}>
-                                                <TableCell className="pl-6 font-mono text-xs font-semibold">
-                                                    {ticket.id}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-col">
-                                                        <span className="line-clamp-1 text-sm font-medium">
-                                                            {ticket.subject}
-                                                        </span>
-                                                        <span className="text-xs text-muted-foreground sm:hidden">
-                                                            {ticket.date}
-                                                        </span>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="text-[11px]"
-                                                    >
-                                                        {ticket.form}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge
-                                                        variant={
-                                                            ticket.status ===
-                                                            'resolved'
-                                                                ? 'secondary'
-                                                                : ticket.status ===
-                                                                    'in_progress'
-                                                                  ? 'default'
-                                                                  : 'destructive'
-                                                        }
-                                                        className="text-[10px] tracking-wider uppercase"
-                                                    >
-                                                        {ticket.status.replace(
-                                                            '_',
-                                                            ' ',
-                                                        )}
-                                                    </Badge>
+                                        {recentTickets.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell
+                                                    colSpan={4}
+                                                    className="py-6 text-center text-xs text-muted-foreground italic"
+                                                >
+                                                    No recent tickets found.
                                                 </TableCell>
                                             </TableRow>
-                                        ))}
+                                        ) : (
+                                            recentTickets?.map((ticket) => (
+                                                <TableRow key={ticket.id}>
+                                                    <TableCell className="pl-6 font-mono text-xs font-semibold">
+                                                        {ticket.id}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex flex-col">
+                                                            <span className="line-clamp-1 text-sm font-medium">
+                                                                {ticket.title}
+                                                            </span>
+                                                            <span className="text-xs text-muted-foreground sm:hidden">
+                                                                {ticket.date}
+                                                            </span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge
+                                                            variant="outline"
+                                                            className="text-[11px]"
+                                                        >
+                                                            {ticket.form}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge
+                                                            variant={
+                                                                ticket.status ===
+                                                                'resolved'
+                                                                    ? 'secondary'
+                                                                    : ticket.status ===
+                                                                        'in_progress'
+                                                                      ? 'default'
+                                                                      : 'destructive'
+                                                            }
+                                                            className="text-[10px] tracking-wider uppercase"
+                                                        >
+                                                            {ticket.status.replace(
+                                                                '_',
+                                                                ' ',
+                                                            )}
+                                                        </Badge>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
                                     </TableBody>
                                 </Table>
                             </CardContent>
                         </Card>
 
-                        {/* RECENT ACTIVITY LOGS TABLE */}
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0">
                                 <div>
@@ -267,7 +254,6 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
                                         administrators.
                                     </CardDescription>
                                 </div>
-                                {/* 🌟 VIEW ALL LOGS BUTTON */}
                                 {recentActivities.length > 5 && (
                                     <Button
                                         variant="ghost"
@@ -326,7 +312,6 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
                         </Card>
                     </div>
 
-                    {/* RIGHT COLUMN */}
                     <div className="space-y-6">
                         <Card>
                             <CardHeader>
@@ -392,7 +377,7 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
             </div>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="flex max-h-[85vh] max-w-3xl flex-col overflow-hidden p-0">
+                <DialogContent className="flex max-h-[85vh] max-w-3xl min-w-2xl flex-col overflow-hidden p-5">
                     <DialogHeader className="border-b p-6 pb-4">
                         <DialogTitle className="flex items-center gap-2 text-xl font-bold">
                             <Activity className="h-5 w-5 text-orange-500" />
@@ -404,7 +389,6 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
                         </DialogDescription>
                     </DialogHeader>
 
-                    {/* SCROLLABLE TABLE BODY AREA */}
                     <div className="flex-1 overflow-y-auto p-0">
                         <Table>
                             <TableHeader className="sticky top-0 z-10 bg-muted/50">
@@ -441,7 +425,6 @@ export default function Dashboard({ statsData, recentActivities = [] }: Props) {
                         </Table>
                     </div>
 
-                    {/* MODAL FOOTER */}
                     <div className="flex justify-end border-t bg-muted/20 p-4">
                         <Button
                             variant="secondary"

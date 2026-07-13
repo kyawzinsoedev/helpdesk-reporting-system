@@ -8,18 +8,36 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Activitylog\Models\Activity;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display the dashboard view with logs.
-     */
     public function index(Request $request)
     {
-        $totalTickets = 148; // Ticket::count();
-        $openTickets = 12;   // Ticket::where('status', 'open')->count();
-        $inProgress = 24;    // Ticket::where('status', 'in_progress')->count();
-        $resolved = 112;     // Ticket::where('status', 'resolved')->count();
+        $ticketStats = Ticket::select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->all();
+
+        $openTickets = $ticketStats['open'] ?? 0;
+        $assignTickets = $ticketStats['assigned'] ?? 0;
+        $inProgress = $ticketStats['processing'] ?? 0;
+        $resolved   = $ticketStats['resolved'] ?? 0;
+
+
+        $recentTickets = Ticket::latest()
+            ->take(4)
+            ->get()
+            ->map(function ($ticket) {
+                return [
+                    'id' => $ticket->id,
+                    'title' => $ticket->title,
+                    'form' => $ticket->form ? $ticket->form->name : 'General Support',
+                    'priority' => $ticket->priority,
+                    'status' => $ticket->status,
+                    'date' => $ticket->created_at->diffForHumans(),
+                ];
+            });
 
         $recentActivities = Activity::with('causer')
             ->latest()
@@ -33,16 +51,16 @@ class DashboardController extends Controller
                     'date' => $log->created_at->diffForHumans(),
                 ];
             });
-        // dd($recentActivities->toArray());
+
         return Inertia::render('dashboard', [
             'statsData' => [
-                'total' => $totalTickets,
                 'open' => $openTickets,
+                'assign' => $assignTickets,
                 'in_progress' => $inProgress,
                 'resolved' => $resolved,
             ],
+            'recentTickets' => $recentTickets,
             'recentActivities' => $recentActivities,
-            'recentTickets' => Ticket::latest()->take(4)->get()
         ]);
     }
 }
