@@ -10,10 +10,21 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 
 import fields from '@/routes/forms/fields';
 import { toast } from 'sonner';
 import Can from '@/features/permissions/Can';
+import { useRef, useState } from 'react';
+import { Pencil, Trash2, Asterisk } from 'lucide-react';
 
 type Props = {
     form: any;
@@ -24,6 +35,7 @@ export default function Fields({ form }: Props) {
         data,
         setData,
         post,
+        put,
         delete: destroy,
         processing,
         errors,
@@ -36,17 +48,35 @@ export default function Fields({ form }: Props) {
         required: false,
     });
 
+    const [editingFieldId, setEditingFieldId] = useState<number | null>(null);
+    const formRef = useRef<HTMLDivElement>(null);
     const showOptions = ['select', 'radio', 'checkbox'].includes(data.type);
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post(fields.store({ form: form.id }).url, {
-            onSuccess: () => reset(),
-        });
+        if (editingFieldId) {
+            put(`/forms/${form.id}/fields/${editingFieldId}`, {
+                onSuccess: () => {
+                    toast.success('Field updated successfully.');
+                    resetForm();
+                },
+            });
+        } else {
+            post(fields.store({ form: form.id }).url, {
+                onSuccess: () => resetForm(),
+            });
+        }
+    };
+
+    const resetForm = () => {
+        reset();
+        setEditingFieldId(null);
     };
 
     const handleEdit = (field: any) => {
+        setEditingFieldId(field.id);
+
         setData({
             label: field.label,
             name: field.name,
@@ -54,24 +84,29 @@ export default function Fields({ form }: Props) {
             required: field.required,
             options: field.options || [],
         });
+
+        formRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
     };
 
     const handleDelete = (id: number) => {
         if (!confirm('Are you sure you want to delete this field?')) return;
 
         destroy(`/forms/${form.id}/fields/${id}`, {
+            data: {},
             onSuccess: () => {
                 toast.success('Field deleted successfully.');
-                reset();
+                resetForm();
             },
         });
     };
-
     return (
-        <div className="mx-auto max-w-5xl space-y-8">
+        <div ref={formRef} className="space-y-8 p-6">
             {/* HEADER */}
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">
+                <h1 className="text-2xl font-bold tracking-tight">
                     {form.name} Form Builder
                 </h1>
                 <p className="text-sm text-muted-foreground">
@@ -80,7 +115,7 @@ export default function Fields({ form }: Props) {
             </div>
 
             {/* BUILDER CARD */}
-            <div className="rounded-xl border p-6 shadow-sm">
+            <div className="rounded-xl border bg-card p-6 shadow-sm">
                 <form onSubmit={submit} className="space-y-5">
                     {/* FIELD TYPE */}
                     <div className="space-y-2">
@@ -143,7 +178,7 @@ export default function Fields({ form }: Props) {
                                 placeholder="Email Address"
                             />
                             {errors.label && (
-                                <p className="text-sm text-red-500">
+                                <p className="text-sm text-destructive">
                                     {errors.label}
                                 </p>
                             )}
@@ -230,87 +265,167 @@ export default function Fields({ form }: Props) {
                             onChange={(e) =>
                                 setData('required', e.target.checked)
                             }
+                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                         />
                         <Label>Required field</Label>
                     </div>
 
                     {/* SUBMIT */}
                     <Can permission="ticket_forms.create">
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-2">
+                            {editingFieldId && (
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    onClick={resetForm}
+                                >
+                                    Cancel
+                                </Button>
+                            )}
                             <Button disabled={processing} className="px-6">
-                                Add Field
+                                {editingFieldId ? 'Update Field' : 'Add Field'}
                             </Button>
                         </div>
                     </Can>
                 </form>
             </div>
 
-            {/* FIELD LIST */}
+            {/* FIELD LIST (UPDATED DESIGN) */}
             <div className="space-y-4">
-                {form.fields.map((field: any) => (
-                    <div
-                        key={field.id}
-                        className="rounded-xl border bg-white p-5 shadow-sm transition hover:shadow-md dark:bg-gray-900"
-                    >
-                        <div className="flex items-start justify-between">
-                            {/* LEFT */}
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <h3 className="text-base font-semibold">
-                                        {field.label}
-                                    </h3>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold tracking-tight">
+                        Form Fields
+                    </h2>
+                    <span className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">
+                        Total: {form.fields?.length || 0} fields
+                    </span>
+                </div>
 
-                                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-600 uppercase dark:bg-gray-800">
-                                        {field.type}
-                                    </span>
-                                </div>
+                <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+                    {form.fields && form.fields.length > 0 ? (
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[250px]">
+                                        Label
+                                    </TableHead>
+                                    <TableHead className="w-[200px]">
+                                        Field Name
+                                    </TableHead>
+                                    <TableHead className="w-[120px]">
+                                        Type
+                                    </TableHead>
+                                    <TableHead>
+                                        Options / Configuration
+                                    </TableHead>
+                                    <TableHead className="w-[120px] text-right">
+                                        Actions
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {form.fields.map((field: any) => (
+                                    <TableRow key={field.id} className="group">
+                                        {/* LABEL & REQUIRED */}
+                                        <TableCell className="font-medium">
+                                            <div className="flex items-center gap-1">
+                                                <span>{field.label}</span>
+                                                {field.required && (
+                                                    <Asterisk
+                                                        className="h-3 w-3 text-destructive"
+                                                        title="Required"
+                                                    />
+                                                )}
+                                            </div>
+                                        </TableCell>
 
-                                <div className="text-xs text-muted-foreground">
-                                    {field.name} •{' '}
-                                    {field.required ? 'Required' : 'Optional'}
-                                </div>
+                                        {/* FIELD NAME */}
+                                        <TableCell className="font-mono text-xs text-muted-foreground">
+                                            {field.name}
+                                        </TableCell>
 
-                                {field.options?.length > 0 && (
-                                    <div className="flex flex-wrap gap-1 pt-1">
-                                        {field.options.map(
-                                            (opt: any, i: number) => (
-                                                <span
-                                                    key={i}
-                                                    className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] text-blue-600 dark:bg-blue-950"
-                                                >
-                                                    {opt.label}
+                                        {/* TYPE BADGE */}
+                                        <TableCell>
+                                            <Badge
+                                                variant="secondary"
+                                                className="text-[10px] font-semibold tracking-wider uppercase"
+                                            >
+                                                {field.type}
+                                            </Badge>
+                                        </TableCell>
+
+                                        {/* OPTIONS OR EXTRA DETAILS */}
+                                        <TableCell>
+                                            {field.options?.length > 0 ? (
+                                                <div className="flex max-w-xs flex-wrap gap-1">
+                                                    {field.options.map(
+                                                        (
+                                                            opt: any,
+                                                            i: number,
+                                                        ) => (
+                                                            <Badge
+                                                                key={i}
+                                                                variant="outline"
+                                                                className="border-blue-100 bg-blue-50/50 text-[10px] text-blue-600 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-400"
+                                                            >
+                                                                {opt.label}
+                                                            </Badge>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground/60">
+                                                    —
                                                 </span>
-                                            ),
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                                            )}
+                                        </TableCell>
 
-                            {/* RIGHT */}
-                            <div className="flex gap-2">
-                                <Can permission="ticket_forms.update">
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => handleEdit(field)}
-                                    >
-                                        Edit
-                                    </Button>
-                                </Can>
+                                        {/* ACTIONS */}
+                                        <TableCell className="text-right">
+                                            <div className="flex justify-end gap-1 opacity-80 transition-opacity group-hover:opacity-100">
+                                                <Can permission="ticket_forms.update">
+                                                    <Button
+                                                        size="icon"
+                                                        variant="ghost"
+                                                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                                        onClick={() =>
+                                                            handleEdit(field)
+                                                        }
+                                                        title="Edit Field"
+                                                    >
+                                                        <Pencil className="h-4 w-4" />
+                                                    </Button>
+                                                </Can>
 
-                                <Can permission="ticket_forms.delete">
-                                    <Button
-                                        size="sm"
-                                        variant="destructive"
-                                        onClick={() => handleDelete(field.id)}
-                                    >
-                                        Delete
-                                    </Button>
-                                </Can>
-                            </div>
+                                                <Can permission="ticket_forms.delete">
+                                                    <Button
+                                                        size="icon"
+                                                        variant="ghost"
+                                                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                field.id,
+                                                            )
+                                                        }
+                                                        title="Delete Field"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </Can>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center p-8 text-center">
+                            <p className="text-sm text-muted-foreground">
+                                No fields added yet.
+                            </p>
                         </div>
-                    </div>
-                ))}
+                    )}
+                </div>
             </div>
         </div>
     );

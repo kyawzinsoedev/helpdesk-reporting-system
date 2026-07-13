@@ -83,6 +83,11 @@ class UserController extends Controller
         // Spatie role assignment (CORRECT)
         $user->assignRole($validated['role']);
 
+        activity()
+            ->performedOn($user)
+            ->causedBy(auth()->user())
+            ->withProperties(['role' => $request->role])
+            ->log(auth()->user()->name . " added a new user: " . $user->email);
         return redirect()->route('users.index')
             ->with('success', 'User created successfully');
     }

@@ -27,10 +27,10 @@ class TicketFormSeeder extends Seeder
                         'type' => 'select',
                         'required' => true,
                         'options' => [
-                            'Hardware',
-                            'Software',
-                            'Network',
-                            'Email',
+                            ['label' => 'Hardware', 'value' => 'hardware'],
+                            ['label' => 'Software', 'value' => 'software'],
+                            ['label' => 'Network', 'value' => 'network'],
+                            ['label' => 'Email', 'value' => 'email'],
                         ],
                     ],
                     [
@@ -53,9 +53,9 @@ class TicketFormSeeder extends Seeder
                         'type' => 'select',
                         'required' => true,
                         'options' => [
-                            'Annual',
-                            'Medical',
-                            'Casual',
+                            ['label' => 'Annual', 'value' => 'annual'],
+                            ['label' => 'Medical', 'value' => 'medical'],
+                            ['label' => 'Casual', 'value' => 'casual'],
                         ],
                     ],
                     [
@@ -119,7 +119,6 @@ class TicketFormSeeder extends Seeder
         ];
 
         foreach ($forms as $data) {
-
             $fields = $data['fields'];
             unset($data['fields']);
 

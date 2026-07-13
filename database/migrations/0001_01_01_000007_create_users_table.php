@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('phone')->nullable();
             $table->date('birthday')->nullable();
             $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('gender')->nullable();
             $table->text('address')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');

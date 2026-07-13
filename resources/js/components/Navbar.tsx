@@ -7,7 +7,7 @@ export default function Navbar() {
     return (
         <div className="flex items-center justify-center gap-2 border-y bg-background px-6 py-2">
             <Button variant="ghost" asChild>
-                <Link href="/dashboard">Home</Link>
+                <Link href="/">Dashboard</Link>
             </Button>
 
             <DropDownUserAdmin />

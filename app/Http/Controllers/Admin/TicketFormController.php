@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TicketForm;
+use App\Models\TicketFormField;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -44,6 +45,20 @@ class TicketFormController extends Controller
             ->with('success', 'Form created successfully.');
     }
 
+    public function destroy(TicketForm $form)
+    {
+        $this->authorize('delete', $form);
+
+        // Delete related fields first if foreign key doesn't cascade
+        $form->fields()->delete();
+
+        $form->delete();
+
+        return redirect()
+            ->route('forms.index') // or redirect('/forms')
+            ->with('success', 'Form deleted successfully.');
+    }
+
     public function fields(TicketForm $form)
     {
         $this->authorize('manageFields', $form);
@@ -77,17 +92,39 @@ class TicketFormController extends Controller
         return back();
     }
 
-    public function destroy(TicketForm $form)
+
+    public function updateField(Request $request, TicketForm $form, TicketFormField $field)
     {
-        $this->authorize('delete', $form);
+        $this->authorize('manageFields', $form);
 
-        // Delete related fields first if foreign key doesn't cascade
-        $form->fields()->delete();
+        $validated = $request->validate([
+            'label' => 'required',
+            'name' => 'required',
+            'type' => 'required',
+            'options' => 'nullable',
+        ]);
 
-        $form->delete();
+        $field->update([
+            'label' => $validated['label'],
+            'name' => $validated['name'],
+            'type' => $validated['type'],
+            'required' => $request->required ?? false,
+            'options' => $validated['options'] ?? null,
+        ]);
 
-        return redirect()
-            ->route('forms.index') // or redirect('/forms')
-            ->with('success', 'Form deleted successfully.');
+        return back();
+    }
+
+    public function destroyField(TicketForm $form, TicketFormField $field)
+    {
+        $this->authorize('manageFields', $form);
+
+        if ($field->ticket_form_id !== $form->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $field->delete();
+
+        return back();
     }
 }

@@ -210,9 +210,13 @@ export default function AssignTicketDialog({ ticket, staffs }: AssignProps) {
                 {/* Assigned Staffs Table */}
                 <div className="mt-4 max-h-[250px] overflow-y-auto rounded-md border">
                     <Table>
-                        <TableCaption>
-                            A list of assigned staffs for this ticket.
-                        </TableCaption>
+                        {ticket?.assigned_staff ? (
+                            <TableCaption>
+                                A list of assigned staffs for this ticket.
+                            </TableCaption>
+                        ) : (
+                            ''
+                        )}
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Name</TableHead>
@@ -229,7 +233,6 @@ export default function AssignTicketDialog({ ticket, staffs }: AssignProps) {
                                         {ticket.assigned_staff.name}
                                     </TableCell>
                                     <TableCell>
-                                        {/* လက်ရှိ staff ရဲ့ department_id နဲ့ ကိုက်ညီတဲ့ department name ကို staffs list ထဲက ရှာပြတာပါ */}
                                         {staffs.find(
                                             (s) =>
                                                 s.id ===

@@ -24,6 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/forms', TicketFormController::class);
     Route::get('/forms/{form}/fields', [TicketFormController::class, 'fields'])->name('forms.fields.index');
     Route::post('/forms/{form}/fields', [TicketFormController::class, 'storeField'])->name('forms.fields.store');
+    Route::put('/forms/{form}/fields/{field}', [TicketFormController::class, 'updateField'])->name('forms.fields.update');
+    Route::delete('/forms/{form}/fields/{field}', [TicketFormController::class, 'destroyField']);
 
     // Tickets
     Route::patch('/tickets/{ticket}/assign', [TicketController::class, 'assign'])->name('tickets.assign');
