@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Builder;
 
 class Ticket extends Model
 {
@@ -52,5 +53,47 @@ class Ticket extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
         // ->setDescriptionForEvent(fn(string $eventName) => "Form field has been {$eventName}");
+    }
+
+    public function scopeSearch(Builder $query, ?string $search): Builder
+    {
+        return $query->when($search, function ($query, $search) {
+            $query->where('title', 'like', "%{$search}%");
+        });
+    }
+
+    public function scopeTicketForm(Builder $query, $ticketFormId): Builder
+    {
+        return $query->when($ticketFormId, function ($query, $ticketFormId) {
+            $query->where('ticket_form_id', $ticketFormId);
+        });
+    }
+
+    public function scopePriority(Builder $query, ?string $priority): Builder
+    {
+        return $query->when($priority, function ($query, $priority) {
+            $query->where('priority', $priority);
+        });
+    }
+
+    public function scopeStatus(Builder $query, ?string $status): Builder
+    {
+        return $query->when($status, function ($query, $status) {
+            $query->where('status', $status);
+        });
+    }
+
+    public function scopeDateBetween(
+        Builder $query,
+        ?string $from,
+        ?string $to
+    ): Builder {
+        return $query
+            ->when($from, function ($query, $from) {
+                $query->whereDate('created_at', '>=', $from);
+            })
+            ->when($to, function ($query, $to) {
+                $query->whereDate('created_at', '<=', $to);
+            });
     }
 }

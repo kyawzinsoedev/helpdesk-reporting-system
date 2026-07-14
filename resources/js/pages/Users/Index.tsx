@@ -21,7 +21,7 @@ export default function UserIndex({
     filters,
 }: UserIndexProps) {
     return (
-        <div className="space-y-6 p-6">
+        <div className="space-y-4 px-6 py-3">
             {/* Header Section */}
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                 <div>

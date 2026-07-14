@@ -54,19 +54,6 @@ export default function TicketForm({
         resolver: zodResolver(ticketSchema),
     });
 
-    // useEffect(() => {
-    //     if (mode === 'edit' && ticket) {
-    //         reset({
-    //             ticket_form_id: Number(ticket.ticket_form_id),
-    //             title: ticket.title ?? '',
-    //             description: ticket.description ?? '',
-    //             priority: ticket.priority ?? 'low',
-    //             status: ticket.status ?? undefined,
-    //             custom_fields: ticket.custom_fields ?? {},
-    //         });
-    //     }
-    // }, [mode, ticket, reset]);
-
     const selectedFormId = useWatch({
         control,
         name: 'ticket_form_id',

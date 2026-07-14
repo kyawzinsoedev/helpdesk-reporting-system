@@ -20,17 +20,21 @@ use App\Notifications\TicketAssignedNotification;
 class TicketController extends Controller
 {
     use AuthorizesRequests;
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Ticket::class);
 
         $tickets = Ticket::with(['form', 'user', 'answers', 'assignedStaff'])
             ->where('user_id', Auth::id())
+            ->search($request->search)
+            ->ticketForm($request->ticket_form_id)
+            ->priority($request->priority)
+            ->status($request->status)
+            ->dateBetween($request->from, $request->to)
             ->latest()
             ->get()
             ->map(function ($ticket) {
 
-                // Convert answers → custom_fields (IMPORTANT FIX)
                 $customFields = [];
 
                 foreach ($ticket->answers as $answer) {
@@ -47,7 +51,6 @@ class TicketController extends Controller
         $ticketForms = TicketForm::with('fields')->get();
 
         $staffs = User::with('department')
-            // ->where('status', 'active')
             ->get()
             ->map(function ($user) {
                 return [
@@ -59,12 +62,18 @@ class TicketController extends Controller
                 ];
             });
 
-        // dd($tickets->toArray());
-
         return Inertia::render('Admin/Tickets/Index', [
             'tickets' => $tickets,
             'ticketForms' => $ticketForms,
             'staffs' => $staffs,
+            'filters' => $request->only([
+                'search',
+                'ticket_form_id',
+                'priority',
+                'status',
+                'from',
+                'to',
+            ]),
         ]);
     }
 

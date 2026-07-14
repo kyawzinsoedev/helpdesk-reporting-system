@@ -4,6 +4,8 @@ import type { TicketFormStructure } from '@/features/tickets/schemas/ticketSchem
 import type { Ticket } from '../../../../js/features/tickets/types/tickets';
 import Can from '@/features/permissions/Can';
 
+import TicketFilter from '@/features/tickets/componets/TicketFilter';
+
 export interface Staff {
     id: number;
     name: string;
@@ -15,11 +17,25 @@ interface Props {
     tickets: Ticket[];
     ticketForms: TicketFormStructure[];
     staffs: Staff[];
+    filters: {
+        search?: string;
+        ticket_form_id?: string;
+        priority?: string;
+        status?: string;
+        from?: string;
+        to?: string;
+    };
 }
-export default function Index({ tickets, ticketForms, staffs }: Props) {
+export default function Index({
+    tickets,
+    ticketForms,
+    staffs,
+    filters,
+}: Props) {
     // console.log('Ticket form index ', tickets);
+
     return (
-        <div className="space-y-4 p-6">
+        <div className="space-y-4 px-6 py-3">
             {/* Header */}
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                 <div>
@@ -37,6 +53,9 @@ export default function Index({ tickets, ticketForms, staffs }: Props) {
                     <TicketFormModal mode="create" ticketForms={ticketForms} />
                 </Can>
             </div>
+
+            {/* Filter  */}
+            <TicketFilter ticketForms={ticketForms} filters={filters} />
 
             {/* Table */}
             <TicketTable
