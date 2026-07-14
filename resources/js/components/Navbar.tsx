@@ -16,10 +16,6 @@ export default function Navbar() {
                     <Link href="/tickets">Tickets</Link>
                 </Button>
             </Can>
-
-            <Button variant="ghost" asChild>
-                <Link href="/settings">Settings</Link>
-            </Button>
         </div>
     );
 }

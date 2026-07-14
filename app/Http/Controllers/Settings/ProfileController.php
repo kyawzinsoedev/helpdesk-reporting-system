@@ -17,6 +17,16 @@ class ProfileController extends Controller
     /**
      * Show the user's profile settings page.
      */
+    public function index(Request $request): Response
+    {
+        return Inertia::render('settings/profile', [
+            'user' => $request->user()->load([
+                'department',
+                'role',
+            ]),
+        ]);
+    }
+
     public function edit(Request $request): Response
     {
         return Inertia::render('settings/profile', [

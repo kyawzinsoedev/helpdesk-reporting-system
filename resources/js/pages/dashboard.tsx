@@ -33,6 +33,7 @@ import {
     FileText,
     ArrowUpRight,
     Activity,
+    User,
 } from 'lucide-react';
 import RecentTickets from '@/features/dashboard/components/RecentTickets';
 import RecentActivities from '@/features/dashboard/components/RecentActivities';
@@ -80,8 +81,8 @@ export default function Dashboard({
         {
             title: 'Assign',
             value: statsData?.assign ?? 0,
-            icon: AlertCircle,
-            color: 'text-destructive bg-destructive/10',
+            icon: User,
+            color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/40',
         },
         {
             title: 'In Progress',
@@ -101,7 +102,7 @@ export default function Dashboard({
         <>
             <Head title="Dashboard" />
 
-            <div className="mx-auto max-w-7xl space-y-8 p-6">
+            <div className="mx-auto max-w-7xl space-y-6 px-6 py-3">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
@@ -112,14 +113,6 @@ export default function Dashboard({
                             activities.
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Button asChild>
-                            <Link href="/tickets">
-                                <PlusCircle className="mr-2 h-4 w-4" /> Create
-                                Ticket
-                            </Link>
-                        </Button>
-                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -127,7 +120,7 @@ export default function Dashboard({
                         const Icon = stat.icon;
                         return (
                             <Card key={i}>
-                                <CardContent className="flex items-center justify-between p-6">
+                                <CardContent className="flex items-center justify-between p-4">
                                     <div className="space-y-1">
                                         <p className="text-sm font-medium text-muted-foreground">
                                             {stat.title}

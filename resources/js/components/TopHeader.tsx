@@ -1,8 +1,17 @@
 import { router, usePage } from '@inertiajs/react';
-import { Bell, LogOut, Mail, MessageSquare } from 'lucide-react';
+import { Bell, CircleUser, LogOut, Mail, MessageSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import AppearanceTabs from '@/components/appearance-tabs';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -22,6 +31,7 @@ import {
     PopoverTitle,
     PopoverTrigger,
 } from '@/components/ui/popover';
+import type { PageProps } from '@/types';
 import { Separator } from '@/components/ui/separator';
 
 interface Notification {
@@ -34,16 +44,10 @@ interface Notification {
     read_at: string | null;
 }
 
-interface HeaderPageProps {
-    notifications: Notification[];
-}
-
 export default function TopHeader() {
     const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
     useEffect(() => {
-        // setCurrentTime(new Date());
-
         const timer = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
@@ -68,7 +72,11 @@ export default function TopHeader() {
           })
         : '';
 
-    const { notifications } = usePage<HeaderPageProps>().props;
+    const { auth, notifications } = usePage<
+        PageProps & {
+            notifications: Notification[];
+        }
+    >().props;
 
     const [hasUnread, setHasUnread] = useState(notifications.length > 0);
 
@@ -94,11 +102,9 @@ export default function TopHeader() {
                     )}
                 </div>
 
+                {/* Right  */}
                 <div className="flex items-center gap-2">
-                    {/* <Button variant="ghost" size="icon">
-                        <Bell className="h-4 w-4" />
-                    </Button> */}
-
+                    {/* notification */}
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button
@@ -146,13 +152,116 @@ export default function TopHeader() {
                         </PopoverContent>
                     </Popover>
 
-                    <Button variant="ghost" size="icon">
-                        <Mail className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                        <MessageSquare className="h-4 w-4" />
-                    </Button>
+                    {/* profile */}
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <CircleUser className="h-5 w-5" />
+                            </Button>
+                        </DialogTrigger>
 
+                        <DialogContent className="max-w-md">
+                            <DialogHeader>
+                                <DialogTitle>My Profile</DialogTitle>
+                            </DialogHeader>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-center">
+                                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-3xl font-bold text-primary-foreground">
+                                        {auth.user.name.charAt(0)}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3 text-sm">
+                                    <div>
+                                        <p className="text-muted-foreground">
+                                            Name
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.name}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-muted-foreground">
+                                            Username
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.username}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-muted-foreground">
+                                            Email
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.email}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-muted-foreground">
+                                            Phone
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.phone || '-'}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-muted-foreground">
+                                            Birthday
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.birthday || '-'}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-muted-foreground">
+                                            Gender
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.gender || '-'}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-muted-foreground">
+                                            Department
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.department?.name ?? '-'}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-muted-foreground">
+                                            Role
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.role?.name ?? '-'}
+                                        </p>
+                                    </div>
+
+                                    <div className="col-span-2">
+                                        <p className="text-muted-foreground">
+                                            Address
+                                        </p>
+                                        <p className="font-medium">
+                                            {auth.user.address || '-'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* lignt & dark mode */}
+                    <AppearanceTabs />
+
+                    {/* logout  */}
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="ghost" size="icon">
