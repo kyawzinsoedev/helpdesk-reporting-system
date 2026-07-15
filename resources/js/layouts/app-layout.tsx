@@ -1,6 +1,6 @@
+import Navbar from '@/features/layouts/Navbar/Navbar';
+import TopHeader from '@/features/layouts/TopHeader/TopHeader';
 import type { ReactNode } from 'react';
-import Navbar from '@/components/Navbar';
-import TopHeader from '@/components/TopHeader';
 
 interface AppLayoutProps {
     children: ReactNode;

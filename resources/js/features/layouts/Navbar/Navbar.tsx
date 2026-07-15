@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import DropDownUserAdmin from './dropdown-user-admin/DropDownUserAdmin';
-import { Button } from './ui/button';
+import DropDownUserAdmin from '../../../components/dropdown-user-admin/DropDownUserAdmin';
+import { Button } from '../../../components/ui/button';
 import Can from '@/features/permissions/Can';
 
 export default function Navbar() {

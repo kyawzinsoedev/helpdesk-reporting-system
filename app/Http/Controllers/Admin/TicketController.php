@@ -25,7 +25,7 @@ class TicketController extends Controller
         $this->authorize('viewAny', Ticket::class);
 
         $tickets = Ticket::with(['form', 'user', 'answers', 'assignedStaff'])
-            ->where('user_id', Auth::id())
+            ->visibleTo(Auth::user())
             ->search($request->search)
             ->ticketForm($request->ticket_form_id)
             ->priority($request->priority)

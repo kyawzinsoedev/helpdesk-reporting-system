@@ -96,4 +96,13 @@ class Ticket extends Model
                 $query->whereDate('created_at', '<=', $to);
             });
     }
+
+    public function scopeVisibleTo($query, User $user)
+    {
+        if ($user->hasRole('Super Admin')) {
+            return $query;
+        }
+
+        return $query->where('user_id', $user->id);
+    }
 }
