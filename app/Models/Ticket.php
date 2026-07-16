@@ -99,7 +99,11 @@ class Ticket extends Model
 
     public function scopeVisibleTo($query, User $user)
     {
-        if ($user->hasRole('Super Admin')) {
+        // if ($user->hasRole('Super Admin' )) {
+        //     return $query;
+        // }
+
+        if ($user->hasAnyRole(['Super Admin', 'Admin'])) {
             return $query;
         }
 

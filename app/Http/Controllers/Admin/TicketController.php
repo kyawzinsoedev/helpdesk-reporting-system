@@ -32,8 +32,10 @@ class TicketController extends Controller
             ->status($request->status)
             ->dateBetween($request->from, $request->to)
             ->latest()
-            ->get()
-            ->map(function ($ticket) use ($request) {
+            ->orderBy('id', 'desc')
+            ->paginate(5)
+            ->withQueryString()
+            ->through(function ($ticket) use ($request) {
 
                 $customFields = [];
 
@@ -87,7 +89,6 @@ class TicketController extends Controller
 
         ]);
     }
-
     public function store(Request $request)
     {
         $this->authorize('create', Ticket::class);

@@ -15,8 +15,8 @@ class RoleSeeder extends Seeder
             'guard_name' => 'web',
         ]);
 
-        $manager = Role::firstOrCreate([
-            'name' => 'Manager',
+        $admin = Role::firstOrCreate([
+            'name' => 'Admin',
             'guard_name' => 'web',
         ]);
 
@@ -25,25 +25,55 @@ class RoleSeeder extends Seeder
             'guard_name' => 'web',
         ]);
 
+        $user = Role::firstOrCreate([
+            'name' => 'User',
+            'guard_name' => 'web',
+        ]);
+
         // Super Admin gets every permission
         $superAdmin->syncPermissions(Permission::all());
 
         // Manager
-        $manager->syncPermissions([
+        $admin->syncPermissions([
             'users.view',
             'users.create',
+            'users.update',
+            'users.delete',
+            'users.reset-password',
 
             'tickets.view',
+            'tickets.create',
+            'tickets.update',
+            'tickets.delete',
             'tickets.assign',
+            'tickets.process',
+            'tickets.resolve',
+            'tickets.close',
+
+            'departments.view',
+            'departments.create',
+            'departments.update',
+            'departments.delete',
 
         ]);
 
         // Staff
         $staff->syncPermissions([
-            'departments.view',
-            'departments.create',
-            'departments.update',
-            'departments.delete',
+            'tickets.view',
+            'tickets.create',
+            'tickets.update',
+            'tickets.delete',
+            'tickets.assign',
+            'tickets.process',
+            'tickets.resolve',
+            'tickets.close',
+        ]);
+
+        $user->syncPermissions([
+            'tickets.view',
+            'tickets.create',
+            'tickets.update',
+            'tickets.delete',
         ]);
     }
 }

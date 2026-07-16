@@ -34,10 +34,10 @@ class UserSeeder extends Seeder
         // Manager User
         // ==========================
         $user1 = User::firstOrCreate(
-            ['email' => 'user1@example.com'],
+            ['email' => 'admin@gmail.com'],
             [
-                'name' => 'User One',
-                'username' => 'user1',
+                'name' => 'Admin',
+                'username' => 'admin',
                 'phone' => '09222222222',
                 'birthday' => '2000-05-10',
                 'gender' => 'male',
@@ -48,16 +48,16 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $user1->syncRoles(['Manager']);
+        $user1->syncRoles(['Admin']);
 
         // ==========================
         // Staff User
         // ==========================
         $user2 = User::firstOrCreate(
-            ['email' => 'user2@example.com'],
+            ['email' => 'user@gmail.com'],
             [
-                'name' => 'User Two',
-                'username' => 'user2',
+                'name' => 'User',
+                'username' => 'user',
                 'phone' => '09333333333',
                 'birthday' => '1999-08-20',
                 'gender' => 'female',
@@ -68,6 +68,23 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $user2->syncRoles(['Staff']);
+        $user2->syncRoles(['User']);
+
+        $user3 = User::firstOrCreate(
+            ['email' => 'staff@gmail.com'],
+            [
+                'name' => 'Staff',
+                'username' => 'staff',
+                'phone' => '09333333333',
+                'birthday' => '1999-08-20',
+                'gender' => 'female',
+                'address' => 'Naypyidaw',
+                'status' => 'active',
+                'department_id' => 1,
+                'password' => Hash::make('kyaw@123'),
+            ]
+        );
+
+        $user3->syncRoles(['Staff']);
     }
 }

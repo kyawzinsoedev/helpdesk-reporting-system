@@ -9,26 +9,27 @@ import {
 } from '@/components/ui/table';
 import type { Staff } from '@/pages/Admin/Tickets/Index';
 import type { TicketFormStructure } from '../schemas/ticketSchema';
-import type { Ticket } from '../types/tickets';
+import type { PaginatedData, Ticket } from '../types/tickets';
 import AssignTicketDialog from './AssignTicketDialog';
 import DeleteTicketDialog from './DeleteTicketDialog';
 import TicketFormModal from './TicketFormModal';
 import ProcessTicketDialog from './ProcessTicketDialog';
 import Can from '@/features/permissions/Can';
+import AppPagination from '@/features/common/pagination';
 
 interface Props {
-    tickets: Ticket[];
+    tickets: PaginatedData<Ticket>;
     ticketForms: TicketFormStructure[];
     staffs: Staff[];
 }
 
 export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
-    // console.log('Ticket From Ticket Table ', tickets);
+    console.log('Ticket From Ticket Table ', tickets);
     return (
         <div className="overflow-hidden rounded-md border bg-card shadow-sm">
             <Table>
                 <TableCaption className="mb-3">
-                    {tickets?.length === 0
+                    {tickets?.data.length === 0
                         ? 'No Tickets Abaliable'
                         : 'A list of your recent tickets.'}
                 </TableCaption>
@@ -51,7 +52,7 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
                 </TableHeader>
 
                 <TableBody>
-                    {tickets?.map((ticket) => (
+                    {tickets?.data?.map((ticket) => (
                         <TableRow key={ticket.id}>
                             <TableCell>{ticket.id ?? '-'}</TableCell>
 
@@ -121,6 +122,11 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
                     ))}
                 </TableBody>
             </Table>
+            <div className="flex items-end justify-end p-3">
+                <div>
+                    <AppPagination pagination={tickets} />
+                </div>
+            </div>
         </div>
     );
 }
