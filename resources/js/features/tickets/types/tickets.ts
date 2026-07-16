@@ -1,7 +1,23 @@
+export interface TicketPermission {
+    update: boolean;
+    delete: boolean;
+    assign: boolean;
+    removeAssign: boolean;
+    process: boolean;
+    resolve: boolean;
+    close: boolean;
+}
 export interface Staff {
     id: number;
     name: string;
     username: string;
+    email: string;
+    phone: string;
+    gender: string;
+    birthday: string;
+    address: string;
+    status: string;
+    department_id: number | null;
 }
 export interface Ticket {
     id: number;
@@ -36,4 +52,6 @@ export interface Ticket {
     };
 
     remark?: string;
+
+    can: TicketPermission;
 }

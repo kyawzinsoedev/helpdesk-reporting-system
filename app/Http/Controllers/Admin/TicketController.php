@@ -33,7 +33,7 @@ class TicketController extends Controller
             ->dateBetween($request->from, $request->to)
             ->latest()
             ->get()
-            ->map(function ($ticket) {
+            ->map(function ($ticket) use ($request) {
 
                 $customFields = [];
 
@@ -44,6 +44,16 @@ class TicketController extends Controller
                 }
 
                 $ticket->custom_fields = $customFields;
+
+                $ticket->can = [
+                    'update' => $request->user()->can('update', $ticket),
+                    'delete' => $request->user()->can('delete', $ticket),
+                    'assign' => $request->user()->can('assign', $ticket),
+                    'removeAssign' => $request->user()->can('removeAssign', $ticket),
+                    'process' => $request->user()->can('process', $ticket),
+                    'resolve' => $request->user()->can('resolve', $ticket),
+                    'close' => $request->user()->can('close', $ticket),
+                ];
 
                 return $ticket;
             });
@@ -74,6 +84,7 @@ class TicketController extends Controller
                 'from',
                 'to',
             ]),
+
         ]);
     }
 

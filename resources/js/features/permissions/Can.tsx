@@ -1,22 +1,35 @@
 import { usePage } from '@inertiajs/react';
 
 interface Props {
-    permission: string | null;
+    permission: string | string[] | null;
+    requireAll?: boolean;
     children: React.ReactNode;
 }
 
-export default function Can({ permission, children }: Props) {
+export default function Can({
+    permission,
+    requireAll = false,
+    children,
+}: Props) {
     const { auth } = usePage().props as any;
 
-    const permissions = auth?.user?.permissions ?? [];
+    const permissions: string[] = auth?.user?.permissions ?? [];
 
     if (!permission) {
-        return children;
+        return <>{children}</>;
     }
 
-    if (!permissions.includes(permission)) {
+    const requiredPermissions = Array.isArray(permission)
+        ? permission
+        : [permission];
+
+    const hasPermission = requireAll
+        ? requiredPermissions.every((p) => permissions.includes(p))
+        : requiredPermissions.some((p) => permissions.includes(p));
+
+    if (!hasPermission) {
         return null;
     }
 
-    return children;
+    return <>{children}</>;
 }

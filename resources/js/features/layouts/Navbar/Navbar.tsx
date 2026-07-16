@@ -10,7 +10,16 @@ export default function Navbar() {
                 <Link href="/">Dashboard</Link>
             </Button>
 
-            <DropDownUserAdmin />
+            <Can
+                permission={[
+                    'users.view',
+                    'departments.view',
+                    'ticket_forms.view',
+                ]}
+            >
+                <DropDownUserAdmin />
+            </Can>
+
             <Can permission="tickets.view">
                 <Button variant="ghost" asChild>
                     <Link href="/tickets">Tickets</Link>

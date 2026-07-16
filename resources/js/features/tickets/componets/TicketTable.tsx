@@ -104,17 +104,17 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
                                         />
                                     </Can>
 
-                                    <Can permission="tickets.update">
+                                    {ticket.can.update && (
                                         <TicketFormModal
                                             mode="edit"
                                             ticket={ticket}
                                             ticketForms={ticketForms}
                                         />
-                                    </Can>
+                                    )}
 
-                                    <Can permission="tickets.delete">
+                                    {ticket.can.delete && (
                                         <DeleteTicketDialog ticket={ticket} />
-                                    </Can>
+                                    )}
                                 </div>
                             </TableCell>
                         </TableRow>

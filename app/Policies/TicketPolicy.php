@@ -28,8 +28,14 @@ class TicketPolicy
      */
     public function update(User $authUser, Ticket $ticket): bool
     {
+        // Super Admin bypass
+        if ($authUser->hasRole('Super Admin')) {
+            return true;
+        }
+
+        // Owner can edit only before assignment
         return $authUser->id === $ticket->user_id
-            || $authUser->can('tickets.update');
+            && $ticket->assign_to === null;
     }
 
     /**
@@ -37,7 +43,13 @@ class TicketPolicy
      */
     public function delete(User $authUser, Ticket $ticket): bool
     {
-        return $authUser->can('tickets.delete');
+        // Super Admin bypass
+        if ($authUser->hasRole('Super Admin')) {
+            return true;
+        }
+
+        return $authUser->id === $ticket->user_id
+            && $ticket->assign_to === null;
     }
 
     /**
