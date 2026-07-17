@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActivityLogHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -40,6 +41,11 @@ class RoleController extends Controller
             'name' => $validated['name'],
         ]);
 
+        ActivityLogHelper::created(
+            auth()->user()->name . " created user '{$role->name}'.",
+            $role
+        );
+
         $role->syncPermissions($validated['permissions'] ?? []);
 
         return back()->with('success', 'Role created successfully.');
@@ -65,6 +71,11 @@ class RoleController extends Controller
             'name' => $validated['name'],
         ]);
 
+        ActivityLogHelper::updated(
+            auth()->user()->name . " updated role '{$role->name}'.",
+            $role
+        );
+
         $role->syncPermissions($validated['permissions'] ?? []);
 
         return back()->with('success', 'Role updated successfully.');
@@ -78,6 +89,11 @@ class RoleController extends Controller
         $this->authorize('delete', $role);
 
         $role->delete();
+
+        ActivityLogHelper::deleted(
+            auth()->user()->name . " delete role '{$role->name}'.",
+            $role
+        );
 
         return back()->with('success', 'Role deleted successfully.');
     }

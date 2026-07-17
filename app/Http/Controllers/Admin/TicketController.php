@@ -114,6 +114,11 @@ class TicketController extends Controller
                 'status' => 'open',
             ]);
 
+            ActivityLogHelper::created(
+                auth()->user()->name . " created ticket '{$ticket->title}'.",
+                $ticket
+            );
+
             $formFields = TicketFormField::where('ticket_form_id', $request->ticket_form_id)
                 ->get()
                 ->keyBy('name');
@@ -183,6 +188,11 @@ class TicketController extends Controller
             // 1. Update main ticket
             $ticket->update(
                 $request->only(['title', 'description', 'priority', 'status'])
+            );
+
+            ActivityLogHelper::updated(
+                auth()->user()->name . " updated ticket '{$ticket->title}'.",
+                $ticket
             );
 
             // 2. Get form fields
@@ -284,7 +294,7 @@ class TicketController extends Controller
 
             ActivityLogHelper::custom(
                 'assigned',
-                auth()->user()->name . " assigned Ticket #{$ticket->id} to {$staff->name}.",
+                auth()->user()->name . " assigned Staff #{$staff->name} #{$ticket->title}.",
                 $ticket
             );
 
@@ -319,7 +329,7 @@ class TicketController extends Controller
 
         ActivityLogHelper::custom(
             'remove_assign',
-            auth()->user()->name . " remove Assign to staff {$staff}  #{$ticket->id}.",
+            auth()->user()->name . " remove Assign to staff {$staff->name}  #{$ticket->title}.",
             $ticket
         );
 
@@ -360,7 +370,7 @@ class TicketController extends Controller
 
         ActivityLogHelper::custom(
             'processing',
-            auth()->user()->name . " processing Ticket #{$ticket->id}.",
+            auth()->user()->name . " processing Ticket #{$ticket->title}.",
             $ticket
         );
 
@@ -384,7 +394,7 @@ class TicketController extends Controller
 
             ActivityLogHelper::custom(
                 'resolved',
-                auth()->user()->name . " resolved Ticket #{$ticket->id}.",
+                auth()->user()->name . " resolved Ticket #{$ticket->title}.",
                 $ticket
             );
 
@@ -412,7 +422,7 @@ class TicketController extends Controller
         ]);
         ActivityLogHelper::custom(
             'closed',
-            auth()->user()->name . " closed Ticket #{$ticket->id}.",
+            auth()->user()->name . " closed Ticket #{$ticket->title}.",
             $ticket
         );
         $ticket->update([

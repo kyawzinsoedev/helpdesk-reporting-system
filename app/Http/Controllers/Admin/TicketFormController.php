@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActivityLogHelper;
 use App\Http\Controllers\Controller;
 use App\Models\TicketForm;
 use App\Models\TicketFormField;
@@ -39,7 +40,12 @@ class TicketFormController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        TicketForm::create($validated);
+        $ticketForm = TicketForm::create($validated);
+
+        ActivityLogHelper::created(
+            auth()->user()->name . " created ticket form '{$ticketForm->name}'.",
+            $ticketForm
+        );
 
         return redirect('/forms')
             ->with('success', 'Form created successfully.');
@@ -53,6 +59,11 @@ class TicketFormController extends Controller
         $form->fields()->delete();
 
         $form->delete();
+
+        ActivityLogHelper::deleted(
+            auth()->user()->name . " created ticket form '{$form->name}'.",
+            $form
+        );
 
         return redirect()
             ->route('forms.index') // or redirect('/forms')
@@ -81,6 +92,10 @@ class TicketFormController extends Controller
             'options' => 'nullable',
         ]);
 
+        // dd($form->toArray());
+        $ticketFormName = $form->name;
+        // dd($ticketFormName);
+
         $form->fields()->create([
             'label' => $validated['label'],
             'name' => $validated['name'],
@@ -88,6 +103,11 @@ class TicketFormController extends Controller
             'required' => $request->required ?? false,
             'options' => $validated['options'] ?? null,
         ]);
+
+        ActivityLogHelper::created(
+            auth()->user()->name . " created field '{$form->name}' from ticket form '{$ticketFormName}' ",
+            $form
+        );
 
         return back();
     }
@@ -112,6 +132,11 @@ class TicketFormController extends Controller
             'options' => $validated['options'] ?? null,
         ]);
 
+        ActivityLogHelper::updated(
+            auth()->user()->name . " updated field '{$field->name}' from ticket form '{$form->name}' ",
+            $field
+        );
+
         return back();
     }
 
@@ -122,6 +147,11 @@ class TicketFormController extends Controller
         if ($field->ticket_form_id !== $form->id) {
             abort(403, 'Unauthorized action.');
         }
+
+        ActivityLogHelper::deleted(
+            auth()->user()->name . " updated field '{$field->name}' from ticket form '{$form->name}' ",
+            $field
+        );
 
         $field->delete();
 

@@ -82,13 +82,13 @@ export default function RecentActivities({ recentActivities }: props) {
                             ) : (
                                 displayedActivities.map((log) => (
                                     <TableRow key={log.id}>
-                                        <TableCell className="pl-6 text-xs font-medium">
+                                        <TableCell className="pl-6 text-sm font-medium">
                                             {log.causer_name}
                                         </TableCell>
-                                        <TableCell className="text-xs text-gray-700 dark:text-gray-300">
+                                        <TableCell className="text-sm text-gray-900 dark:text-gray-300">
                                             {log.description}
                                         </TableCell>
-                                        <TableCell className="pr-6 text-right text-[11px] whitespace-nowrap text-muted-foreground">
+                                        <TableCell className="pr-6 text-right text-[12px] whitespace-nowrap text-muted-foreground">
                                             {log.date}
                                         </TableCell>
                                     </TableRow>
@@ -132,10 +132,10 @@ export default function RecentActivities({ recentActivities }: props) {
                                         key={log.id}
                                         className="transition-colors hover:bg-muted/40"
                                     >
-                                        <TableCell className="pl-6 text-xs font-semibold text-gray-900 dark:text-gray-100">
+                                        <TableCell className="pl-6 text-sm font-semibold text-gray-900 dark:text-gray-100">
                                             {log.causer_name}
                                         </TableCell>
-                                        <TableCell className="py-3 text-xs leading-relaxed text-gray-700 dark:text-gray-300">
+                                        <TableCell className="text-md py-3 leading-relaxed text-gray-900 dark:text-gray-300">
                                             {log.description}
                                         </TableCell>
                                         <TableCell className="pr-6 text-right font-mono text-[11px] text-muted-foreground">
