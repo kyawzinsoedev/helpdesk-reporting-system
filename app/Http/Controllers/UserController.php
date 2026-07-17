@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ActivityLogHelper;
 use App\Models\User;
 use App\Models\Department;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -81,11 +82,10 @@ class UserController extends Controller
         // create user
         $user = User::create($validated);
 
-        activity()
-            ->performedOn($user)
-            ->causedBy($request->user())
-            ->log($request->user()->name . " created a new user account for '{$user->name}' ({$user->email})");
-
+        ActivityLogHelper::created(
+            auth()->user()->name . " created user '{$user->name}'.",
+            $user
+        );
         // Spatie role assignment (CORRECT)
         $user->assignRole($validated['role']);
 
@@ -99,6 +99,7 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $this->authorize('update', $user);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
@@ -114,17 +115,51 @@ class UserController extends Controller
 
         $validated['gender'] = $validated['gender'] ?? 'male';
 
+        // Save old values BEFORE update
+        $oldValues = $user->only([
+            'name',
+            'username',
+            'phone',
+            'birthday',
+            'email',
+            'gender',
+            'address',
+            'status',
+            'department_id',
+        ]);
 
+        $oldValues['role'] = $user->getRoleNames()->first();
 
+        // Update
         $user->update($validated);
-
-        // Sync role
         $user->syncRoles($validated['role']);
 
-        activity()
-            ->performedOn($user)
-            ->causedBy($request->user())
-            ->log($request->user()->name . " updated the profile details of user '{$user->name}'");
+        // Reload latest data
+        $user->refresh();
+
+        // Save new values AFTER update
+        $newValues = $user->only([
+            'name',
+            'username',
+            'phone',
+            'birthday',
+            'email',
+            'gender',
+            'address',
+            'status',
+            'department_id',
+        ]);
+
+        $newValues['role'] = $user->getRoleNames()->first();
+
+        ActivityLogHelper::updated(
+            auth()->user()->name . " updated user '{$user->name}'.",
+            $user,
+            [
+                'old' => $oldValues,
+                'new' => $newValues,
+            ]
+        );
 
         return redirect()
             ->route('users.index')
@@ -138,14 +173,11 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
 
-        activity()
-            ->performedOn($user)
-            ->causedBy($request->user())
-            ->withProperties([
-                'deleted_user_id' => $user->id,
-                'deleted_user_email' => $user->email,
-            ])
-            ->log($request->user()->name . " permanently deleted the user account of '{$user->name}' ({$user->email})");
+        ActivityLogHelper::deleted(
+            auth()->user()->name . " deleted user '{$user->name}'.",
+            $user
+        );
+
         $user->delete();
 
         return back()->with('success', 'User deleted successfully');

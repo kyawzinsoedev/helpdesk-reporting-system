@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ActivityLogHelper;
 use App\Models\Department;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -46,7 +47,12 @@ class DepartmentController extends Controller
             'department_code' => 'required|string|max:255|unique:departments,department_code',
         ]);
 
-        Department::create($validated);
+        $department = Department::create($validated);
+
+        ActivityLogHelper::created(
+            auth()->user()->name . " created department '{$department->name}'.",
+            $department
+        );
 
         return redirect()
             ->route('departments.index')
@@ -93,6 +99,11 @@ class DepartmentController extends Controller
 
         $department->update($validated);
 
+        ActivityLogHelper::updated(
+            auth()->user()->name . " update department '{$department->name}'.",
+            $department
+        );
+
         return redirect()
             ->route('departments.index')
             ->with('success', 'Department updated successfully!');
@@ -105,6 +116,11 @@ class DepartmentController extends Controller
     {
         $this->authorize('delete', $department);
         $department->delete();
+
+        ActivityLogHelper::deleted(
+            auth()->user()->name . " delete department '{$department->name}'.",
+            $department
+        );
 
         return redirect()
             ->route('departments.index')

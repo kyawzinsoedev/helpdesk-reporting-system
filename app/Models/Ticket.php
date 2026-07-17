@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Builder;
 
 class Ticket extends Model
 {
-    use LogsActivity;
+
     protected $fillable = [
         'user_id',
         'ticket_form_id',
@@ -46,14 +44,6 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'assign_to');
     }
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-        // ->setDescriptionForEvent(fn(string $eventName) => "Form field has been {$eventName}");
-    }
 
     public function scopeSearch(Builder $query, ?string $search): Builder
     {

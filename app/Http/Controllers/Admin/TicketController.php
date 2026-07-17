@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActivityLogHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Models\TicketForm;
@@ -242,6 +243,11 @@ class TicketController extends Controller
     {
         $this->authorize('delete', $ticket);
 
+        ActivityLogHelper::deleted(
+            auth()->user()->name . " deleted user '{$ticket->title}'.",
+            $ticket
+        );
+
         // $ticket->answers()->delete();
         $ticket->delete();
 
@@ -276,6 +282,12 @@ class TicketController extends Controller
 
             $ticketNameContext = $request->ticket_name ? " (Form Name: {$request->ticket_name})" : "";
 
+            ActivityLogHelper::custom(
+                'assigned',
+                auth()->user()->name . " assigned Ticket #{$ticket->id} to {$staff->name}.",
+                $ticket
+            );
+
             TicketHistory::create([
                 'ticket_id' => $ticket->id,
                 'user_id' => auth()->id(),
@@ -304,6 +316,13 @@ class TicketController extends Controller
         }
 
         DB::beginTransaction();
+
+        ActivityLogHelper::custom(
+            'remove_assign',
+            auth()->user()->name . " remove Assign to staff {$staff}  #{$ticket->id}.",
+            $ticket
+        );
+
 
         try {
             $ticket->update([
@@ -339,6 +358,12 @@ class TicketController extends Controller
             'remark' => ['required', 'string', 'max:1000'],
         ]);
 
+        ActivityLogHelper::custom(
+            'processing',
+            auth()->user()->name . " processing Ticket #{$ticket->id}.",
+            $ticket
+        );
+
         $ticket->update([
             'status' => 'processing',
             'remark' => $validated['remark'],
@@ -356,6 +381,12 @@ class TicketController extends Controller
         ]);
         // send mail to create user ( now that is resolved and need to change status as clsoe )
         DB::transaction(function () use ($validated, $ticket) {
+
+            ActivityLogHelper::custom(
+                'resolved',
+                auth()->user()->name . " resolved Ticket #{$ticket->id}.",
+                $ticket
+            );
 
             $ticket->update([
                 'status' => 'resolved',
@@ -379,6 +410,11 @@ class TicketController extends Controller
         $validated = $request->validate([
             'remark' => ['required', 'string', 'max:1000'],
         ]);
+        ActivityLogHelper::custom(
+            'closed',
+            auth()->user()->name . " closed Ticket #{$ticket->id}.",
+            $ticket
+        );
         $ticket->update([
             'status' => 'closed',
             'remark' => $validated['remark'],
