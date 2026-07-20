@@ -70,24 +70,6 @@ export default function TicketTable({ tickets, ticketForms, staffs }: Props) {
 
                             <TableCell>{ticket.form?.name ?? '-'}</TableCell>
 
-                            {/* <TableCell>
-                                <div className="flex flex-col gap-1">
-                                    {ticket?.custom_fields &&
-                                        Object.entries(
-                                            ticket.custom_fields,
-                                        ).map(([key, value]) => (
-                                            <div key={key} className="text-sm">
-                                                <span className="font-medium">
-                                                    {key}:
-                                                </span>{' '}
-                                                <span className="text-muted-foreground">
-                                                    {String(value)}
-                                                </span>
-                                            </div>
-                                        ))}
-                                </div>
-                            </TableCell> */}
-
                             <TableCell>{ticket.priority ?? '-'}</TableCell>
 
                             <TableCell>{ticket.status ?? '-'}</TableCell>

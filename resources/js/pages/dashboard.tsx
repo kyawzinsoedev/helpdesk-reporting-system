@@ -173,7 +173,7 @@ export default function Dashboard({
                                     className="w-full justify-start"
                                     asChild
                                 >
-                                    <Link href="/settings">
+                                    <Link href="/forms">
                                         <FileText className="mr-2 h-4 w-4 text-purple-500" />{' '}
                                         Configure Form Fields
                                     </Link>

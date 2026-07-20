@@ -26,6 +26,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import Can from '@/features/permissions/Can';
+import { useState } from 'react';
 
 interface Props {
     ticket: Ticket;
@@ -33,6 +34,8 @@ interface Props {
 
 export default function ProcessTicketDialog({ ticket }: Props) {
     // console.log('Ticket From Process Ticket Dialog', ticket);
+
+    const [isOpen, setIsOpen] = useState(false);
 
     const ticketAction = {
         open: {
@@ -88,6 +91,7 @@ export default function ProcessTicketDialog({ ticket }: Props) {
                 preserveScroll: true,
                 onSuccess: () => {
                     toast.success(successMessage);
+                    setIsOpen(false);
                     reset();
                 },
                 onError: () => {
@@ -98,7 +102,7 @@ export default function ProcessTicketDialog({ ticket }: Props) {
     };
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" size="icon">
                     <Settings className="h-4 w-4" />

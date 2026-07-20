@@ -1,7 +1,10 @@
 import TicketFormModal from '@/features/tickets/componets/TicketFormModal';
 import TicketTable from '@/features/tickets/componets/TicketTable';
 import type { TicketFormStructure } from '@/features/tickets/schemas/ticketSchema';
-import type { Ticket } from '../../../../js/features/tickets/types/tickets';
+import type {
+    PaginatedData,
+    Ticket,
+} from '../../../../js/features/tickets/types/tickets';
 import Can from '@/features/permissions/Can';
 
 import TicketFilter from '@/features/tickets/componets/TicketFilter';
@@ -14,7 +17,7 @@ export interface Staff {
     status: string;
 }
 interface Props {
-    tickets: Ticket[];
+    tickets: PaginatedData<Ticket>;
     ticketForms: TicketFormStructure[];
     staffs: Staff[];
     filters: {
