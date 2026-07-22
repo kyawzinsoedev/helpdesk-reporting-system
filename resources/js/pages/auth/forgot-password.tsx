@@ -1,69 +1,52 @@
-// Components
-import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { login } from '@/routes';
-import { email } from '@/routes/password';
+import { Head, Link } from '@inertiajs/react';
+import { TriangleAlert } from 'lucide-react';
 
-export default function ForgotPassword({ status }: { status?: string }) {
+import { Button } from '@/components/ui/button';
+import TextLink from '@/components/text-link';
+import { login } from '@/routes';
+
+export default function ForgotPassword() {
     return (
         <>
-            <Head title="Forgot password" />
+            <Head title="Forgot Password" />
 
-            {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {status}
+            <div className="rounded-xl border bg-background p-8 shadow-sm">
+                <div className="flex justify-center">
+                    <div className="rounded-full bg-amber-100 p-4">
+                        <TriangleAlert className="h-8 w-8 text-amber-600" />
+                    </div>
                 </div>
-            )}
 
-            <div className="space-y-6">
-                <Form {...email.form()}>
-                    {({ processing, errors }) => (
-                        <>
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    autoComplete="off"
-                                    autoFocus
-                                    placeholder="email@example.com"
-                                />
+                <h2 className="mt-6 text-center text-2xl font-bold">
+                    Password Reset Required
+                </h2>
 
-                                <InputError message={errors.email} />
-                            </div>
+                <p className="mt-4 text-center text-muted-foreground">
+                    Password resets are managed by your system administrator.
+                </p>
 
-                            <div className="my-6 flex items-center justify-start">
-                                <Button
-                                    className="w-full"
-                                    disabled={processing}
-                                    data-test="email-password-reset-link-button"
-                                >
-                                    {processing && (
-                                        <LoaderCircle className="h-4 w-4 animate-spin" />
-                                    )}
-                                    Email password reset link
-                                </Button>
-                            </div>
-                        </>
-                    )}
-                </Form>
+                <p className="mt-2 text-center text-muted-foreground">
+                    Please contact your administrator to request a password
+                    reset.
+                </p>
 
-                <div className="space-x-1 text-center text-sm text-muted-foreground">
-                    <span>Or, return to</span>
-                    <TextLink href={login()}>log in</TextLink>
+                <div className="mt-8 rounded-lg border bg-muted/40 p-4">
+                    <p className="text-sm text-muted-foreground">
+                        Administrator Email
+                    </p>
+
+                    <p className="mt-1 font-semibold">admin@company.com</p>
                 </div>
+
+                <Button asChild className="mt-8 w-full">
+                    <Link href={login().url}>Back to Login</Link>
+                </Button>
             </div>
         </>
     );
 }
 
 ForgotPassword.layout = {
-    title: 'Forgot password',
-    description: 'Enter your email to receive a password reset link',
+    title: 'Forgot Password',
+    description: 'Contact your system administrator to reset your password.',
 };
