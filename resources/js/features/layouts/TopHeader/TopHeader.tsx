@@ -26,12 +26,8 @@ import {
 import {
     Popover,
     PopoverContent,
-    PopoverDescription,
-    PopoverHeader,
-    PopoverTitle,
     PopoverTrigger,
 } from '@/components/ui/popover';
-import type { PageProps } from '@/types';
 import { Separator } from '@/components/ui/separator';
 
 interface Notification {
@@ -241,7 +237,7 @@ export default function TopHeader() {
                                             Role
                                         </p>
                                         <p className="font-medium">
-                                            {auth.user.role?.name ?? '-'}
+                                            {auth.user.roles?.[0] ?? '-'}
                                         </p>
                                     </div>
 

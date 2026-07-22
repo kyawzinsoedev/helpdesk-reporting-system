@@ -42,7 +42,9 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => Auth::user()
                     ? [
-                        ...Auth::user()->toArray(),
+                        ...Auth::user()
+                            ->loadMissing('department')
+                            ->toArray(),
 
                         'roles' => Auth::user()
                             ->getRoleNames(),
