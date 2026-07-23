@@ -81,9 +81,21 @@ Project introduction...
 
 # 📷 Screenshots
 
+### Login
+
+![Login](docs/images/login.png)
+
 ### Dashboard
 
 ![Dashboard](docs/images/dashboard.png)
+
+### User
+
+![Dashboard](docs/images/users.png)
+
+### Ticket Form
+
+![Ticket Form](docs/images/tickets-form.png)
 
 ### Ticket List
 
@@ -91,7 +103,7 @@ Project introduction...
 
 ### Ticket Detail
 
-![Ticket Detail](docs/images/detail.png)
+![Ticket Detail](docs/images/details.png)
 
 ---
 
