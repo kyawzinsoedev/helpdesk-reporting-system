@@ -100,6 +100,123 @@ export default function TopHeader() {
 
                 {/* Right  */}
                 <div className="flex items-center gap-2">
+                    {/* profile */}
+                    <div className="flex items-center gap-3">
+                        <div className="hidden text-right sm:block">
+                            <p className="text-sm leading-none font-semibold">
+                                {auth.user.name}
+                            </p>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                                {auth.user.roles?.[0] ?? '-'}
+                            </p>
+                        </div>
+
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    className="h-10 w-10 rounded-full p-0"
+                                >
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground">
+                                        {auth.user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                </Button>
+                            </DialogTrigger>
+
+                            <DialogContent className="max-w-md">
+                                <DialogHeader>
+                                    <DialogTitle>My Profile</DialogTitle>
+                                </DialogHeader>
+
+                                <div className="space-y-6">
+                                    {/* Profile Header */}
+                                    <div className="flex flex-col items-center border-b pb-5">
+                                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-3xl font-bold text-primary-foreground">
+                                            {auth.user.name
+                                                .charAt(0)
+                                                .toUpperCase()}
+                                        </div>
+
+                                        <h3 className="mt-3 text-lg font-semibold">
+                                            {auth.user.name}
+                                        </h3>
+
+                                        <p className="text-sm text-muted-foreground">
+                                            {auth.user.roles?.[0] ?? '-'}
+                                        </p>
+                                    </div>
+
+                                    {/* Details */}
+                                    <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <p className="text-muted-foreground">
+                                                Username
+                                            </p>
+                                            <p className="font-medium">
+                                                {auth.user.username}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-muted-foreground">
+                                                Department
+                                            </p>
+                                            <p className="font-medium">
+                                                {auth.user.department?.name ??
+                                                    '-'}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-muted-foreground">
+                                                Email
+                                            </p>
+                                            <p className="font-medium break-all">
+                                                {auth.user.email}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-muted-foreground">
+                                                Phone
+                                            </p>
+                                            <p className="font-medium">
+                                                {auth.user.phone || '-'}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-muted-foreground">
+                                                Birthday
+                                            </p>
+                                            <p className="font-medium">
+                                                {auth.user.birthday || '-'}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-muted-foreground">
+                                                Gender
+                                            </p>
+                                            <p className="font-medium">
+                                                {auth.user.gender || '-'}
+                                            </p>
+                                        </div>
+
+                                        <div className="col-span-2">
+                                            <p className="text-muted-foreground">
+                                                Address
+                                            </p>
+                                            <p className="font-medium">
+                                                {auth.user.address || '-'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+
                     {/* notification */}
                     <Popover>
                         <PopoverTrigger asChild>
@@ -147,112 +264,6 @@ export default function TopHeader() {
                             </div>
                         </PopoverContent>
                     </Popover>
-
-                    {/* profile */}
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                                <CircleUser className="h-5 w-5" />
-                            </Button>
-                        </DialogTrigger>
-
-                        <DialogContent className="max-w-md">
-                            <DialogHeader>
-                                <DialogTitle>My Profile</DialogTitle>
-                            </DialogHeader>
-
-                            <div className="space-y-4">
-                                <div className="flex justify-center">
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-3xl font-bold text-primary-foreground">
-                                        {auth.user.name.charAt(0)}
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3 text-sm">
-                                    <div>
-                                        <p className="text-muted-foreground">
-                                            Name
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.name}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <p className="text-muted-foreground">
-                                            Username
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.username}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <p className="text-muted-foreground">
-                                            Email
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.email}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <p className="text-muted-foreground">
-                                            Phone
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.phone || '-'}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <p className="text-muted-foreground">
-                                            Birthday
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.birthday || '-'}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <p className="text-muted-foreground">
-                                            Gender
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.gender || '-'}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <p className="text-muted-foreground">
-                                            Department
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.department?.name ?? '-'}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <p className="text-muted-foreground">
-                                            Role
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.roles?.[0] ?? '-'}
-                                        </p>
-                                    </div>
-
-                                    <div className="col-span-2">
-                                        <p className="text-muted-foreground">
-                                            Address
-                                        </p>
-                                        <p className="font-medium">
-                                            {auth.user.address || '-'}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
 
                     {/* lignt & dark mode */}
                     <AppearanceTabs />

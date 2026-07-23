@@ -87,14 +87,33 @@ class Ticket extends Model
             });
     }
 
+    // public function scopeVisibleTo($query, User $user)
+    // {
+    //     // if ($user->hasRole('Super Admin' )) {
+    //     //     return $query;
+    //     // }
+
+    //     if ($user->hasAnyRole(['Super Admin', 'Admin'])) {
+    //         return $query;
+    //     }
+
+    //     return $query->where('user_id', $user->id);
+    // }
+
     public function scopeVisibleTo($query, User $user)
     {
-        // if ($user->hasRole('Super Admin' )) {
-        //     return $query;
-        // }
-
-        if ($user->hasAnyRole(['Super Admin', 'Admin'])) {
+        if ($user->hasRole('Super Admin')) {
             return $query;
+        }
+
+        if ($user->hasRole('Admin')) {
+            return $query->whereHas('user', function ($q) use ($user) {
+                $q->where('department_id', $user->department_id);
+            });
+        }
+
+        if ($user->hasRole('Staff')) {
+            return $query->where('assign_to', $user->id);
         }
 
         return $query->where('user_id', $user->id);
