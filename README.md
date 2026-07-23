@@ -1,53 +1,58 @@
 # Help Desk Reporting System
 
-A modern Help Desk Reporting System built with Laravel, React Starter Kit, Inertia.js, TailwindCSS, and MySQL.
+> A modern Help Desk Reporting System built with Laravel, React, Inertia.js, Tailwind CSS, and MySQL.
 
 ---
 
-# Overview
+## 📌 Table of Contents
 
-This project is designed to manage support tickets, workflows, approvals, and communication between users and support staff.
-
-The system supports dynamic ticket forms, ticket assignments, status tracking, file uploads, and role-based access control.
+- Overview
+- Features
+- Screenshots
+- Demo
+- Tech Stack
+- System Architecture
+- Project Flow
+- Database Design
+- Roles & Permissions
+- Installation
+- Environment Configuration
+- Running the Project
+- Folder Structure
+- Project Modules
+- API (Optional)
+- Reports
+- Future Roadmap
+- Contributing
+- License
+- Author
 
 ---
 
-# Features
+# 📖 Overview
 
-## Authentication & Authorization
-
-- Login / Logout
-- Role & Permission Management
-- Protected Routes
-- User Access Control
+Project introduction...
 
 ---
+
+# ✨ Features
+
+## Authentication
+
+- Login
+- Register
+- Forgot Password
+- Role & Permission
 
 ## Ticket Management
 
 - Create Ticket
 - Update Ticket
 - Assign Ticket
-- Ticket Priority
-- Ticket Status Tracking
-
-### Ticket Workflow
-
-```text
-Open
-→ In Progress
-→ Pending
-→ Resolved
-→ Closed
-```
-
----
+- Priority
+- Status
 
 ## Dynamic Form Builder
-
-Dynamic database-driven ticket forms.
-
-### Supported Fields
 
 - Text
 - Textarea
@@ -57,180 +62,190 @@ Dynamic database-driven ticket forms.
 - Date
 - File Upload
 
----
+## Comments
 
-## File Upload System
-
-Supports:
-
-- Images
-- PDF
-- Documents
-- Screenshots
-
----
-
-## Comment System
-
-Communication between users and support staff.
-
----
+- Staff Comments
+- User Comments
 
 ## Notifications
 
-- Ticket Created
-- Ticket Updated
-- Ticket Assigned
-- Ticket Resolved
+- Email
+- In-App
 
----
+## Reports
 
-## Dashboard & Reports
-
-- Open Tickets
-- Closed Tickets
-- Pending Tickets
+- Dashboard
 - Ticket Statistics
 
 ---
 
-# Tech Stack
+# 📷 Screenshots
 
-| Technology | Usage |
-|---|---|
-| Laravel | Backend Framework |
-| React Starter Kit | Frontend |
-| Inertia.js | SPA Architecture |
-| TailwindCSS | UI Design |
-| MySQL | Database |
-| Spatie Permission | Roles & Permissions |
+### Dashboard
+
+![Dashboard](docs/images/dashboard.png)
+
+### Ticket List
+
+![Ticket List](docs/images/tickets.png)
+
+### Ticket Detail
+
+![Ticket Detail](docs/images/detail.png)
 
 ---
 
-# System Flow
+# 🎥 Demo
 
-```text
-User
- ↓
-Create Ticket
- ↓
-Dynamic Form Render
- ↓
-Store Ticket
- ↓
-Assign Staff
- ↓
-Process Ticket
- ↓
-Resolve Ticket
- ↓
-Close Ticket
+Live Demo
+
+```
+https://example.com
 ```
 
 ---
 
-# Database Structure
+# 🛠 Tech Stack
+
+| Technology | Version |
+|------------|----------|
+| Laravel | 12 |
+| React | 19 |
+| Inertia.js | Latest |
+| TailwindCSS | 4 |
+| MySQL | 8 |
+| Spatie Permission | Latest |
+
+---
+
+# 🏗 System Architecture
+
+```text
+React
+      │
+Inertia.js
+      │
+Laravel
+      │
+MySQL
+```
+
+---
+
+# 🔄 Project Flow
+
+```mermaid
+flowchart TD
+
+A[User Login]
+B[Create Ticket]
+C[Dynamic Form]
+D[Store Ticket]
+E[Assign Staff]
+F[Process Ticket]
+G[Resolved]
+H[Closed]
+
+A --> B
+B --> C
+C --> D
+D --> E
+E --> F
+F --> G
+G --> H
+```
+
+---
+
+# 📂 Database Design
 
 ## Main Tables
 
 - users
+- roles
+- permissions
 - tickets
-- ticket_comments
-- ticket_attachments
+- ticket_histories
 - ticket_forms
 - ticket_form_fields
 - ticket_answers
+- activity_log
 
 ---
 
-# Installation
+# 👥 Roles & Permissions
+
+| Role | Description |
+|------|-------------|
+| Admin | Full System Access |
+| Staff | Manage Assigned Tickets |
+| User | Create & View Tickets |
+
+---
+
+# 🚀 Installation
 
 ## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/helpdesk-reporting-system.git
+git clone https://github.com/username/helpdesk-reporting-system.git
 ```
-
----
 
 ## Enter Project
 
 ```bash
-cd helpdesk-management-system
+cd helpdesk-reporting-system
 ```
 
----
-
-## Install Backend Dependencies
+## Install Backend
 
 ```bash
 composer install
 ```
 
----
-
-## Install Frontend Dependencies
+## Install Frontend
 
 ```bash
 npm install
 ```
 
----
-
-## Setup Environment File
+## Copy Environment
 
 ```bash
 cp .env.example .env
 ```
 
----
-
-## Generate Application Key
+## Generate Key
 
 ```bash
 php artisan key:generate
 ```
 
----
-
 ## Configure Database
 
-Update `.env`
-
 ```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=helpdesk_management
+DB_DATABASE=helpdesk
 DB_USERNAME=root
 DB_PASSWORD=
 ```
 
----
-
 ## Run Migration
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
----
-
-## Run Seeder
+## Create Storage Link
 
 ```bash
-php artisan db:seed
+php artisan storage:link
 ```
 
----
-
-## Start Laravel Server
+## Start Backend
 
 ```bash
 php artisan serve
 ```
-
----
 
 ## Start Frontend
 
@@ -240,122 +255,110 @@ npm run dev
 
 ---
 
-# Folder Structure
+# ⚙ Environment Configuration
 
-```text
-app/
-database/
-resources/
-routes/
-public/
+```env
+APP_NAME=HelpDesk
+APP_URL=http://127.0.0.1:8000
 ```
 
 ---
 
-# Project Modules
+# 📦 Project Modules
 
-## Authentication Module
+## Authentication
 
 - Login
 - Register
 - Forgot Password
 
----
+## Authorization
 
-## Ticket Module
+- CRUD Roles
+- Assign permissions for each role
+- Dynamic roles and permissions
 
-- Create Ticket
-- Assign Ticket
-- Ticket Status
-- Ticket Priority
+## Ticket
 
----
+- CRUD
+- Assignment
+- Workflow
+- Priority
+- Status
 
-## Dynamic Form Module
+## Dynamic Form
 
-- Dynamic Fields
-- Dynamic Validation
-- Dynamic Rendering
-- Store Answers
+- Builder
+- Validation
+- Rendering
 
----
+## Notifications
 
-## Notification Module
+- Email
+- Database
 
-- Email Notifications
-- In-App Notifications
+## Reports
 
----
-
-# Roles & Permissions
-
-| Role | Access |
-|---|---|
-| Admin | Full Access |
-| Staff | Manage Tickets |
-| User | Create & View Tickets |
+- Dashboard
+- Statistics
 
 ---
 
-# Future Features
+# 📊 Dashboard
 
-- Drag & Drop Form Builder
-- SLA Management
-- Real-time Notifications
-- Analytics Dashboard
-- Mobile Responsive Enhancements
+- Total Tickets
+- Open Tickets
+- Pending Tickets
+- Resolved Tickets
+- Closed Tickets
 
 ---
 
-# Development Roadmap
+# 📈 Reports
+
+- Tickets by Status
+- Tickets by Priority
+- Tickets by Staff
+- Monthly Reports
+
+---
+
+# 🛣 Roadmap
 
 ## Phase 1
 
 - Authentication
-- Basic Ticket CRUD
-- Ticket Status
-
----
+- Ticket CRUD
 
 ## Phase 2
 
 - Dynamic Form Builder
 - File Upload
-- Comments
-
----
 
 ## Phase 3
 
-- Workflow System
+- Workflow
 - Notifications
-- Assignments
 
----
+## Phase 4 ( Upcoming )
 
-## Phase 4
-
-- Reports
 - SLA
 - Analytics
+- Export Excel
+- Export PDF
 
 ---
 
-# Contributing
-
-Pull requests are welcome.
-
----
-
-# License
+# 📄 License
 
 MIT License
 
 ---
 
-# Author
+# 👨‍💻 Author
 
-Your Name
+**Kyaw Zin Soe**
 
-GitHub:
+GitHub
+
 https://github.com/kyawzinsoedev
