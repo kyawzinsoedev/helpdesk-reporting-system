@@ -200,10 +200,10 @@ class UserController extends Controller
         // 3. (Optional) send email to user
         try {
             Mail::to($user->email)->send(new \App\Mail\PasswordResetMail($user, $newPassword));
-
             Log::channel('mail')->info('Password reset email sent', [
                 'user_id' => $user->id,
                 'email' => $user->email,
+                'newPassword' => $newPassword,
                 'sent_by' => auth()->id(),
             ]);
         } catch (\Exception $e) {

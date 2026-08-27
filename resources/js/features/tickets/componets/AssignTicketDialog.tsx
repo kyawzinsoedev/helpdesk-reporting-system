@@ -138,7 +138,7 @@ export default function AssignTicketDialog({ ticket, staffs }: AssignProps) {
                     <UserRound className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[85vh] min-w-[800px] overflow-y-auto">
+            <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle>Assign Ticket to Staff</DialogTitle>
                     <DialogDescription>

@@ -37,7 +37,7 @@ export default function RecentActivities({ recentActivities }: props) {
     return (
         <>
             <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
                     <div>
                         <CardTitle className="flex items-center gap-2 text-lg font-semibold">
                             <Activity className="h-5 w-5 text-orange-500" />
@@ -99,7 +99,7 @@ export default function RecentActivities({ recentActivities }: props) {
                 </CardContent>
             </Card>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="flex max-h-[85vh] max-w-3xl min-w-2xl flex-col overflow-hidden p-5">
+                <DialogContent className="flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden p-5">
                     <DialogHeader className="border-b p-6 pb-4">
                         <DialogTitle className="flex items-center gap-2 text-xl font-bold">
                             <Activity className="h-5 w-5 text-orange-500" />

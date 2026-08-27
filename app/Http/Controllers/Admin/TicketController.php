@@ -420,16 +420,54 @@ class TicketController extends Controller
         $validated = $request->validate([
             'remark' => ['required', 'string', 'max:1000'],
         ]);
-        ActivityLogHelper::custom(
-            'closed',
-            auth()->user()->name . " closed Ticket #{$ticket->title}.",
-            $ticket
-        );
-        $ticket->update([
-            'status' => 'closed',
-            'remark' => $validated['remark'],
-        ]);
 
-        return back()->with('success', 'Ticket closed successfully.');
+        DB::beginTransaction();
+
+        try {
+            // Get assigned staff before removing assignment
+            $staff = $ticket->assignedStaff;
+
+            // Close ticket and remove assigned staff
+            $ticket->update([
+                'status' => 'closed',
+                'remark' => $validated['remark'],
+                'assign_to' => null,
+            ]);
+
+            // Set assigned staff back to active
+            if ($staff) {
+                $staff->update([
+                    'status' => 'active',
+                ]);
+            }
+
+            // Create history
+            TicketHistory::create([
+                'ticket_id' => $ticket->id,
+                'user_id'   => auth()->id(),
+                'status'    => 'closed',
+                'comment'   => $staff
+                    ? "Ticket closed. Staff member {$staff->name} was removed and set back to active."
+                    : "Ticket closed.",
+            ]);
+
+            // Activity log
+            ActivityLogHelper::custom(
+                'closed',
+                auth()->user()->name . " closed Ticket #{$ticket->title}.",
+                $ticket
+            );
+
+            DB::commit();
+
+            return back()->with('success', 'Ticket closed successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back()->with(
+                'error',
+                'Something went wrong: ' . $e->getMessage()
+            );
+        }
     }
 }

@@ -27,7 +27,7 @@ interface Props {
 export default function RecentTickets({ recentTickets }: Props) {
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
                 <div>
                     <CardTitle className="text-lg font-semibold">
                         Recent Tickets

@@ -20,7 +20,7 @@ export default function Create() {
 
     return (
         <div className="flex w-full items-center justify-center p-6">
-            <form onSubmit={submit} className="max-w-2xl min-w-xl space-y-6">
+            <form onSubmit={submit} className="w-full max-w-2xl space-y-6">
                 <div>
                     <h1 className="text-2xl font-bold">Create Ticket Form</h1>
                 </div>

@@ -27,7 +27,7 @@ export default function UserFilter({ filters }: Props) {
 
     return (
         <Input
-            className="w-100"
+            className="w-full"
             placeholder="Search users..."
             value={search}
             onChange={(e) => handleSearch(e.target.value)}

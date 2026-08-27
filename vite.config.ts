@@ -20,7 +20,9 @@ export default defineConfig({
 
         inertia(),
 
-        wayfinder(),
+        wayfinder({
+            formVariants: true,
+        }),
 
         react({
             babel: {

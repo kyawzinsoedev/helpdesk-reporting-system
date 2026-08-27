@@ -45,7 +45,9 @@ export default function UserIndex({
 
             {/* Filter Section */}
             <Can permission="users.view">
-                <UserFilter filters={filters} />
+                <div className="w-full sm:max-w-sm">
+                    <UserFilter filters={filters} />
+                </div>
             </Can>
 
             {/* Table Section */}

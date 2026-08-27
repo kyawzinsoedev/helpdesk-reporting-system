@@ -80,21 +80,20 @@ export default function TopHeader() {
         <div className="border-b bg-card">
             <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-3 text-sm">
                 {/* Left */}
-                <div className="bg flex flex-wrap items-center gap-2 text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-2 text-muted-foreground">
                     {currentTime ? (
-                        <Badge
-                            className="px-2 py-1 text-sm"
-                            variant={'outline'}
-                        >
+                        <Badge className="px-2 py-1 text-sm" variant="outline">
                             {date}
+
                             <Separator
                                 orientation="vertical"
-                                className="mx-2 inline-block h-4"
+                                className="mx-2 hidden h-4 sm:inline-block"
                             />
-                            {time}
+
+                            <span className="hidden sm:inline">{time}</span>
                         </Badge>
                     ) : (
-                        <div className="h-7 w-40 animate-pulse rounded-md bg-muted" />
+                        <div className="h-7 w-28 animate-pulse rounded-md bg-muted sm:w-40" />
                     )}
                 </div>
 

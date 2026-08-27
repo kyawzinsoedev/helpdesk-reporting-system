@@ -18,19 +18,19 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
-import categories from '@/routes/categories';
+import dashboard from '@/routes/dashboard';
+import departments from '@/routes/departments';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: dashboard.index(),
         icon: LayoutGrid,
     },
     {
-        title: 'Categories',
-        href: categories.index(),
+        title: 'Departments',
+        href: departments.index(),
         icon: ChartBarStacked,
     },
 ];

@@ -125,7 +125,7 @@ export default function ProcessTicketDialog({ ticket }: Props) {
                                 <CardTitle>Ticket Information</CardTitle>
                             </CardHeader>
 
-                            <CardContent className="grid grid-cols-2 gap-4">
+                            <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
                                     <p className="text-sm text-muted-foreground">
                                         Ticket Form

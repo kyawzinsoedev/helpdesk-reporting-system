@@ -1,5 +1,4 @@
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -8,7 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+
 import { Permission, Role } from '@/pages/Admin/Roles/Index';
+
 import RoleFormModal from './RoleFormModal';
 import DeleteRoleDialog from './DeleteRoleDialog';
 import Can from '@/features/permissions/Can';
@@ -21,57 +22,87 @@ interface Props {
 export default function RoleTable({ roles, permissions }: Props) {
     return (
         <div className="overflow-hidden rounded-md border bg-card shadow-sm">
-            <Table>
-                <TableHeader className="bg-muted/50">
-                    <TableRow>
-                        <TableHead className="w-20">ID</TableHead>
-                        <TableHead className="w-48">Role Name</TableHead>
-                        <TableHead>Permissions</TableHead>
-                        <TableHead className="w-40 text-center">
-                            Actions
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
+            <div className="w-full overflow-x-auto">
+                <Table>
+                    <TableHeader className="bg-muted/50">
+                        <TableRow>
+                            {/* ID - Tablet and Desktop */}
+                            <TableHead className="hidden w-20 md:table-cell">
+                                ID
+                            </TableHead>
 
-                <TableBody>
-                    {roles.map((role) => {
-                        const groupedPermissions = role.permissions.reduce(
-                            (groups, permission) => {
-                                const [module, action] =
-                                    permission.name.split('.');
+                            {/* Role Name */}
+                            <TableHead className="min-w-30">
+                                Role Name
+                            </TableHead>
 
-                                if (!groups[module]) {
-                                    groups[module] = [];
-                                }
+                            {/* Permissions */}
+                            <TableHead>Permissions</TableHead>
 
-                                groups[module].push(action);
+                            {/* Actions */}
+                            <TableHead className="w-24 text-right sm:w-32 md:text-center">
+                                Actions
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
 
-                                return groups;
-                            },
-                            {} as Record<string, string[]>,
-                        );
+                    <TableBody>
+                        {roles.map((role) => {
+                            const groupedPermissions = role.permissions.reduce(
+                                (groups, permission) => {
+                                    const [module, action] =
+                                        permission.name.split('.');
 
-                        return (
-                            <TableRow key={role.id}>
-                                <TableCell className="font-medium">
-                                    {role.id}
-                                </TableCell>
+                                    if (!groups[module]) {
+                                        groups[module] = [];
+                                    }
 
-                                <TableCell className="font-medium">
-                                    {role.name}
-                                </TableCell>
+                                    groups[module].push(action);
 
-                                <TableCell>
-                                    <div className="space-y-3">
-                                        {Object.entries(groupedPermissions).map(
-                                            ([module, actions]) => (
+                                    return groups;
+                                },
+                                {} as Record<string, string[]>,
+                            );
+
+                            return (
+                                <TableRow key={role.id}>
+                                    {/* ID */}
+                                    <TableCell className="hidden font-medium md:table-cell">
+                                        {role.id}
+                                    </TableCell>
+
+                                    {/* Role Name */}
+                                    <TableCell className="font-medium">
+                                        <span className="capitalize">
+                                            {role.name}
+                                        </span>
+                                    </TableCell>
+
+                                    {/* Permissions */}
+                                    <TableCell>
+                                        {/* Mobile & Tablet */}
+                                        <div className="lg:hidden">
+                                            <Badge
+                                                variant="secondary"
+                                                className="whitespace-nowrap"
+                                            >
+                                                {role.permissions.length}{' '}
+                                                permissions
+                                            </Badge>
+                                        </div>
+
+                                        {/* Desktop */}
+                                        <div className="hidden space-y-3 lg:block">
+                                            {Object.entries(
+                                                groupedPermissions,
+                                            ).map(([module, actions]) => (
                                                 <div
                                                     key={module}
                                                     className="flex flex-wrap items-start gap-2"
                                                 >
                                                     <Badge
                                                         variant="outline"
-                                                        className="min-w-25 justify-center bg-indigo-300 capitalize"
+                                                        className="min-w-25 justify-center capitalize"
                                                     >
                                                         {module}
                                                     </Badge>
@@ -90,42 +121,44 @@ export default function RoleTable({ roles, permissions }: Props) {
                                                         )}
                                                     </div>
                                                 </div>
-                                            ),
-                                        )}
-                                    </div>
-                                </TableCell>
+                                            ))}
+                                        </div>
+                                    </TableCell>
 
-                                <TableCell>
-                                    <div className="flex justify-center gap-2">
-                                        <Can permission="roles.update">
-                                            <RoleFormModal
-                                                mode="edit"
-                                                permissions={permissions}
-                                                role={role}
-                                            />
-                                        </Can>
+                                    {/* Actions */}
+                                    <TableCell>
+                                        <div className="flex justify-end gap-1 sm:justify-center sm:gap-2">
+                                            <Can permission="roles.update">
+                                                <RoleFormModal
+                                                    mode="edit"
+                                                    permissions={permissions}
+                                                    role={role}
+                                                />
+                                            </Can>
 
-                                        <Can permission="roles.delete">
-                                            <DeleteRoleDialog role={role} />
-                                        </Can>
-                                    </div>
+                                            <Can permission="roles.delete">
+                                                <DeleteRoleDialog role={role} />
+                                            </Can>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+
+                        {/* Empty State */}
+                        {roles.length === 0 && (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={4}
+                                    className="py-8 text-center text-muted-foreground"
+                                >
+                                    No roles found.
                                 </TableCell>
                             </TableRow>
-                        );
-                    })}
-
-                    {roles.length === 0 && (
-                        <TableRow>
-                            <TableCell
-                                colSpan={4}
-                                className="py-8 text-center text-muted-foreground"
-                            >
-                                No roles found.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
         </div>
     );
 }
